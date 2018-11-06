@@ -1,1 +1,0 @@
-This is the initial ReadMe for the game
