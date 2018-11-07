@@ -1,0 +1,13 @@
+## Resources ##
+
+Resources that are needed for the client and server
+
+## Issues ##
+* Textures for ships
+* Textures for islands
+* Textures for water
+* Textures for items
+* Textures for the fog
+* Character images
+* Background Pictures
+## Resolved ##
