@@ -1,0 +1,6 @@
+## Entities ##
+The object the player controls and designs. Players should be able to choose from various hulls, crews, cannons and sails.
+## Issues ##
+- Need a base ship class.
+- Need a factory to build the various types of ships.
+## Resolved ##
