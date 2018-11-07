@@ -1,0 +1,10 @@
+## Entities ##
+All our entites for this game including ships items obstacles and the fog.
+## Issues ##
+* Need a base ship class.
+    - A factory to build the various types of ships.
+* Need item classes.
+* Obstacles - passable and impassable
+* Fog
+* Wind
+## Resolved ##

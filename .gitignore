@@ -1,0 +1,6 @@
+#ignore all .idea files
+*.idea
+
+#ignore generated iml file from intellij
+*.iml
+out

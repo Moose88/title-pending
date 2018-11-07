@@ -1,0 +1,8 @@
+## Server ##
+one beefy boi
+
+## Issues ##
+* Needs thread that connects with the clients
+* class for a lobby
+* loading states
+* playing states
