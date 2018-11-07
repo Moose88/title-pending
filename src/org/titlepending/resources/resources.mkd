@@ -1,6 +1,6 @@
 ## Resources ##
 
-Resources that are needed for the client and server
+Resources that are needed for the Client and Server
 
 ## Issues ##
 * Textures for ships
