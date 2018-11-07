@@ -1,0 +1,7 @@
+## Map ##
+Using a tiled map
+## Issues ##
+* Islands
+* Whirlpool
+* Ship Placement - Level manager
+## Resolved ##
