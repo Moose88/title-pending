@@ -1,8 +1,8 @@
 ## Client ##
 
 ## Issues ##
-* Need a thread that will connect to the server.
+* Need a thread that will connect to the Server.
     - A way to send and receive information
-* An area to render what the server sends back to it.
+* An area to render what the Server sends back to it.
 * A menu system.
 ## Resolved ##
