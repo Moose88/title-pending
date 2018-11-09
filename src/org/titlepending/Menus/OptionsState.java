@@ -10,7 +10,7 @@ import org.newdawn.slick.state.StateBasedGame;
 public class OptionsState extends BaseMenuState {
 
     private final static int FULLSCREEN = 0;
-    private final static int BACK =1;
+    private final static int BACK = 1;
     private GameContainer container;
     private SavedState savedState;
 
@@ -25,8 +25,8 @@ public class OptionsState extends BaseMenuState {
         this.container = container;
         savedState = new SavedState("options");
 
-        isFullScreen = (int)savedState.getNumber("fullScreen",1                                                                                                                                                                                                                                                                                                             );
-        if(isFullScreen==1){
+        isFullScreen = (int)savedState.getNumber("fullScreen",0);
+        if(isFullScreen == 1){
             System.out.println("Setting Fullscreen");
             container.setFullscreen(true);
         } else {
