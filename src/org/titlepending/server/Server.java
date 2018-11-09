@@ -7,7 +7,6 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashSet;
-import java.util.logging.Handler;
 
 public class Server {
 
@@ -28,21 +27,7 @@ public class Server {
         } finally {
             listener.close();
         }
-//        while (true){
-//            Socket socket = listener.accept();
-//
-//            try{
-//                PrintWriter out =
-//                        new PrintWriter(socket.getOutputStream(),true);
-//                    out.println("2");
-//                }
-//            catch (IOException e){
-//                e.printStackTrace();
-//                socket.close();
-//            }finally {
-//                socket.close();
-//            }
-        }
+    }
 
     private static class Handler extends Thread{
         private String name;
