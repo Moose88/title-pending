@@ -38,13 +38,7 @@ public class MenuState extends BaseMenuState {
         // Draw menu
         int yTop = (int) (client.ScreenHeight * 0.6); // one third down the string
         int itemSpace = 95;
-
-        if(((PlayingState)client.getState(Client.PLAYINGSTATE)).isGameInProgress()){
-            drawMenuItem("Continue", yTop,isSelected(PLAY) );
-        } else {
-            drawMenuItem("New Game", yTop,isSelected(PLAY));
-        }
-
+        drawMenuItem("Join Lobby", yTop,isSelected(PLAY));
         drawMenuItem("Options",yTop+OPTIONS*itemSpace,isSelected(OPTIONS));
         drawMenuItem("Stats",yTop+STATS*itemSpace,isSelected(STATS));
         drawMenuItem("Exit",yTop+EXIT*itemSpace,isSelected(EXIT));

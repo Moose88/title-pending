@@ -19,19 +19,10 @@ public abstract class BaseMenuState extends BasicGameState {
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException{
         client = (Client)game;
+        //Draw menu background here
+        g.drawImage(ResourceManager.getImage(Client.FRONT_MENU_RSC).getScaledCopy(3f), 0, 0);
 
-        if(((PlayingState)client.getState(Client.PLAYINGSTATE)).isGameInProgress()){
-            game.getState(Client.PLAYINGSTATE).render(container, game, g);
 
-            //Darkens the backgrounds playing state
-            g.setColor(new Color(0f, 0f, 0.5f, 0.3f));
-            g.fillRect(0, 0, container.getWidth(), container.getHeight());
-
-        } else {
-            //Draw menu background here
-            g.drawImage(ResourceManager.getImage(Client.FRONT_MENU_RSC).getScaledCopy(3f), 0, 0);
-
-        }
     }
 
     @Override
