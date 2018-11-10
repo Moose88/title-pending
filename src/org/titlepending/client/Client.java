@@ -1,19 +1,17 @@
 package org.titlepending.client;
 
 import jig.ResourceManager;
-import org.newdawn.slick.AppGameContainer;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.UnicodeFont;
+import org.newdawn.slick.*;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.font.effects.OutlineEffect;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.ResourceLoader;
-import org.titlepending.Menus.ManuState;
-import org.titlepending.Menus.OptionsState;
+import org.titlepending.menus.MenuState;
+import org.titlepending.menus.OptionsState;
 import org.titlepending.client.states.*;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
 
 public class Client extends StateBasedGame {
 
@@ -27,13 +25,15 @@ public class Client extends StateBasedGame {
     public static final int OPTIONSMENUSTATE = 7;
 
     public static final String STARTUP_BANNER_RSC = "org/titlepending/resources/startstatebackground.png";
-    public static final String FONT_RSC = "org/titlepending/resources/Tolo.ttf";
+    public static final String FONT_RSC = "org/titlepending/resources/Treamd.ttf";
 
     public static UnicodeFont fontStandard;
     public UnicodeFont fontMenu;
 
     public final int ScreenWidth;
     public final int ScreenHeight;
+
+    public static AppGameContainer app;
 
     public Client(String title, int width , int height) throws SlickException{
         super(title);
@@ -46,7 +46,7 @@ public class Client extends StateBasedGame {
 
     @Override
     public void initStatesList(GameContainer container) throws SlickException{
-        addState(new ManuState());
+        addState(new MenuState());
         addState(new StartState());
         addState(new ConnectState());
         addState(new PlayingState());
@@ -84,10 +84,10 @@ public class Client extends StateBasedGame {
     }
 
     public static void main(String[] args){
-        AppGameContainer app;
+
         try{
-            app = new AppGameContainer(new Client("Title Pending",1920,1080));
-            app.setDisplayMode(1920,1080,false);
+            app = new AppGameContainer(new ScalableGame(new Client("Title Pending!!", 1920, 1080),1920,1080, true));
+            app.setDisplayMode(1920 ,1080,false);
             app.start();
         }catch (SlickException e){
 

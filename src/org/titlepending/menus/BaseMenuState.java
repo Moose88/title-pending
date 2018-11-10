@@ -1,4 +1,4 @@
-package org.titlepending.Menus;
+package org.titlepending.menus;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.BasicGameState;
@@ -24,7 +24,7 @@ public abstract class BaseMenuState extends BasicGameState {
 
             //Darkens the backgrounds playing state
             g.setColor(new Color(0f, 0f, 0.5f, 0.3f));
-            g.fillRect(0, 0, client.ScreenWidth, client.ScreenHeight);
+            g.fillRect(0, 0, container.getWidth(), container.getHeight());
 
         } else {
             //Draw menu background here
@@ -56,7 +56,7 @@ public abstract class BaseMenuState extends BasicGameState {
             client.enterState(backstate,new FadeOutTransition(),new FadeInTransition());
     }
 
-    protected void drawMenuItem(String text, int yPos,boolean isSelected){
+    protected void drawMenuItem(String text, int yPos, boolean isSelected){
         int textWidth = client.fontMenu.getWidth(text);
         // render some text to the screen
         Color textColor;

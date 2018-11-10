@@ -3,19 +3,11 @@ package org.titlepending.client.states;
 import jig.ResourceManager;
 import org.newdawn.slick.*;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.font.effects.ColorEffect;
-import org.newdawn.slick.font.effects.OutlineEffect;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.state.transition.EmptyTransition;
 import org.newdawn.slick.state.transition.FadeOutTransition;
-import org.newdawn.slick.util.ResourceLoader;
-import org.titlepending.Menus.BaseMenuState;
 import org.titlepending.client.Client;
-
-import java.awt.*;
-import java.awt.Color;
-import java.awt.Font;
 
 public class StartState extends BasicGameState {
     public void init(GameContainer container, StateBasedGame game)

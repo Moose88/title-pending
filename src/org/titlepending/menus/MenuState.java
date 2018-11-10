@@ -1,4 +1,4 @@
-package org.titlepending.Menus;
+package org.titlepending.menus;
 
 import org.titlepending.client.Client;
 import org.titlepending.client.states.PlayingState;
@@ -7,7 +7,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.state.transition.EmptyTransition;
 import org.newdawn.slick.state.transition.FadeInTransition;
 
-public class ManuState extends BaseMenuState {
+public class MenuState extends BaseMenuState {
 
     private final static int PLAY = 0;
     private final static int OPTIONS = 1;
@@ -29,8 +29,11 @@ public class ManuState extends BaseMenuState {
     }
 
     @Override
-    public void render(GameContainer container, StateBasedGame _game, Graphics g) throws SlickException {
+    public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
         super.render(container, client, g);
+
+        //g.pushTransform();
+        //g.scale(Display.getWidth()/client.ScreenWidth, Display.getHeight()/client.ScreenHeight);
 
         // Draw menu
         int yTop = (int) (client.ScreenHeight * 0.3); // one third down the string
@@ -43,14 +46,14 @@ public class ManuState extends BaseMenuState {
         }
 
         drawMenuItem("Options",yTop+OPTIONS*itemSpace,isSelected(OPTIONS));
-        //drawMenuItem("Help",yTop+HELP*itemSpace,isSelected(HELP));
         drawMenuItem("Stats",yTop+STATS*itemSpace,isSelected(STATS));
-        //drawMenuItem("Credits",yTop+CREDITS*itemSpace,isSelected(CREDITS));
         drawMenuItem("Exit",yTop+EXIT*itemSpace,isSelected(EXIT));
+        //g.popTransform();
     }
 
     public void update(GameContainer container, StateBasedGame game, int delta){
         // Nothing to do here
+
 
     }
 
