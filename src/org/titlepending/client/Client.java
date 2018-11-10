@@ -25,6 +25,7 @@ public class Client extends StateBasedGame {
     public static final int OPTIONSMENUSTATE = 7;
 
     public static final String STARTUP_BANNER_RSC = "org/titlepending/resources/startstatebackground.png";
+    public static final String FRONT_MENU_RSC = "org/titlepending/resources/bgnd.png";
     public static final String FONT_RSC = "org/titlepending/resources/Treamd.ttf";
 
     public static UnicodeFont fontStandard;
@@ -56,12 +57,14 @@ public class Client extends StateBasedGame {
         addState(new OptionsState());
 
         ResourceManager.loadImage(STARTUP_BANNER_RSC);
+        ResourceManager.loadImage(FRONT_MENU_RSC);
 
         try{
             Font UIFont0 = Font.createFont(Font.TRUETYPE_FONT, ResourceLoader.getResourceAsStream(Client.FONT_RSC));
             Font UIFont1 = UIFont0.deriveFont(Font.PLAIN, 30.f); //You can change "PLAIN" to "BOLD" or "ITALIC"... and 16.f is the size of your font
-            Font UIFont2 = UIFont0.deriveFont(Font.PLAIN,80f);
+            Font UIFont2 = UIFont0.deriveFont(Font.PLAIN,100f);
 
+            //This font is the standard font for the rest of the game
             fontStandard = new UnicodeFont(UIFont1);
             fontStandard.addAsciiGlyphs();
             fontStandard.getEffects().add(new OutlineEffect(5, Color.black));
@@ -69,9 +72,10 @@ public class Client extends StateBasedGame {
             fontStandard.addAsciiGlyphs();
             fontStandard.loadGlyphs();
 
+            //This font works for the front menu
             fontMenu = new UnicodeFont(UIFont2);
             fontMenu.addAsciiGlyphs();
-            fontMenu.getEffects().add(new OutlineEffect(10, Color.black));
+            //fontMenu.getEffects().add(new OutlineEffect(10, Color.black));
             fontMenu.getEffects().add(new ColorEffect(Color.white)); //You can change your color here, but you can also change it in the render{ ... }
             fontMenu.addAsciiGlyphs();
             fontMenu.loadGlyphs();

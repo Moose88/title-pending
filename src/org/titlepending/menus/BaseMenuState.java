@@ -1,5 +1,6 @@
 package org.titlepending.menus;
 
+import jig.ResourceManager;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -28,6 +29,7 @@ public abstract class BaseMenuState extends BasicGameState {
 
         } else {
             //Draw menu background here
+            g.drawImage(ResourceManager.getImage(Client.FRONT_MENU_RSC).getScaledCopy(3f), 0, 0);
 
         }
     }
@@ -61,9 +63,9 @@ public abstract class BaseMenuState extends BasicGameState {
         // render some text to the screen
         Color textColor;
         if(isSelected){
-            textColor = Color.white;
+            textColor = new Color(155,28,31);
         } else{
-            textColor = Color.gray;
+            textColor = Color.black;
         }
         client.fontMenu.drawString((client.ScreenWidth/2)-(textWidth/2), (int)yPos, text ,textColor);
     }

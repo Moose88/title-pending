@@ -36,7 +36,7 @@ public class MenuState extends BaseMenuState {
         //g.scale(Display.getWidth()/client.ScreenWidth, Display.getHeight()/client.ScreenHeight);
 
         // Draw menu
-        int yTop = (int) (client.ScreenHeight * 0.3); // one third down the string
+        int yTop = (int) (client.ScreenHeight * 0.6); // one third down the string
         int itemSpace = 95;
 
         if(((PlayingState)client.getState(Client.PLAYINGSTATE)).isGameInProgress()){

@@ -85,7 +85,7 @@ public class OptionsState extends BaseMenuState {
         super.render(container, client, g);
 
         // Draw menu
-        int yTop = (int) (this.client.ScreenHeight * 0.3); // one third down the string
+        int yTop = (int) (this.client.ScreenHeight * 0.6); // one third down the string
         int itemSpace = 95;
 
         if(isFullScreen == 1)
