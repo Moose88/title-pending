@@ -13,7 +13,7 @@ public class Client extends StateBasedGame {
     public static final int PLAYINGSTATE = 2;
     public static final int LOADSTATE = 3;
     public static final int GAMEOVERSTATE = 4;
-
+    public static final int PORT = 8000;
     public Client(String title, int width , int height){
         super(title);
         addState(new StartState());

@@ -8,7 +8,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
 
-public class Player implements Serializable {
+public class Player implements Serializable{
     private int id;
     private Socket socket;
     private boolean is_alive;
@@ -17,16 +17,7 @@ public class Player implements Serializable {
     private ObjectOutputStream out;
     private ObjectInputStream in;
 
-    public Player(int id, Socket socket){
-        this.id=id;
-        this.is_alive=true;
-        this.socket = socket;
+    public Player(int id,ObjectOutputStream out,ObjectInputStream in){
 
-        try {
-            in = new ObjectInputStream(socket.getInputStream());
-            out = new ObjectOutputStream(socket.getOutputStream());
-        }catch (IOException e){
-            e.printStackTrace();
-        }
     }
 }
