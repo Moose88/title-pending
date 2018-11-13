@@ -4,6 +4,8 @@ import jig.ResourceManager;
 import org.newdawn.slick.*;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.font.effects.OutlineEffect;
+import org.newdawn.slick.loading.DeferredResource;
+import org.newdawn.slick.loading.LoadingList;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.ResourceLoader;
 import org.titlepending.menus.MenuState;
@@ -12,6 +14,8 @@ import org.titlepending.client.states.*;
 
 import java.awt.Color;
 import java.awt.Font;
+
+import static org.newdawn.slick.loading.LoadingList.setDeferredLoading;
 
 public class Client extends StateBasedGame {
 
@@ -26,7 +30,21 @@ public class Client extends StateBasedGame {
 
     public static final String STARTUP_BANNER_RSC = "org/titlepending/resources/startstatebackground.png";
     public static final String FRONT_MENU_RSC = "org/titlepending/resources/bgnd.png";
+
     public static final String FONT_RSC = "org/titlepending/resources/Treamd.ttf";
+    public static final String TEST_RSC = "org/titlepending/resources/PVCwAb3.png";
+
+    public static final String SOUND1 = "org/titlepending/resources/explosion sounds/Explosion1.wav";
+    public static final String SOUND2 = "org/titlepending/resources/explosion sounds/Explosion2.wav";
+    public static final String SOUND3 = "org/titlepending/resources/explosion sounds/Explosion3.wav";
+    public static final String SOUND4 = "org/titlepending/resources/explosion sounds/Explosion4.wav";
+    public static final String SOUND5 = "org/titlepending/resources/explosion sounds/Explosion5.wav";
+    public static final String SOUND6 = "org/titlepending/resources/explosion sounds/Explosion6.wav";
+    public static final String SOUND7 = "org/titlepending/resources/explosion sounds/Explosion7.wav";
+    public static final String SOUND8 = "org/titlepending/resources/explosion sounds/Explosion8.wav";
+    public static final String SOUND9 = "org/titlepending/resources/explosion sounds/Explosion9.wav";
+    public static final String SOUND10 = "org/titlepending/resources/explosion sounds/Explosion10.wav";
+
 
     public static UnicodeFont fontStandard;
     public UnicodeFont fontMenu;
@@ -42,22 +60,20 @@ public class Client extends StateBasedGame {
         ScreenHeight = height;
         ScreenWidth = width;
 
-
     }
 
     @Override
     public void initStatesList(GameContainer container) throws SlickException{
+        addState(new LoadState());
         addState(new MenuState());
         addState(new StartState());
         addState(new ConnectState());
         addState(new PlayingState());
-        addState(new LoadState());
         addState(new GameOverState());
         //addState(new StatsState());
         addState(new OptionsState());
 
-        ResourceManager.loadImage(STARTUP_BANNER_RSC);
-        ResourceManager.loadImage(FRONT_MENU_RSC);
+        ResourceManager.loadImage(TEST_RSC);
 
         try{
             Font UIFont0 = Font.createFont(Font.TRUETYPE_FONT, ResourceLoader.getResourceAsStream(Client.FONT_RSC));
@@ -93,6 +109,7 @@ public class Client extends StateBasedGame {
             app = new AppGameContainer(new ScalableGame(new Client("Title Pending!!", 1920, 1080),1920,1080, true));
             app.setDisplayMode(1920 ,1080,false);
             app.start();
+
         }catch (SlickException e){
 
         }

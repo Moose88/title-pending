@@ -20,7 +20,9 @@ public abstract class BaseMenuState extends BasicGameState {
     public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException{
         client = (Client)game;
         //Draw menu background here
+
         g.drawImage(ResourceManager.getImage(Client.FRONT_MENU_RSC).getScaledCopy(3f), 0, 0);
+
 
 
     }

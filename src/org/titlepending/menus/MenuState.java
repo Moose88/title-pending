@@ -1,5 +1,6 @@
 package org.titlepending.menus;
 
+import jig.ResourceManager;
 import org.titlepending.client.Client;
 import org.titlepending.client.states.PlayingState;
 import org.newdawn.slick.*;
@@ -32,17 +33,18 @@ public class MenuState extends BaseMenuState {
     public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
         super.render(container, client, g);
 
-        //g.pushTransform();
-        //g.scale(Display.getWidth()/client.ScreenWidth, Display.getHeight()/client.ScreenHeight);
+        /**
+         * This is a placeholder for our title image here
+         */
+        g.drawImage(ResourceManager.getImage(Client.STARTUP_BANNER_RSC), client.ScreenWidth/2 - ResourceManager.getImage(Client.STARTUP_BANNER_RSC).getWidth()/2, 100);
 
         // Draw menu
         int yTop = (int) (client.ScreenHeight * 0.6); // one third down the string
         int itemSpace = 95;
-        drawMenuItem("Join Lobby", yTop,isSelected(PLAY));
-        drawMenuItem("Options",yTop+OPTIONS*itemSpace,isSelected(OPTIONS));
-        drawMenuItem("Stats",yTop+STATS*itemSpace,isSelected(STATS));
-        drawMenuItem("Exit",yTop+EXIT*itemSpace,isSelected(EXIT));
-        //g.popTransform();
+        drawMenuItem("Join Lobby", yTop, isSelected(PLAY));
+        drawMenuItem("Options", yTop+OPTIONS*itemSpace, isSelected(OPTIONS));
+        drawMenuItem("Stats", yTop+STATS*itemSpace, isSelected(STATS));
+        drawMenuItem("Exit", yTop+EXIT*itemSpace, isSelected(EXIT));
     }
 
     public void update(GameContainer container, StateBasedGame game, int delta){
