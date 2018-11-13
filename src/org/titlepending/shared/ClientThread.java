@@ -1,4 +1,4 @@
-package org.titlepending;
+package org.titlepending.shared;
 
 
 import java.io.IOException;
