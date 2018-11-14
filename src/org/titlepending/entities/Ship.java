@@ -1,4 +1,4 @@
 package org.titlepending.entities;
 
-public class ship {
+public class Ship {
 }
