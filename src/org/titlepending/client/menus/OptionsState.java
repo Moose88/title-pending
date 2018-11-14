@@ -1,9 +1,7 @@
-package org.titlepending.menus;
+package org.titlepending.client.menus;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.state.transition.EmptyTransition;
-import org.newdawn.slick.state.transition.FadeInTransition;
 import org.titlepending.client.Client;
 
 public class OptionsState extends BaseMenuState {
