@@ -67,7 +67,7 @@ public class Client extends StateBasedGame {
         addState(new ConnectState());
         addState(new PlayingState());
         addState(new GameOverState());
-        //addState(new StatsState());
+        addState(new StatsState());
         addState(new OptionsState());
 
         ResourceManager.setFilterMethod(ResourceManager.FILTER_LINEAR);
