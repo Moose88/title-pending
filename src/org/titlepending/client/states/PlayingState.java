@@ -27,5 +27,10 @@ public class PlayingState extends BasicGameState {
                        int delta) throws SlickException{
 
     }
+
+    public boolean isGameInProgress(){
+        return false;
+    }
+
     public int getID(){return Client.PLAYINGSTATE; }
 }

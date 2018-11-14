@@ -1,5 +1,6 @@
 package org.titlepending.client.states;
 
+<<<<<<< HEAD
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -109,4 +110,9 @@ class StatsState extends StartState{
 //        client.fontMenu.drawString((client.ScreenWidth/2)-(textWidth/2), (int)yPos, text ,textColor);
 //>>>>>>> Stashed changes
     }
+=======
+import org.newdawn.slick.state.BasicGameState;
+
+public abstract class StatsState extends BasicGameState {
+>>>>>>> develop
 }
