@@ -24,6 +24,7 @@ public class Client extends StateBasedGame {
     public static final int PLAYINGSTATE = 2;
     public static final int LOADSTATE = 3;
     public static final int GAMEOVERSTATE = 4;
+    public static final int PORT = 8000;
     public static final int MAINMENUSTATE = 5;
     public static final int STATSSTATE = 6;
     public static final int OPTIONSMENUSTATE = 7;
@@ -73,6 +74,7 @@ public class Client extends StateBasedGame {
         //addState(new StatsState());
         addState(new OptionsState());
 
+        ResourceManager.setFilterMethod(ResourceManager.FILTER_LINEAR);
         ResourceManager.loadImage(TEST_RSC);
 
         try{

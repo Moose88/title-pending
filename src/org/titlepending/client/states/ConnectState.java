@@ -10,6 +10,7 @@ import org.titlepending.client.Client;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.net.Socket;
 
 public class ConnectState extends BasicGameState {
@@ -22,29 +23,23 @@ public class ConnectState extends BasicGameState {
         throws SlickException{
         Client client = (Client) game;
         Socket s=null;
+        ObjectInputStream input =null;
+        System.out.println("Attempting to connect to server.");
+        int response = -1;
         try{
-            s = new Socket("localhost",8000);
+            s = new Socket("localhost",Client.PORT);
+            input = new ObjectInputStream(s.getInputStream());
+            response = input.read();
 
         } catch (IOException e){
             e.printStackTrace();
             client.enterState(Client.STARTUPSTATE);
         }
-        BufferedReader input =null;
-        try{
-           input = new BufferedReader(new InputStreamReader(s.getInputStream()));
-        }catch (IOException e){
-            e.printStackTrace();
-            client.enterState(Client.STARTUPSTATE);
-        }
-        String response = null;
-        try{
-            response = input.readLine();
-        }catch (IOException e){
-            e.printStackTrace();
-            client.enterState(Client.STARTUPSTATE);
-        }
+        if(response!=-1)
+            client.enterState(response);
 
-        client.enterState(Integer.valueOf(response));
+        System.out.println("Failed to establish connection");
+        client.enterState(Client.STARTUPSTATE);
     }
 
     public void render(GameContainer container, StateBasedGame game,
