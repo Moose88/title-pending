@@ -1,4 +1,4 @@
-package org.titlepending.menus;
+package org.titlepending.client.menus;
 
 import jig.ResourceManager;
 import org.titlepending.client.Client;
