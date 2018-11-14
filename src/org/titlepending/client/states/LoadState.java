@@ -43,10 +43,14 @@ public class LoadState extends BasicGameState {
         ResourceManager.loadSound(Client.SOUND10);
 
 
+        ResourceManager.loadMusic(Client.TITLE_MUSIC);
+
     }
 
     public void enter(GameContainer container, StateBasedGame game)
             throws SlickException{
+
+        ResourceManager.getSound(Client.LOADING_SOUND).loop();
 
     }
 
@@ -104,6 +108,7 @@ public class LoadState extends BasicGameState {
                 lastLoaded = nextResource.getDescription();
             } else {
                 // loading is complete, do normal update here
+                //ResourceManager.getSound(Client.LOADING_SOUND).stop();
                 client.enterState(Client.MAINMENUSTATE,new EmptyTransition(), new EmptyTransition());
             }
         }
