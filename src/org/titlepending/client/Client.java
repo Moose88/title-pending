@@ -4,18 +4,14 @@ import jig.ResourceManager;
 import org.newdawn.slick.*;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.font.effects.OutlineEffect;
-import org.newdawn.slick.loading.DeferredResource;
-import org.newdawn.slick.loading.LoadingList;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.ResourceLoader;
-import org.titlepending.menus.MenuState;
-import org.titlepending.menus.OptionsState;
+import org.titlepending.client.menus.MenuState;
+import org.titlepending.client.menus.OptionsState;
 import org.titlepending.client.states.*;
 
 import java.awt.Color;
 import java.awt.Font;
-
-import static org.newdawn.slick.loading.LoadingList.setDeferredLoading;
 
 public class Client extends StateBasedGame {
 
@@ -67,7 +63,7 @@ public class Client extends StateBasedGame {
     public void initStatesList(GameContainer container) throws SlickException{
         addState(new LoadState());
         addState(new MenuState());
-        addState(new StartState());
+        //addState(new StartState());
         addState(new ConnectState());
         addState(new PlayingState());
         addState(new GameOverState());

@@ -14,6 +14,21 @@ import java.io.ObjectInputStream;
 import java.net.Socket;
 
 public class ConnectState extends BasicGameState {
+    /**
+     * Connecting State
+     * - Waiting to connect
+     *      idle screen
+     *      add to render
+     *
+     * - Connected
+     *      Go to lobby
+     *
+     * - No Server / Full Server
+     *      Give error
+     *      Go back to menu
+     *
+     */
+
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException{
 
@@ -33,13 +48,13 @@ public class ConnectState extends BasicGameState {
 
         } catch (IOException e){
             e.printStackTrace();
-            client.enterState(Client.STARTUPSTATE);
+            client.enterState(Client.MAINMENUSTATE);
         }
         if(response!=-1)
             client.enterState(response);
 
         System.out.println("Failed to establish connection");
-        client.enterState(Client.STARTUPSTATE);
+        client.enterState(Client.MAINMENUSTATE);
     }
 
     public void render(GameContainer container, StateBasedGame game,
