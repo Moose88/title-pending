@@ -1,6 +1,10 @@
 ## Resources ##
 
+<<<<<<< HEAD
+Resources that are needed for the Client and Server
+=======
 Resources that are needed for the client and server
+>>>>>>> develop
 
 ## Issues ##
 * Textures for ships
