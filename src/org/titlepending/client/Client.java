@@ -63,7 +63,7 @@ public class Client extends StateBasedGame {
     public void initStatesList(GameContainer container) throws SlickException{
         addState(new LoadState());
         addState(new MenuState());
-        addState(new StartState());
+        //addState(new StartState());
         addState(new ConnectState());
         addState(new PlayingState());
         addState(new GameOverState());

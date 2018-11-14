@@ -60,7 +60,7 @@ public class MenuState extends BaseMenuState {
         if(key == Input.KEY_ENTER){
             switch(selection){
                 case PLAY:
-                    client.enterState(Client.PLAYINGSTATE,new EmptyTransition(), new FadeInTransition());
+                    client.enterState(Client.CONNECTSTATE,new EmptyTransition(), new FadeInTransition());
                     break;
                 case OPTIONS:
                     client.enterState(Client.OPTIONSMENUSTATE,new EmptyTransition(), new FadeInTransition());
