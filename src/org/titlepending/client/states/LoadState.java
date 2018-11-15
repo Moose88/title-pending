@@ -49,7 +49,6 @@ public class LoadState extends BasicGameState {
         ResourceManager.loadSound(Client.SOUND9);
         ResourceManager.loadSound(Client.SOUND10);
 
-
         ResourceManager.loadMusic(Client.TITLE_MUSIC);
 
     }
@@ -59,7 +58,7 @@ public class LoadState extends BasicGameState {
 
         boatDude = new boatGuy();
         boatDude.movement(0);
-        ResourceManager.getSound(Client.SCREAM_SOUND).loop(1.2f, 0.03f);
+        ResourceManager.getSound(Client.SCREAM_SOUND).loop(1.2f, 0.05f);
         ResourceManager.getSound(Client.LOADING_SOUND).loop();
 
 
@@ -131,7 +130,7 @@ public class LoadState extends BasicGameState {
                 // loading is complete, do normal update here
                 //ResourceManager.getSound(Client.LOADING_SOUND).stop();
                 ResourceManager.getSound(Client.SCREAM_SOUND).stop();
-                ResourceManager.getMusic(Client.TITLE_MUSIC).loop(); 
+                ResourceManager.getMusic(Client.TITLE_MUSIC).loop();
                 client.enterState(Client.MAINMENUSTATE,new EmptyTransition(), new EmptyTransition());
             }
         }
