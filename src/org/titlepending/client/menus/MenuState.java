@@ -36,7 +36,7 @@ public class MenuState extends BaseMenuState {
         /**
          * This is a placeholder for our title image here
          */
-        g.drawImage(ResourceManager.getImage(Client.STARTUP_BANNER_RSC), client.ScreenWidth/2 - ResourceManager.getImage(Client.STARTUP_BANNER_RSC).getWidth()/2, 100);
+        g.drawImage(ResourceManager.getImage(Client.STARTUP_BANNER_RSC), client.ScreenWidth/2f - ResourceManager.getImage(Client.STARTUP_BANNER_RSC).getWidth()/2f, 100);
 
         // Draw menu
         int yTop = (int) (client.ScreenHeight * 0.6); // one third down the string

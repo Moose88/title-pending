@@ -1,5 +1,6 @@
 package org.titlepending.client;
 
+import jig.Entity;
 import jig.ResourceManager;
 import org.newdawn.slick.*;
 import org.newdawn.slick.font.effects.ColorEffect;
@@ -33,6 +34,7 @@ public class Client extends StateBasedGame {
 
     public static final String TITLE_MUSIC = "org/titlepending/resources/TitleMusic.wav";
     public static final String LOADING_SOUND = "org/titlepending/resources/loadingSounds.wav";
+    public static final String SCREAM_SOUND = "org/titlepending/resources/AAAGH1.wav";
 
     public static final String SOUND1 = "org/titlepending/resources/explosion sounds/Explosion1.wav";
     public static final String SOUND2 = "org/titlepending/resources/explosion sounds/Explosion2.wav";
@@ -59,6 +61,7 @@ public class Client extends StateBasedGame {
 
         ScreenHeight = height;
         ScreenWidth = width;
+        Entity.setCoarseGrainedCollisionBoundary(Entity.AABB);
 
     }
 
@@ -76,6 +79,7 @@ public class Client extends StateBasedGame {
         ResourceManager.setFilterMethod(ResourceManager.FILTER_LINEAR);
         ResourceManager.loadImage(TEST_RSC);
         ResourceManager.loadSound(LOADING_SOUND);
+        ResourceManager.loadSound(SCREAM_SOUND);
 
         try{
             Font UIFont0 = Font.createFont(Font.TRUETYPE_FONT, ResourceLoader.getResourceAsStream(Client.FONT_RSC));
