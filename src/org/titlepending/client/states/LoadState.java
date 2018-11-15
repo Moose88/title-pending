@@ -131,7 +131,7 @@ public class LoadState extends BasicGameState {
                 // loading is complete, do normal update here
                 //ResourceManager.getSound(Client.LOADING_SOUND).stop();
                 ResourceManager.getSound(Client.SCREAM_SOUND).stop();
-
+                ResourceManager.getMusic(Client.TITLE_MUSIC).loop(); 
                 client.enterState(Client.MAINMENUSTATE,new EmptyTransition(), new EmptyTransition());
             }
         }

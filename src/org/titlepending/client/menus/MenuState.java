@@ -21,6 +21,7 @@ public class MenuState extends BaseMenuState {
         this.client = (Client)game;
         this.items = 4;
         this.selection = 0;
+
     }
 
     private boolean isSelected(int option){
@@ -60,6 +61,7 @@ public class MenuState extends BaseMenuState {
         if(key == Input.KEY_ENTER){
             switch(selection){
                 case PLAY:
+                    ResourceManager.getSound(Client.TITLE_MUSIC).stop();
                     client.enterState(Client.CONNECTSTATE,new EmptyTransition(), new FadeInTransition());
                     break;
                 case OPTIONS:
@@ -69,6 +71,7 @@ public class MenuState extends BaseMenuState {
                     client.enterState(Client.STATSSTATE,new EmptyTransition(), new FadeInTransition());
                     break;
                 case EXIT:
+                    ResourceManager.getSound(Client.TITLE_MUSIC).stop();
                     client.getContainer().exit();
                     break;
                 default:

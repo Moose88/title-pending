@@ -18,7 +18,7 @@ public abstract class BaseMenuState extends BasicGameState {
     @Override
     public void enter(GameContainer container, StateBasedGame game)
             throws SlickException{
-        ResourceManager.getMusic(Client.TITLE_MUSIC).loop();
+
     }
 
     @Override
