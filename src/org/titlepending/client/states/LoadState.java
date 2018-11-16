@@ -22,8 +22,7 @@ public class LoadState extends BasicGameState {
     private int totalResources;
     private int remainingResources;
     public Vector boatPosition;
-    private boatGuy boatDude;
-
+    public boatGuy boatDude;
 
 
     public void init(GameContainer container, StateBasedGame game)
