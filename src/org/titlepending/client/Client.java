@@ -1,5 +1,6 @@
 package org.titlepending.client;
 
+import jig.Entity;
 import jig.ResourceManager;
 import org.newdawn.slick.*;
 import org.newdawn.slick.font.effects.ColorEffect;
@@ -26,10 +27,18 @@ public class Client extends StateBasedGame {
     public static final int OPTIONSMENUSTATE = 7;
 
     public static final String STARTUP_BANNER_RSC = "org/titlepending/resources/startstatebackground.png";
+    public static final String LOADING_SKY_RSC = "org/titlepending/resources/LoadSky.png";
+    public static final String LOADING_SEA_RSC = "org/titlepending/resources/LoadOcean.png";
+    public static final String SHIP_RSC = "org/titlepending/resources/images/ShipSS.png";
+
     public static final String FRONT_MENU_RSC = "org/titlepending/resources/bgnd.png";
 
     public static final String FONT_RSC = "org/titlepending/resources/Treamd.ttf";
     public static final String TEST_RSC = "org/titlepending/resources/PVCwAb3.png";
+
+    public static final String TITLE_MUSIC = "org/titlepending/resources/TitleMusic.wav";
+    public static final String LOADING_SOUND = "org/titlepending/resources/loadingSounds.wav";
+    public static final String SCREAM_SOUND = "org/titlepending/resources/AAAGH1.wav";
 
     public static final String SOUND1 = "org/titlepending/resources/explosion sounds/Explosion1.wav";
     public static final String SOUND2 = "org/titlepending/resources/explosion sounds/Explosion2.wav";
@@ -56,6 +65,7 @@ public class Client extends StateBasedGame {
 
         ScreenHeight = height;
         ScreenWidth = width;
+        Entity.setCoarseGrainedCollisionBoundary(Entity.AABB);
 
     }
 
@@ -72,6 +82,11 @@ public class Client extends StateBasedGame {
 
         ResourceManager.setFilterMethod(ResourceManager.FILTER_LINEAR);
         ResourceManager.loadImage(TEST_RSC);
+        ResourceManager.loadImage(SHIP_RSC);
+        ResourceManager.loadImage(LOADING_SEA_RSC);
+        ResourceManager.loadImage(LOADING_SKY_RSC);
+        ResourceManager.loadSound(LOADING_SOUND);
+        ResourceManager.loadSound(SCREAM_SOUND);
 
         try{
             Font UIFont0 = Font.createFont(Font.TRUETYPE_FONT, ResourceLoader.getResourceAsStream(Client.FONT_RSC));
