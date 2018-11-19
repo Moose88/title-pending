@@ -16,7 +16,7 @@ public class boatGuy extends Entity {
     public Vector movingTo;
     public float speed = 0.15f;
     private Animation boat_a;
-    SpriteSheet master = new SpriteSheet(ResourceManager.getImage(Client.SHIP_RSC), 96, 96);
+    SpriteSheet master = new SpriteSheet(ResourceManager.getImage(Client.SHIP_RSC), 96, 97);
 
     public Animation getBoat_a() {
         return boat_a;

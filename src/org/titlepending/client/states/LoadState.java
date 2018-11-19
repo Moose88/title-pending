@@ -69,7 +69,7 @@ public class LoadState extends BasicGameState {
         Client client = (Client)game;
 
         // Background splash for the loading screen
-        g.drawImage(ResourceManager.getImage(Client.TEST_RSC), 0, 0);
+        g.drawImage(ResourceManager.getImage(Client.LOADING_SKY_RSC).getScaledCopy(client.ScreenWidth, client.ScreenHeight*5/7), 0, 0);
 
         String statement = new String("Loaded: " + lastLoaded);
 
@@ -82,7 +82,10 @@ public class LoadState extends BasicGameState {
         if(totalResources == 0)
             totalResources = 12;
 
+        //g.drawImage(ResourceManager.getImage(Client.LOADING_SKY_RSC));
         boatDude.render(g);
+
+        g.drawImage(ResourceManager.getImage(Client.LOADING_SEA_RSC).getScaledCopy(client.ScreenWidth, client.ScreenHeight*5/7), 0, 200);
 
 
     }
