@@ -62,7 +62,7 @@ public class boatGuy extends Entity {
         if (isMoving) {
             double angle = getPosition().angleTo(movingTo);
             setPosition(getPosition().add(Vector.getUnit(angle).scale(speed * delta)));
-            System.out.println(getPosition());
+            //System.out.println(getPosition());
             if (getPosition().epsilonEquals(movingTo, speed * delta)) {
                 isMoving = false;
 
