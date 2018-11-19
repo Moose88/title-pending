@@ -43,21 +43,21 @@ public class boatGuy extends Entity {
     }
 
     public void movement(float newX){
-        System.out.println("I'm in Movement!");
+        //System.out.println("I'm in Movement!");
 
         if(isMoving) {
             return;
         }
 
         //addImage();
-        System.out.println("Position =  " + newX);
+        //System.out.println("Position =  " + newX);
         movingTo = getPosition().setX(newX);
         isMoving = true;
 
     }
 
     public void update(int delta){
-        System.out.println("Updating!");
+        //System.out.println("Updating!");
 
         if (isMoving) {
             double angle = getPosition().angleTo(movingTo);
@@ -67,7 +67,7 @@ public class boatGuy extends Entity {
                 isMoving = false;
 
                 setPosition(movingTo);
-                System.out.println("movingTo x: " + movingTo.getX() + " movingTo y: " + movingTo.getY());
+                //System.out.println("movingTo x: " + movingTo.getX() + " movingTo y: " + movingTo.getY());
             }
 
         }
