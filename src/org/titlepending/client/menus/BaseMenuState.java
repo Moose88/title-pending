@@ -16,6 +16,12 @@ public abstract class BaseMenuState extends BasicGameState {
     int backstate;
 
     @Override
+    public void enter(GameContainer container, StateBasedGame game)
+            throws SlickException{
+
+    }
+
+    @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException{
         client = (Client)game;
         //Draw menu background here
