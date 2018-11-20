@@ -29,7 +29,7 @@ public class Server {
 
         while(true){
             // Game logic goes here
-
+            
             if(players.size()!=8){
 
             }else{

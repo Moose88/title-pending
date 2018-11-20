@@ -17,7 +17,7 @@ import java.awt.Font;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Client extends StateBasedGame {
-
+    public static final boolean DEBUG = true;
     public static final int STARTUPSTATE = 0;
     public static final int CONNECTSTATE = 1;
     public static final int PLAYINGSTATE = 2;
