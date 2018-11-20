@@ -52,7 +52,7 @@ public class Server {
                 Socket s = listener.accept();
                 players.add(s);
                 new ClientThread(s,true).start();
-                System.out.println("Tell the client to enter Lobby state");
+                System.out.println("Telling the client to enter Lobby state");
                 // Go to Lobby here
                 // Send a Nuntius (message) to the Client to transition states
 

@@ -1,4 +1,4 @@
-package org.titlepending.resources;
+package org.titlepending.client;
 
 import jig.Entity;
 import jig.ResourceManager;

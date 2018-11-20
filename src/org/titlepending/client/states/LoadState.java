@@ -11,7 +11,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.state.transition.EmptyTransition;
 import org.titlepending.client.Client;
-import org.titlepending.resources.boatGuy;
+import org.titlepending.client.boatGuy;
 
 import java.io.IOException;
 
