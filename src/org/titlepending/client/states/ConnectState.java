@@ -47,6 +47,11 @@ public class ConnectState extends BasicGameState {
         try{
             s = new Socket("localhost",Client.PORT);
             new ClientThread(s,false).start();
+            /** TODO: Find a way to save the socket singleton to each client
+             *
+             *  That way we can save that socket information for input
+             *  and outputting object information
+             */
 
         } catch (IOException e){
             e.printStackTrace();
