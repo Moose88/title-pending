@@ -1,6 +1,7 @@
 package org.titlepending.shared;
 
 
+import org.lwjgl.Sys;
 import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
 
@@ -19,7 +20,7 @@ public class ClientThread extends Thread{
     }
 
     public void run(){
-        System.out.println("New player connected.");
+        System.out.println("New connection established.");
         boolean done = false;
         try{
             in = new ObjectInputStream(socket.getInputStream());
@@ -28,8 +29,11 @@ public class ClientThread extends Thread{
                     Nuntius input = (Nuntius) in.readObject();
                     if(isServer){
                         //code to add to server queue
-                    }else
                         Updates.getInstance().addToQueue(input);
+                    }else {
+                        System.out.println("Reading message (Client thread)");
+                        Updates.getInstance().addToQueue(input);
+                    }
                 }catch (ClassNotFoundException e){
                     e.printStackTrace();
                 }

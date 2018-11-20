@@ -1,7 +1,11 @@
 package org.titlepending.server;
 
 import org.lwjgl.Sys;
+import org.titlepending.client.Client;
+import org.titlepending.client.Updates;
+import org.titlepending.client.states.PlayingState;
 import org.titlepending.shared.ClientThread;
+import org.titlepending.shared.Nuntius;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -48,7 +52,17 @@ public class Server {
                 Socket s = listener.accept();
                 players.add(s);
                 new ClientThread(s,true).start();
+                System.out.println("Tell the client to enter Lobby state");
                 // Go to Lobby here
+                // Send a Nuntius (message) to the Client to transition states
+
+                Nuntius output = new Nuntius();
+                output.setStateTransition(Client.PLAYINGSTATE);
+                System.out.println("attempting to send message");
+                ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
+                out.writeObject(output);
+                out.flush();
+                System.out.println("Message sent");
                 if(players.size()==0 && elapsedTime >= timer){ done=true;}
             }
             System.out.println("Maximum players reached");

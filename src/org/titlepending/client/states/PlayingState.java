@@ -15,7 +15,7 @@ public class PlayingState extends BasicGameState {
 
     public void enter(GameContainer container, StateBasedGame game)
             throws SlickException{
-        System.out.println("Made it here");
+        System.out.println("Made it to the playing state");
     }
 
     public void render(GameContainer container, StateBasedGame game,

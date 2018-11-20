@@ -1,9 +1,11 @@
 package org.titlepending.shared;
 
+import java.io.Serializable;
+
 /**
  * object that is sent across TCP/IP socket for communication in client server pair.
  */
-public class Nuntius {
+public class Nuntius implements Serializable {
     private boolean forServer;
     private int stateTransition;
 

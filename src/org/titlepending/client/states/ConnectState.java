@@ -1,5 +1,6 @@
 package org.titlepending.client.states;
 
+import org.lwjgl.Sys;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -45,17 +46,21 @@ public class ConnectState extends BasicGameState {
         int response = -1;
         try{
             s = new Socket("localhost",Client.PORT);
-            new ClientThread(s,false);
+            new ClientThread(s,false).start();
 
         } catch (IOException e){
             e.printStackTrace();
             client.enterState(Client.MAINMENUSTATE);
         }
         boolean done = false;
+        System.out.println("We got connected!");
         while (Updates.getInstance().getQueue().isEmpty()){}
 
-        Nuntius input  = Updates.getInstance().getQueue().remove();
-        System.out.println("Failed to establish connection");
+        System.out.println("Receiving Updates instance.");
+        // This is what we're receiving
+        Nuntius input = Updates.getInstance().getQueue().remove();
+
+        //System.out.println("Failed to establish connection");
         client.enterState(input.getStateTransition());
     }
 
