@@ -47,9 +47,8 @@ public class Server {
                 long elapsedTime = System.currentTimeMillis() -startTime;
                 Socket s = listener.accept();
                 players.add(s);
-                new ClientThread(s).start();
-                ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
-                out.write(2); out.flush();
+                new ClientThread(s,true).start();
+                // Go to Lobby here
                 if(players.size()==0 && elapsedTime >= timer){ done=true;}
             }
             System.out.println("Maximum players reached");

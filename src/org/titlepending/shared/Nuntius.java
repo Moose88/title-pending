@@ -8,7 +8,7 @@ public class Nuntius {
     private int stateTransition;
 
     public Nuntius(){}
-    
+
     public  void setForServer(boolean forServer){this.forServer = forServer;}
 
     public void setStateTransition(int stateTransition){this.stateTransition = stateTransition;}

@@ -1,6 +1,9 @@
 package org.titlepending.shared;
 
 
+import org.titlepending.client.Client;
+import org.titlepending.client.Updates;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
@@ -8,8 +11,11 @@ import java.net.Socket;
 public class ClientThread extends Thread{
     private Socket socket;
     private ObjectInputStream in;
-    public ClientThread (Socket socket) throws IOException {
-        this.socket=socket;
+    private boolean isServer;
+
+    public ClientThread (Socket socket, boolean isServer) throws IOException {
+        this.socket = socket;
+        this.isServer = isServer;
     }
 
     public void run(){
@@ -19,7 +25,11 @@ public class ClientThread extends Thread{
             in = new ObjectInputStream(socket.getInputStream());
             while (!done){
                 try{
-                    Object input = in.readObject();
+                    Nuntius input = (Nuntius) in.readObject();
+                    if(isServer){
+                        //code to add to server queue
+                    }else
+                        Updates.getInstance().addToQueue(input);
                 }catch (ClassNotFoundException e){
                     e.printStackTrace();
                 }

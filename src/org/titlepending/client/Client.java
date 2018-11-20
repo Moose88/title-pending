@@ -10,9 +10,11 @@ import org.newdawn.slick.util.ResourceLoader;
 import org.titlepending.client.menus.MenuState;
 import org.titlepending.client.menus.OptionsState;
 import org.titlepending.client.states.*;
+import org.titlepending.shared.Nuntius;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Client extends StateBasedGame {
 
@@ -112,6 +114,7 @@ public class Client extends StateBasedGame {
         }catch(Exception e){
             e.printStackTrace();
         }
+        Updates.getInstance();
 
 
     }
