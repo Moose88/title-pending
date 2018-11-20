@@ -1,15 +1,23 @@
 package org.titlepending.client.menus;
 
 import org.newdawn.slick.*;
+import org.newdawn.slick.gui.AbstractComponent;
+import org.newdawn.slick.gui.ComponentListener;
+import org.newdawn.slick.gui.GUIContext;
+import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.StateBasedGame;
 import org.titlepending.client.Client;
+
+import javax.swing.*;
 
 public class OptionsState extends BaseMenuState {
 
 
     private final static int FULLSCREEN = 0;
     private final static int DIMENSION = 1;
-    private final static int BACK = 2;
+    private final static int IPADDRESS = 2;
+    private final static int BACK = 3;
+
     private GameContainer container;
     private SavedState savedState;
 
@@ -17,6 +25,8 @@ public class OptionsState extends BaseMenuState {
 
     private int isResolution;
     private int isFullScreen;
+
+    private TextField input;
 
     @Override
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
@@ -27,9 +37,10 @@ public class OptionsState extends BaseMenuState {
         resolution[4] = "< 640 x 480 >";
 
         this.client = (Client) game;
-        this.items = 3;
+        this.items = 4;
         this.selection = 0;
         this.isResolution = 1;
+        this.isIP = "localhost";
         this.backstate = Client.MAINMENUSTATE;
         this.container = container;
 
@@ -37,6 +48,7 @@ public class OptionsState extends BaseMenuState {
 
         isResolution = (int)savedState.getNumber("resolution",1);
         isFullScreen = (int)savedState.getNumber("fullScreen",0);
+        isIP = savedState.getString("ipaddress", "localhost");
 
         if(isFullScreen == 1){
             System.out.println("Setting Fullscreen");
@@ -45,6 +57,35 @@ public class OptionsState extends BaseMenuState {
             container.setFullscreen(false);
         }
 
+        input = new TextField(container, client.fontMenu,
+                ((client.ScreenWidth/2)+(client.fontMenu.getWidth("IP Address: ")/2))-250,
+                (int)(client.ScreenHeight * 0.6)+ 98*2, client.fontMenu.getWidth("IPADDRESS"), client.fontMenu.getLineHeight()-20, new ComponentListener() {
+            @Override
+            public void componentActivated(AbstractComponent source) {
+                isIP = input.getText();
+                System.out.println("Enter pressed: isIP = " + isIP);
+                input.setCursorVisible(false);
+                input.setAcceptingInput(false);
+                input.setFocus(false);
+            }
+        });
+        if(isIP.equals("localhost")){
+            input.setText("Localhost");
+        } else {
+            input.setText(isIP);
+        }
+
+        input.setFocus(false);
+        input.setBorderColor(Color.black);
+        input.setAcceptingInput(false);
+        input.setBackgroundColor(Color.lightGray);
+
+
+
+        if(!isIP.equals("localhost")){
+            // Assign the ipaddress from the recorded isIP
+
+        }
 
         if(isResolution == 0){
             System.out.println("Setting to 4k");
@@ -78,6 +119,7 @@ public class OptionsState extends BaseMenuState {
         return false;
     }
 
+
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
         super.render(container, client, g);
@@ -90,6 +132,10 @@ public class OptionsState extends BaseMenuState {
             drawMenuItem("Switch To Windowed",yTop+FULLSCREEN*itemSpace,isSelected(FULLSCREEN));
         else
             drawMenuItem("Switch to Fullscreen",yTop+FULLSCREEN*itemSpace,isSelected(FULLSCREEN));
+
+        drawMenuItem("IP Address: " , yTop+IPADDRESS*itemSpace, isSelected(IPADDRESS));
+
+        input.render(container, g);
 
         drawMenuItem("Resolution: " + resolution[isResolution], yTop+DIMENSION*itemSpace,isSelected(DIMENSION));
 
@@ -138,11 +184,6 @@ public class OptionsState extends BaseMenuState {
                     }
                     break;
                 case DIMENSION:
-
-                    /*TODO: Show the current resolution
-                    * Left and right keys will shift between resolutions available
-                    * Press enter, change the container to the proper resolution
-                    */
                     if(isResolution == 0){
                         try {
                             Client.app.setDisplayMode(3840,2160,Client.app.isFullscreen());
@@ -184,6 +225,12 @@ public class OptionsState extends BaseMenuState {
                             e.printStackTrace();
                         }
                     }
+                    break;
+                case IPADDRESS:
+                    input.setCursorVisible(true);
+                    input.setFocus(true);
+                    input.setAcceptingInput(true);
+                    // Allow modification of the text box
                     break;
                 case BACK:
                     backPressed();

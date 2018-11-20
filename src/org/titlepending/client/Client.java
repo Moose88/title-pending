@@ -57,6 +57,8 @@ public class Client extends StateBasedGame {
     public static UnicodeFont fontStandard;
     public UnicodeFont fontMenu;
 
+    public static boolean DEBUG = true;
+
     public final int ScreenWidth;
     public final int ScreenHeight;
 

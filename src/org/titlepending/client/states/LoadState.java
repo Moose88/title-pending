@@ -99,7 +99,12 @@ public class LoadState extends BasicGameState {
 
         boatDude.update(delta);
 
-        int runTimer = 1000;
+        int runTimer;
+
+        if(Client.DEBUG)
+            runTimer = 0;
+        else
+            runTimer = 1000;
         if(soFar >= runTimer) {
 
             if (LoadingList.get().getRemainingResources() > 0) {

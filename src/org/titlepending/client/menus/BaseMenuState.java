@@ -14,6 +14,7 @@ public abstract class BaseMenuState extends BasicGameState {
     Client client;
     int items;
     int backstate;
+    String isIP;
 
     @Override
     public void enter(GameContainer container, StateBasedGame game)
@@ -32,6 +33,12 @@ public abstract class BaseMenuState extends BasicGameState {
 
     }
 
+    /**
+     * TODO: There is an error when attempting to go up (selection--)
+     * on the menu state and all following states
+     * @param key
+     * @param c
+     */
     @Override
     public void keyPressed(int key, char c){
         if(key == Input.KEY_ESCAPE){
@@ -65,6 +72,9 @@ public abstract class BaseMenuState extends BasicGameState {
         } else{
             textColor = Color.black;
         }
-        client.fontMenu.drawString((client.ScreenWidth/2)-(textWidth/2), (int)yPos, text ,textColor);
+        if(text.contains("IP Address: "))
+            client.fontMenu.drawString((client.ScreenWidth/2)-(textWidth/2)-300, (int)yPos, text ,textColor);
+        else
+            client.fontMenu.drawString((client.ScreenWidth/2)-(textWidth/2), (int)yPos, text ,textColor);
     }
 }
