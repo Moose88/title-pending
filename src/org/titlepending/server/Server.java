@@ -15,7 +15,6 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Server {
 
     public static final boolean DEBUG = true;
-    //TODO change to concurrent
     private static List<ClientThread> players = new CopyOnWriteArrayList<>();
     private static final int PORT = 8000;
     private static final int PLIMIT = 8;
@@ -38,14 +37,18 @@ public class Server {
             while (!commands.isEmpty()){
                 Nuntius cmd = commands.poll();
                 if(Server.DEBUG){
-                    System.out.println("Recieved the following command from client: "+cmd.getId() +
+                    System.out.println("Received the following command from client: "+cmd.getId() +
                             "\nTurn left: "+cmd.isTurnLeft()+
                             "\nTurn right: "+cmd.isTurnRight()+
                             "\nRaise Anchor: "+cmd.isRaiseAnchor()+
                             "\nLower Anchor: "+cmd.isLowerAnchor());
                 }
             }
-            if(players.size()!=8){
+
+            if(Server.DEBUG)
+                System.out.println("Done parsing commands");
+
+            if(players.size()!=PLIMIT){
 
             }else{
 
@@ -104,7 +107,7 @@ public class Server {
 
                 Nuntius cmd = new Nuntius();
                 cmd.setId(id);
-                cmd.setStateTransition(Client.PLAYINGSTATE);
+                cmd.setStateTransition(Client.LOBBYSTATE);
 
                 if(Server.DEBUG)
                     System.out.println("Attempting to send command to client");
