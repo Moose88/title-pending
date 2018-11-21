@@ -1,6 +1,7 @@
 package org.titlepending.client.menus;
 
 import org.newdawn.slick.*;
+import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.StateBasedGame;
 import org.titlepending.client.Client;
 
@@ -9,7 +10,9 @@ public class OptionsState extends BaseMenuState {
 
     private final static int FULLSCREEN = 0;
     private final static int DIMENSION = 1;
-    private final static int BACK = 2;
+    private final static int IPADDRESS = 2;
+    private final static int BACK = 3;
+
     private GameContainer container;
     private SavedState savedState;
 
@@ -17,6 +20,8 @@ public class OptionsState extends BaseMenuState {
 
     private int isResolution;
     private int isFullScreen;
+
+    private TextField input;
 
     @Override
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
@@ -27,9 +32,10 @@ public class OptionsState extends BaseMenuState {
         resolution[4] = "< 640 x 480 >";
 
         this.client = (Client) game;
-        this.items = 3;
+        this.items = 4;
         this.selection = 0;
         this.isResolution = 1;
+        isIP = "localhost";
         this.backstate = Client.MAINMENUSTATE;
         this.container = container;
 
@@ -37,34 +43,66 @@ public class OptionsState extends BaseMenuState {
 
         isResolution = (int)savedState.getNumber("resolution",1);
         isFullScreen = (int)savedState.getNumber("fullScreen",0);
+        isIP = savedState.getString("ipaddress", "localhost");
 
         if(isFullScreen == 1){
-            System.out.println("Setting Fullscreen");
+            if(Client.DEBUG)
+                System.out.println("Setting Fullscreen");
             container.setFullscreen(true);
         } else {
             container.setFullscreen(false);
         }
 
+        input = new TextField(container, client.fontMenu,
+                ((client.ScreenWidth/2)+(client.fontMenu.getWidth("IP Address: ")/2))-250,
+                (int)(client.ScreenHeight * 0.6)+ 98*2, client.fontMenu.getWidth("IPADDRESS"),
+                client.fontMenu.getLineHeight()-20, source -> {
+                    typing = false;
+                    isIP = input.getText();
+                    if(Client.DEBUG)
+                        System.out.println("Enter pressed: isIP = " + isIP);
+                    input.setCursorVisible(false);
+                    input.setAcceptingInput(false);
+                    input.setBackgroundColor(Color.darkGray);
+                    input.setFocus(false);
+                });
+
+        if(isIP.equals("localhost")){
+            input.setText("localhost");
+        } else {
+            input.setText(isIP);
+        }
+
+        input.setMaxLength(15);
+        input.setFocus(false);
+        input.setBorderColor(Color.black);
+        input.setAcceptingInput(false);
+        input.setBackgroundColor(Color.darkGray);
 
         if(isResolution == 0){
-            System.out.println("Setting to 4k");
+            if(Client.DEBUG)
+                System.out.println("Setting to 4k");
             Client.app.setDisplayMode(3840,2160,Client.app.isFullscreen());
         } else if(isResolution == 1){
-            System.out.println("Setting 1920 x 1080");
+            if(Client.DEBUG)
+                System.out.println("Setting 1920 x 1080");
             Client.app.setDisplayMode(1920, 1080, Client.app.isFullscreen());
         } else if(isResolution == 2) {
-            System.out.println("Setting 1280 x 720");
+            if(Client.DEBUG)
+                System.out.println("Setting 1280 x 720");
             Client.app.setDisplayMode(1280, 720, Client.app.isFullscreen());
         } else if(isResolution == 3){
-            System.out.println("Setting 800 x 600");
+            if(Client.DEBUG)
+                System.out.println("Setting 800 x 600");
             Client.app.setDisplayMode(800, 600, Client.app.isFullscreen());
         } else if(isResolution == 4){
-            System.out.println("Setting 640 x 480");
+            if(Client.DEBUG)
+                System.out.println("Setting 640 x 480");
             Client.app.setDisplayMode(640, 480, Client.app.isFullscreen());
         }
     }
 
-    public void save() {
+    private void save() {
         try {
             savedState.save();
         } catch (Exception e){
@@ -73,10 +111,9 @@ public class OptionsState extends BaseMenuState {
     }
 
     private boolean isSelected(int option){
-        if(selection == option)
-            return true;
-        return false;
+        return selection == option;
     }
+
 
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
@@ -90,6 +127,10 @@ public class OptionsState extends BaseMenuState {
             drawMenuItem("Switch To Windowed",yTop+FULLSCREEN*itemSpace,isSelected(FULLSCREEN));
         else
             drawMenuItem("Switch to Fullscreen",yTop+FULLSCREEN*itemSpace,isSelected(FULLSCREEN));
+
+        drawMenuItem("IP Address: " , yTop+IPADDRESS*itemSpace, isSelected(IPADDRESS));
+
+        input.render(container, g);
 
         drawMenuItem("Resolution: " + resolution[isResolution], yTop+DIMENSION*itemSpace,isSelected(DIMENSION));
 
@@ -138,11 +179,6 @@ public class OptionsState extends BaseMenuState {
                     }
                     break;
                 case DIMENSION:
-
-                    /*TODO: Show the current resolution
-                    * Left and right keys will shift between resolutions available
-                    * Press enter, change the container to the proper resolution
-                    */
                     if(isResolution == 0){
                         try {
                             Client.app.setDisplayMode(3840,2160,Client.app.isFullscreen());
@@ -184,6 +220,15 @@ public class OptionsState extends BaseMenuState {
                             e.printStackTrace();
                         }
                     }
+                    break;
+                case IPADDRESS:
+                    typing = true;
+                    input.setBackgroundColor(Color.lightGray);
+                    input.setCursorPos(input.getText().length());
+                    input.setCursorVisible(true);
+                    input.setFocus(true);
+                    input.setAcceptingInput(true);
+                    // Allow modification of the text box
                     break;
                 case BACK:
                     backPressed();

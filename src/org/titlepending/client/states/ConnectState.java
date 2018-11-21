@@ -1,6 +1,5 @@
 package org.titlepending.client.states;
 
-import org.lwjgl.Sys;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -11,10 +10,7 @@ import org.titlepending.client.Updates;
 import org.titlepending.shared.ClientThread;
 import org.titlepending.shared.Nuntius;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
 import java.net.Socket;
 
 public class ConnectState extends BasicGameState {
