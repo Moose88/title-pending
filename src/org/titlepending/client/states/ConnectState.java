@@ -8,6 +8,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
+import org.titlepending.client.menus.BaseMenuState;
 import org.titlepending.shared.ClientThread;
 import org.titlepending.shared.Nuntius;
 
@@ -45,7 +46,7 @@ public class ConnectState extends BasicGameState {
         System.out.println("Attempting to connect to server.");
         int response = -1;
         try{
-            s = new Socket("localhost",Client.PORT);
+            s = new Socket(BaseMenuState.isIP, Client.PORT);
             new ClientThread(s,false).start();
             /** TODO: Find a way to save the socket singleton to each client
              *

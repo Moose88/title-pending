@@ -1,6 +1,7 @@
 package org.titlepending.client.menus;
 
 import jig.ResourceManager;
+import org.newdawn.slick.state.transition.FadeOutTransition;
 import org.titlepending.client.Client;
 import org.titlepending.client.states.PlayingState;
 import org.newdawn.slick.*;
@@ -25,17 +26,15 @@ public class MenuState extends BaseMenuState {
     }
 
     private boolean isSelected(int option){
-        if(selection == option)
-            return true;
-        return false;
+        return selection == option;
     }
 
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
         super.render(container, client, g);
 
-        /**
-         * This is a placeholder for our title image here
+        /** This is a placeholder for our title image here
+         *  Testing
          */
         g.drawImage(ResourceManager.getImage(Client.STARTUP_BANNER_RSC), client.ScreenWidth/2f - ResourceManager.getImage(Client.STARTUP_BANNER_RSC).getWidth()/2f, 100);
 
@@ -61,8 +60,12 @@ public class MenuState extends BaseMenuState {
         if(key == Input.KEY_ENTER){
             switch(selection){
                 case PLAY:
-                    ResourceManager.getMusic(Client.TITLE_MUSIC).stop();
-                    client.enterState(Client.CONNECTSTATE,new EmptyTransition(), new FadeInTransition());
+                    if(!Client.DEBUG) {
+                        ResourceManager.getMusic(Client.TITLE_MUSIC).stop();
+                        client.enterState(Client.CONNECTSTATE, new EmptyTransition(), new FadeInTransition());
+                    } else
+                        ResourceManager.getMusic(Client.TITLE_MUSIC).stop();
+                        client.enterState(Client.LOBBYSTATE, new FadeOutTransition(), new FadeInTransition());
                     break;
                 case OPTIONS:
                     client.enterState(Client.OPTIONSMENUSTATE,new EmptyTransition(), new FadeInTransition());

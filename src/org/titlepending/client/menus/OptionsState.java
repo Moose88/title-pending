@@ -1,14 +1,9 @@
 package org.titlepending.client.menus;
 
 import org.newdawn.slick.*;
-import org.newdawn.slick.gui.AbstractComponent;
-import org.newdawn.slick.gui.ComponentListener;
-import org.newdawn.slick.gui.GUIContext;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.StateBasedGame;
 import org.titlepending.client.Client;
-
-import javax.swing.*;
 
 public class OptionsState extends BaseMenuState {
 
@@ -40,7 +35,7 @@ public class OptionsState extends BaseMenuState {
         this.items = 4;
         this.selection = 0;
         this.isResolution = 1;
-        this.isIP = "localhost";
+        isIP = "localhost";
         this.backstate = Client.MAINMENUSTATE;
         this.container = container;
 
@@ -51,7 +46,8 @@ public class OptionsState extends BaseMenuState {
         isIP = savedState.getString("ipaddress", "localhost");
 
         if(isFullScreen == 1){
-            System.out.println("Setting Fullscreen");
+            if(Client.DEBUG)
+                System.out.println("Setting Fullscreen");
             container.setFullscreen(true);
         } else {
             container.setFullscreen(false);
@@ -59,53 +55,54 @@ public class OptionsState extends BaseMenuState {
 
         input = new TextField(container, client.fontMenu,
                 ((client.ScreenWidth/2)+(client.fontMenu.getWidth("IP Address: ")/2))-250,
-                (int)(client.ScreenHeight * 0.6)+ 98*2, client.fontMenu.getWidth("IPADDRESS"), client.fontMenu.getLineHeight()-20, new ComponentListener() {
-            @Override
-            public void componentActivated(AbstractComponent source) {
-                isIP = input.getText();
-                System.out.println("Enter pressed: isIP = " + isIP);
-                input.setCursorVisible(false);
-                input.setAcceptingInput(false);
-                input.setFocus(false);
-            }
-        });
+                (int)(client.ScreenHeight * 0.6)+ 98*2, client.fontMenu.getWidth("IPADDRESS"),
+                client.fontMenu.getLineHeight()-20, source -> {
+                    typing = false;
+                    isIP = input.getText();
+                    if(Client.DEBUG)
+                        System.out.println("Enter pressed: isIP = " + isIP);
+                    input.setCursorVisible(false);
+                    input.setAcceptingInput(false);
+                    input.setBackgroundColor(Color.darkGray);
+                    input.setFocus(false);
+                });
+
         if(isIP.equals("localhost")){
-            input.setText("Localhost");
+            input.setText("localhost");
         } else {
             input.setText(isIP);
         }
 
+        input.setMaxLength(15);
         input.setFocus(false);
         input.setBorderColor(Color.black);
         input.setAcceptingInput(false);
-        input.setBackgroundColor(Color.lightGray);
-
-
-
-        if(!isIP.equals("localhost")){
-            // Assign the ipaddress from the recorded isIP
-
-        }
+        input.setBackgroundColor(Color.darkGray);
 
         if(isResolution == 0){
-            System.out.println("Setting to 4k");
+            if(Client.DEBUG)
+                System.out.println("Setting to 4k");
             Client.app.setDisplayMode(3840,2160,Client.app.isFullscreen());
         } else if(isResolution == 1){
-            System.out.println("Setting 1920 x 1080");
+            if(Client.DEBUG)
+                System.out.println("Setting 1920 x 1080");
             Client.app.setDisplayMode(1920, 1080, Client.app.isFullscreen());
         } else if(isResolution == 2) {
-            System.out.println("Setting 1280 x 720");
+            if(Client.DEBUG)
+                System.out.println("Setting 1280 x 720");
             Client.app.setDisplayMode(1280, 720, Client.app.isFullscreen());
         } else if(isResolution == 3){
-            System.out.println("Setting 800 x 600");
+            if(Client.DEBUG)
+                System.out.println("Setting 800 x 600");
             Client.app.setDisplayMode(800, 600, Client.app.isFullscreen());
         } else if(isResolution == 4){
-            System.out.println("Setting 640 x 480");
+            if(Client.DEBUG)
+                System.out.println("Setting 640 x 480");
             Client.app.setDisplayMode(640, 480, Client.app.isFullscreen());
         }
     }
 
-    public void save() {
+    private void save() {
         try {
             savedState.save();
         } catch (Exception e){
@@ -114,9 +111,7 @@ public class OptionsState extends BaseMenuState {
     }
 
     private boolean isSelected(int option){
-        if(selection == option)
-            return true;
-        return false;
+        return selection == option;
     }
 
 
@@ -227,6 +222,9 @@ public class OptionsState extends BaseMenuState {
                     }
                     break;
                 case IPADDRESS:
+                    typing = true;
+                    input.setBackgroundColor(Color.lightGray);
+                    input.setCursorPos(input.getText().length());
                     input.setCursorVisible(true);
                     input.setFocus(true);
                     input.setAcceptingInput(true);
