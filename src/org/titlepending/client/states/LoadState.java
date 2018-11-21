@@ -11,7 +11,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.state.transition.EmptyTransition;
 import org.titlepending.client.Client;
-import org.titlepending.resources.boatGuy;
+import org.titlepending.client.boatGuy;
 
 import java.io.IOException;
 
@@ -99,7 +99,12 @@ public class LoadState extends BasicGameState {
 
         boatDude.update(delta);
 
-        int runTimer = 1000;
+        int runTimer;
+
+        if(Client.DEBUG)
+            runTimer = 0;
+        else
+            runTimer = 1000;
         if(soFar >= runTimer) {
 
             if (LoadingList.get().getRemainingResources() > 0) {

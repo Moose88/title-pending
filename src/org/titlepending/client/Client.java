@@ -10,12 +10,14 @@ import org.newdawn.slick.util.ResourceLoader;
 import org.titlepending.client.menus.MenuState;
 import org.titlepending.client.menus.OptionsState;
 import org.titlepending.client.states.*;
+import org.titlepending.shared.Nuntius;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Client extends StateBasedGame {
-
+    public static final boolean DEBUG = true;
     public static final int STARTUPSTATE = 0;
     public static final int CONNECTSTATE = 1;
     public static final int PLAYINGSTATE = 2;
@@ -25,6 +27,18 @@ public class Client extends StateBasedGame {
     public static final int MAINMENUSTATE = 5;
     public static final int STATSSTATE = 6;
     public static final int OPTIONSMENUSTATE = 7;
+    public static final int LOBBYSTATE = 8;
+
+    /**
+     * Set to true for debugging
+     */
+
+    public static boolean DEBUG = true;
+
+    /**
+     * These are all the game resources to include-
+     * Images, sounds, and music
+     */
 
     public static final String STARTUP_BANNER_RSC = "org/titlepending/resources/startstatebackground.png";
     public static final String LOADING_SKY_RSC = "org/titlepending/resources/LoadSky.png";
@@ -55,6 +69,8 @@ public class Client extends StateBasedGame {
     public static UnicodeFont fontStandard;
     public UnicodeFont fontMenu;
 
+
+
     public final int ScreenWidth;
     public final int ScreenHeight;
 
@@ -79,6 +95,7 @@ public class Client extends StateBasedGame {
         addState(new GameOverState());
         //addState(new StatsState());
         addState(new OptionsState());
+        addState(new LobbyState());
 
         ResourceManager.setFilterMethod(ResourceManager.FILTER_LINEAR);
         ResourceManager.loadImage(TEST_RSC);
@@ -112,6 +129,7 @@ public class Client extends StateBasedGame {
         }catch(Exception e){
             e.printStackTrace();
         }
+        Updates.getInstance();
 
 
     }

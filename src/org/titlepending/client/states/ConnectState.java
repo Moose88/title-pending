@@ -6,11 +6,11 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.titlepending.client.Client;
+import org.titlepending.client.Updates;
+import org.titlepending.shared.ClientThread;
+import org.titlepending.shared.Nuntius;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
 import java.net.Socket;
 
 public class ConnectState extends BasicGameState {
@@ -37,24 +37,38 @@ public class ConnectState extends BasicGameState {
     public void enter(GameContainer container, StateBasedGame game)
         throws SlickException{
         Client client = (Client) game;
-        Socket s=null;
-        ObjectInputStream input =null;
-        System.out.println("Attempting to connect to server.");
-        int response = -1;
+        Socket s;
+
+        if(Client.DEBUG)
+            System.out.println("Attempting to connect to server.");
+
+        ClientThread thread;
         try{
             s = new Socket("localhost",Client.PORT);
-            input = new ObjectInputStream(s.getInputStream());
-            response = input.read();
-
+            thread = new ClientThread(s,false);
+            thread.start();
+            Updates.getInstance().setThread(thread);
         } catch (IOException e){
             e.printStackTrace();
             client.enterState(Client.MAINMENUSTATE);
         }
-        if(response!=-1)
-            client.enterState(response);
+        boolean done = false;
 
-        System.out.println("Failed to establish connection");
-        client.enterState(Client.MAINMENUSTATE);
+        if(Client.DEBUG)
+             System.out.println("We got connected!");
+
+        while (Updates.getInstance().getQueue().isEmpty());
+
+        if (Client.DEBUG)
+            System.out.println("Receiving Updates instance.");
+        // This is what we're receiving
+        Nuntius input = Updates.getInstance().getQueue().poll();
+
+
+        if(Client.DEBUG && input != null)
+            System.out.println("Received from server\nState transition: "+input.getStateTransition()+"\nid: "+input.getId());
+        if(input!=null)
+            client.enterState(input.getStateTransition());
     }
 
     public void render(GameContainer container, StateBasedGame game,
