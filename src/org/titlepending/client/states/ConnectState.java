@@ -7,6 +7,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
+import org.titlepending.client.menus.BaseMenuState;
 import org.titlepending.shared.ClientThread;
 import org.titlepending.shared.Directive;
 
@@ -46,7 +47,7 @@ public class ConnectState extends BasicGameState {
             System.out.println("Attempting to connect to server.");
 
         try{
-            s = new Socket("localhost",Client.PORT);
+            s = new Socket(BaseMenuState.isIP,Client.PORT);
             thread = new ClientThread(s,false);
             thread.start();
             Updates.getInstance().setThread(thread);
