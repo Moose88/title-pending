@@ -42,30 +42,33 @@ public class ConnectState extends BasicGameState {
         throws SlickException{
         Client client = (Client) game;
         Socket s;
-        System.out.println("Attempting to connect to server.");
-        int response = -1;
+
+        if(Client.DEBUG)
+            System.out.println("Attempting to connect to server.");
+
+        ClientThread thread;
         try{
             s = new Socket("localhost",Client.PORT);
-            new ClientThread(s,false).start();
-            /** TODO: Find a way to save the socket singleton to each client
-             *
-             *  That way we can save that socket information for input
-             *  and outputting object information
-             */
-
+            thread = new ClientThread(s,false);
+            thread.start();
         } catch (IOException e){
             e.printStackTrace();
             client.enterState(Client.MAINMENUSTATE);
         }
         boolean done = false;
-        System.out.println("We got connected!");
-        while (Updates.getInstance().getQueue().isEmpty()){}
 
-        System.out.println("Receiving Updates instance.");
+        if(Client.DEBUG)
+             System.out.println("We got connected!");
+
+        while (Updates.getInstance().getQueue().isEmpty());
+
+        if (Client.DEBUG)
+            System.out.println("Receiving Updates instance.");
         // This is what we're receiving
         Nuntius input = Updates.getInstance().getQueue().remove();
-
-        //System.out.println("Failed to establish connection");
+        Updates.getInstance().setId(input.getId());
+        if(Client.DEBUG)
+            System.out.println("Received from server\nState transition: "+input.getStateTransition()+"\nid: "+input.getId());
         client.enterState(input.getStateTransition());
     }
 

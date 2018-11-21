@@ -1,5 +1,6 @@
 package org.titlepending.client;
 
+import org.titlepending.shared.ClientThread;
 import org.titlepending.shared.Nuntius;
 
 import java.io.IOException;
@@ -10,12 +11,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class Updates {
     private ConcurrentLinkedQueue<Nuntius> queue;
     private static Updates updates;
-    private Socket socket;
-    private ObjectOutputStream out;
+    private int id;
     private Updates(){
         queue = new ConcurrentLinkedQueue<>();
     }
-
+    ClientThread thread;
     public static Updates getInstance(){
         if(updates == null){
             updates = new Updates();
@@ -29,25 +29,11 @@ public class Updates {
         return queue;
     }
 
-    public void setSocket(Socket socket) {
-        this.socket = socket;
-    }
+    public int getId() {return id;}
 
-    public Socket getSocket(){return socket;}
+    public void setId(int id) {this.id = id;}
 
-    public void createOutPutStream(){
-        if(socket==null)
-            return;
+    public void setThread(ClientThread thread) {this.thread = thread;}
 
-        try {
-            out = new ObjectOutputStream(socket.getOutputStream());
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-
-    }
-
-    public ObjectOutputStream getOut() {
-        return out;
-    }
+    public ClientThread getThread(){return thread;}
 }

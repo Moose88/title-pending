@@ -41,27 +41,31 @@ public class PlayingState extends BasicGameState {
             if(Client.DEBUG)
                 System.out.println("Sending command to raise anchor");
             cmd.setRaiseAncor();
+            cmd.setId(Updates.getInstance().getId());
             sendCommand(cmd);
         }
         if(input.isKeyDown(Input.KEY_S)){
             // Send lower anchor command to server
             cmd.setLowerAncor();
+            cmd.setId(Updates.getInstance().getId());
             sendCommand(cmd);
         }
         if(input.isKeyDown(Input.KEY_A)){
             // Send command to turn left
             cmd.setTurnLeft();
+            cmd.setId(Updates.getInstance().getId());
             sendCommand(cmd);
         }
         if(input.isKeyDown(Input.KEY_D)){
             cmd.setTurnRight();
+            cmd.setId(Updates.getInstance().getId());
             sendCommand(cmd);
         }
 
     }
     private void sendCommand(Nuntius cmd){
         try{
-            Updates.getInstance().getOut().writeObject(cmd);
+            Updates.getInstance().getThread().sendCommand(cmd);
         }catch (IOException e){
             e.printStackTrace();
         }

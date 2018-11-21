@@ -11,6 +11,7 @@ public class Nuntius implements Serializable {
     private boolean turnRight;
     private boolean raiseAnchor;
     private boolean lowerAnchor;
+    private int id;
     public Nuntius(){
         turnLeft = turnRight = raiseAnchor = lowerAnchor = false;
     }
@@ -23,9 +24,11 @@ public class Nuntius implements Serializable {
     public void setTurnRight(){turnRight = true;}
     public void setRaiseAncor(){raiseAnchor = true;}
     public void setLowerAncor(){lowerAnchor = true;}
+    public void setId(int id){this.id = id;}
 
     public boolean isTurnRight(){return turnRight;}
     public boolean isTurnLeft(){return turnLeft;}
     public boolean isRaiseAnchor(){return raiseAnchor;}
     public boolean isLowerAnchor(){return lowerAnchor;}
+    public int getId(){return id;}
 }
