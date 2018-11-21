@@ -1,14 +1,10 @@
 package org.titlepending.server;
 
-import org.lwjgl.Sys;
 import org.titlepending.client.Client;
-import org.titlepending.client.Updates;
-import org.titlepending.client.states.PlayingState;
 import org.titlepending.shared.ClientThread;
 import org.titlepending.shared.Nuntius;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
@@ -23,7 +19,7 @@ public class Server {
     private static List<ClientThread> players = new CopyOnWriteArrayList<>();
     private static final int PORT = 8000;
     private static final int PLIMIT = 8;
-    public static List<Nuntius> commands = new CopyOnWriteArrayList<>();
+    public static ConcurrentLinkedQueue<Nuntius> commands = new ConcurrentLinkedQueue<>();
 
     public static void main(String[] args) throws IOException{
 
@@ -32,9 +28,23 @@ public class Server {
 
         new Handler().start();
 
+        if(Server.DEBUG)
+            System.out.println("Starting game loop");
         while(true){
             // Game logic goes here
+            for(ClientThread thread : players)
+                //do updates
 
+            while (!commands.isEmpty()){
+                Nuntius cmd = commands.poll();
+                if(Server.DEBUG){
+                    System.out.println("Recieved the following command from client: "+cmd.getId() +
+                            "\nTurn left: "+cmd.isTurnLeft()+
+                            "\nTurn right: "+cmd.isTurnRight()+
+                            "\nRaise Anchor: "+cmd.isRaiseAnchor()+
+                            "\nLower Anchor: "+cmd.isLowerAnchor());
+                }
+            }
             if(players.size()!=8){
 
             }else{
@@ -46,26 +56,48 @@ public class Server {
 
     private static class  Handler extends Thread{
         ServerSocket listener;
-        private int timer = 180000;
-        long startTime = System.currentTimeMillis();
-        public Handler() throws IOException{
-            listener = new ServerSocket(PORT);
+        private int timer;
+        long startTime;
+        public Handler(){
+            timer = 180000;
+            startTime = System.currentTimeMillis();
+        }
+
+        public void run(){
+            try {
+                listener = new ServerSocket(PORT);
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+
             boolean done = false;
             if(Server.DEBUG)
                 System.out.println("Listening for new clients.");
 
             while(!done){
                 long elapsedTime = System.currentTimeMillis() -startTime;
-                Socket s = listener.accept();
+                Socket s = null;
+                try {
+                    s = listener.accept();
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
                 if(Server.DEBUG)
                     System.out.println("New connection received\nSetting up client thread");
-                ClientThread temp = new ClientThread(s,true);
+                ClientThread temp = null;
+                try {
+                    temp = new ClientThread(s, true);
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
                 int id = ThreadLocalRandom.current().nextInt();
-                temp.setId(id);
+                if(temp != null)
+                    temp.setClientId(id);
 
                 if(Server.DEBUG)
                     System.out.println("Starting thread with id: "+id);
-                temp.start();
+                if(temp != null)
+                    temp.start();
 
                 if(Server.DEBUG)
                     System.out.println("Building initial command");
@@ -76,18 +108,26 @@ public class Server {
 
                 if(Server.DEBUG)
                     System.out.println("Attempting to send command to client");
-                temp.sendCommand(cmd);
 
+                try{
+                    temp.sendCommand(cmd);
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
 
                 if(Server.DEBUG)
                     System.out.println("Adding thread to players list");
-
-                players.add(temp);
+                if(temp != null)
+                    players.add(temp);
 
                 if(players.size()==0 && elapsedTime >= timer){ done=true;}
             }
             System.out.println("Maximum players reached");
-            listener.close();
+            try {
+                listener.close();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
 
         }
     }

@@ -15,7 +15,7 @@ public class ClientThread extends Thread{
     private ObjectInputStream in;
     private ObjectOutputStream out;
     private boolean isServer;
-    private int id;
+    private int clientId;
 
     public ClientThread (Socket socket, boolean isServer) throws IOException {
         this.socket = socket;
@@ -68,12 +68,12 @@ public class ClientThread extends Thread{
 
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setClientId(int clientId) {
+        this.clientId = clientId;
     }
 
     public int getClientId() {
-        return id;
+        return clientId;
     }
 
     public void sendCommand(Nuntius cmd) throws IOException{

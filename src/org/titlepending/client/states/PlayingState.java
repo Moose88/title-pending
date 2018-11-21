@@ -1,6 +1,5 @@
 package org.titlepending.client.states;
 
-import org.lwjgl.Sys;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -12,7 +11,6 @@ import org.titlepending.client.Updates;
 import org.titlepending.shared.Nuntius;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 
 public class PlayingState extends BasicGameState {
     public void init(GameContainer container, StateBasedGame game)
@@ -40,30 +38,27 @@ public class PlayingState extends BasicGameState {
             // Send raise anchor command to server
             if(Client.DEBUG)
                 System.out.println("Sending command to raise anchor");
-            cmd.setRaiseAncor();
-            cmd.setId(Updates.getInstance().getId());
+            cmd.setRaiseAnchor();
             sendCommand(cmd);
         }
         if(input.isKeyDown(Input.KEY_S)){
             // Send lower anchor command to server
-            cmd.setLowerAncor();
-            cmd.setId(Updates.getInstance().getId());
+            cmd.setLowerAnchor();
             sendCommand(cmd);
         }
         if(input.isKeyDown(Input.KEY_A)){
             // Send command to turn left
             cmd.setTurnLeft();
-            cmd.setId(Updates.getInstance().getId());
             sendCommand(cmd);
         }
         if(input.isKeyDown(Input.KEY_D)){
             cmd.setTurnRight();
-            cmd.setId(Updates.getInstance().getId());
             sendCommand(cmd);
         }
 
     }
     private void sendCommand(Nuntius cmd){
+        cmd.setId(Updates.getInstance().getThread().getClientId());
         try{
             Updates.getInstance().getThread().sendCommand(cmd);
         }catch (IOException e){

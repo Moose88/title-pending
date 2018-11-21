@@ -22,8 +22,8 @@ public class Nuntius implements Serializable {
 
     public void setTurnLeft(){turnLeft = true;}
     public void setTurnRight(){turnRight = true;}
-    public void setRaiseAncor(){raiseAnchor = true;}
-    public void setLowerAncor(){lowerAnchor = true;}
+    public void setRaiseAnchor(){raiseAnchor = true;}
+    public void setLowerAnchor(){lowerAnchor = true;}
     public void setId(int id){this.id = id;}
 
     public boolean isTurnRight(){return turnRight;}

@@ -51,6 +51,7 @@ public class ConnectState extends BasicGameState {
             s = new Socket("localhost",Client.PORT);
             thread = new ClientThread(s,false);
             thread.start();
+            Updates.getInstance().setThread(thread);
         } catch (IOException e){
             e.printStackTrace();
             client.enterState(Client.MAINMENUSTATE);
@@ -65,11 +66,13 @@ public class ConnectState extends BasicGameState {
         if (Client.DEBUG)
             System.out.println("Receiving Updates instance.");
         // This is what we're receiving
-        Nuntius input = Updates.getInstance().getQueue().remove();
-        Updates.getInstance().setId(input.getId());
-        if(Client.DEBUG)
+        Nuntius input = Updates.getInstance().getQueue().poll();
+
+
+        if(Client.DEBUG && input != null)
             System.out.println("Received from server\nState transition: "+input.getStateTransition()+"\nid: "+input.getId());
-        client.enterState(input.getStateTransition());
+        if(input!=null)
+            client.enterState(input.getStateTransition());
     }
 
     public void render(GameContainer container, StateBasedGame game,
