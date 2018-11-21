@@ -78,11 +78,11 @@ public class LobbyState extends BasicGameState {
         }
 
         if(text.equals("Ready"))
-            client.fontMenu.drawString((client.ScreenWidth*4/5)-(textWidth/2), client.ScreenHeight-client.fontMenu.getHeight(text)-20, text ,textColor);
+            client.fontMenu.drawString((client.ScreenWidth*4f/5f)-(textWidth/2f), client.ScreenHeight-client.fontMenu.getHeight(text)-20, text ,textColor);
         else if(text.equals("Exit"))
-            client.fontMenu.drawString((client.ScreenWidth/5)-(textWidth/2), client.ScreenHeight-client.fontMenu.getHeight(text)-20, text ,textColor);
+            client.fontMenu.drawString((client.ScreenWidth/5f)-(textWidth/2f), client.ScreenHeight-client.fontMenu.getHeight(text)-20, text ,textColor);
         else
-            client.fontMenu.drawString((client.ScreenWidth/2)-(textWidth/2), yPos, text ,textColor);
+            client.fontMenu.drawString((client.ScreenWidth/2f)-(textWidth/2f), yPos, text ,textColor);
     }
 
 

@@ -1,12 +1,12 @@
 package org.titlepending.client;
 
 import org.titlepending.shared.ClientThread;
-import org.titlepending.shared.Nuntius;
+import org.titlepending.shared.Directive;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Updates {
-    private ConcurrentLinkedQueue<Nuntius> queue;
+    private ConcurrentLinkedQueue<Directive> queue;
     private static Updates updates;
     private Updates(){
         queue = new ConcurrentLinkedQueue<>();
@@ -19,9 +19,9 @@ public class Updates {
         return updates;
     }
 
-    public void addToQueue(Nuntius cmd){ queue.add(cmd);}
+    public void addToQueue(Directive cmd){ queue.add(cmd);}
 
-    public ConcurrentLinkedQueue<Nuntius> getQueue() {
+    public ConcurrentLinkedQueue<Directive> getQueue() {
         return queue;
     }
 

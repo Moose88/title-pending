@@ -2,7 +2,8 @@ package org.titlepending.server;
 
 import org.titlepending.client.Client;
 import org.titlepending.shared.ClientThread;
-import org.titlepending.shared.Nuntius;
+import org.titlepending.shared.CmdProcessor;
+import org.titlepending.shared.Directive;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 public class Server {
 
@@ -18,7 +20,7 @@ public class Server {
     private static List<ClientThread> players = new CopyOnWriteArrayList<>();
     private static final int PORT = 8000;
     private static final int PLIMIT = 8;
-    public static ConcurrentLinkedQueue<Nuntius> commands = new ConcurrentLinkedQueue<>();
+    public static ConcurrentLinkedQueue<Directive> commands = new ConcurrentLinkedQueue<>();
 
     public static void main(String[] args) throws IOException{
 
@@ -26,27 +28,39 @@ public class Server {
             System.out.println("Game server started");
 
         new Handler().start();
+        CmdProcessor processor = new CmdProcessor(true);
+
+        if(Server.DEBUG){
+            System.out.println("Starting lobby state");
+        }
+        int lobbyTimer = 180000;
+        long startTIme = System.currentTimeMillis();
+        while(System.currentTimeMillis() - startTIme < lobbyTimer){
+            for (ClientThread thread : players){
+                Directive timeUpdate = new Directive();
+                timeUpdate.setTime(System.currentTimeMillis());
+                thread.sendCommand(timeUpdate);
+            }
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            }catch (InterruptedException e){
+                e.printStackTrace();
+            }
+        }
 
         if(Server.DEBUG)
             System.out.println("Starting game loop");
+
         while(true){
             // Game logic goes here
             for(ClientThread thread : players)
                 //do updates
 
             while (!commands.isEmpty()){
-                Nuntius cmd = commands.poll();
-                if(Server.DEBUG){
-                    System.out.println("Received the following command from client: "+cmd.getId() +
-                            "\nTurn left: "+cmd.isTurnLeft()+
-                            "\nTurn right: "+cmd.isTurnRight()+
-                            "\nRaise Anchor: "+cmd.isRaiseAnchor()+
-                            "\nLower Anchor: "+cmd.isLowerAnchor());
-                }
-            }
+                Directive cmd = commands.poll();
+                processor.processCommand(cmd);
 
-            if(Server.DEBUG)
-                System.out.println("Done parsing commands");
+            }
 
             if(players.size()!=PLIMIT){
 
@@ -105,7 +119,7 @@ public class Server {
                 if(Server.DEBUG)
                     System.out.println("Building initial command");
 
-                Nuntius cmd = new Nuntius();
+                Directive cmd = new Directive();
                 cmd.setId(id);
                 cmd.setStateTransition(Client.LOBBYSTATE);
 

@@ -35,7 +35,7 @@ public class ClientThread extends Thread{
         try{
             while (!done){
                 try{
-                    Nuntius input = (Nuntius) in.readObject();
+                    Directive input = (Directive) in.readObject();
                     if(isServer){
                         //code to add to server queue
                         if(Server.DEBUG) {
@@ -76,7 +76,7 @@ public class ClientThread extends Thread{
         return clientId;
     }
 
-    public void sendCommand(Nuntius cmd) throws IOException{
+    public void sendCommand(Directive cmd) throws IOException{
         out.writeObject(cmd);
         out.flush();
     }

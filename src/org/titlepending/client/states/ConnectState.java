@@ -8,7 +8,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
 import org.titlepending.shared.ClientThread;
-import org.titlepending.shared.Nuntius;
+import org.titlepending.shared.Directive;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -62,7 +62,7 @@ public class ConnectState extends BasicGameState {
         if (Client.DEBUG)
             System.out.println("Receiving Updates instance.");
         // This is what we're receiving
-        Nuntius input = Updates.getInstance().getQueue().poll();
+        Directive input = Updates.getInstance().getQueue().poll();
 
 
         if(Client.DEBUG && input != null)

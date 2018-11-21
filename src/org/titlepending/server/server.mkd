@@ -2,7 +2,9 @@
 one beefy boi
 
 ## Issues ##
+* Needs to se
+
+
+## Completed ##
 * Needs thread that connects with the clients
-* class for a lobby
-* loading states
-* playing states
+* Keeps track of clients by thread
