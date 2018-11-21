@@ -80,6 +80,14 @@ public class Client extends StateBasedGame {
 
     @Override
     public void initStatesList(GameContainer container) throws SlickException{
+        ResourceManager.setFilterMethod(ResourceManager.FILTER_LINEAR);
+        ResourceManager.loadImage(TEST_RSC);
+        ResourceManager.loadImage(SHIP_RSC);
+        ResourceManager.loadImage(LOADING_SEA_RSC);
+        ResourceManager.loadImage(LOADING_SKY_RSC);
+        ResourceManager.loadSound(LOADING_SOUND);
+        ResourceManager.loadSound(SCREAM_SOUND);
+
         addState(new LoadState());
         addState(new MenuState());
         //addState(new StartState());
@@ -89,14 +97,6 @@ public class Client extends StateBasedGame {
         //addState(new StatsState());
         addState(new OptionsState());
         addState(new LobbyState());
-
-        ResourceManager.setFilterMethod(ResourceManager.FILTER_LINEAR);
-        ResourceManager.loadImage(TEST_RSC);
-        ResourceManager.loadImage(SHIP_RSC);
-        ResourceManager.loadImage(LOADING_SEA_RSC);
-        ResourceManager.loadImage(LOADING_SKY_RSC);
-        ResourceManager.loadSound(LOADING_SOUND);
-        ResourceManager.loadSound(SCREAM_SOUND);
 
         try{
             Font UIFont0 = Font.createFont(Font.TRUETYPE_FONT, ResourceLoader.getResourceAsStream(Client.FONT_RSC));
