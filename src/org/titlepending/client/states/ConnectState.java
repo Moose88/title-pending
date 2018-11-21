@@ -29,8 +29,11 @@ public class ConnectState extends BasicGameState {
      *
      */
 
+    private ClientThread thread;
+
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException{
+        thread = null;
 
     }
 
@@ -42,7 +45,6 @@ public class ConnectState extends BasicGameState {
         if(Client.DEBUG)
             System.out.println("Attempting to connect to server.");
 
-        ClientThread thread;
         try{
             s = new Socket("localhost",Client.PORT);
             thread = new ClientThread(s,false);
@@ -68,7 +70,13 @@ public class ConnectState extends BasicGameState {
         if(Client.DEBUG && input != null)
             System.out.println("Received from server\nState transition: "+input.getStateTransition()+"\nid: "+input.getId());
         if(input!=null)
-            client.enterState(input.getStateTransition());
+            if(input.getStateTransition() == Client.LOBBYSTATE) {
+                client.enterState(Client.LOBBYSTATE);
+            }else{
+                thread.stopThread();
+                System.out.println("Server full");
+                client.enterState(Client.MAINMENUSTATE);
+            }
     }
 
     public void render(GameContainer container, StateBasedGame game,

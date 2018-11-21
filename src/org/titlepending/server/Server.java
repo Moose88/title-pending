@@ -19,7 +19,7 @@ public class Server {
     public static final boolean DEBUG = true;
     public static List<ClientThread> players = new CopyOnWriteArrayList<>();
     private static final int PORT = 8000;
-    private static final int PLIMIT = 8;
+    private static final int PLIMIT = 2;
     public static ConcurrentLinkedQueue<Directive> commands = new ConcurrentLinkedQueue<>();
 
     public static void main(String[] args) throws IOException{
@@ -108,29 +108,38 @@ public class Server {
                 }catch (IOException e){
                     e.printStackTrace();
                 }
-                int id = ThreadLocalRandom.current().nextInt();
-                if(temp != null)
-                    temp.setClientId(id);
+                int id = ThreadLocalRandom.current().nextInt(0,1000000);
+                if(temp != null) temp.setClientId(id);
 
-                if(Server.DEBUG)
-                    System.out.println("Starting thread with id: "+id);
-                if(temp != null)
-                    temp.start();
+                if(Server.DEBUG) System.out.println("Starting thread with id: "+id);
 
-                if(Server.DEBUG)
-                    System.out.println("Building initial command");
+                if(temp != null) temp.start();
+
+                if(Server.DEBUG) System.out.println("Building initial command");
 
                 Directive cmd = new Directive();
                 cmd.setId(id);
                 cmd.setStateTransition(Client.LOBBYSTATE);
 
-                if(Server.DEBUG)
-                    System.out.println("Attempting to send command to client");
+                if(Server.DEBUG) System.out.println("Attempting to send command to client");
 
-                try{
-                    temp.sendCommand(cmd);
-                }catch (IOException e){
-                    e.printStackTrace();
+                if(temp!=null && players.size() <= PLIMIT){
+                    try{
+                        temp.sendCommand(cmd);
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                }else if(temp !=null) {
+                    if(Server.DEBUG)
+                        System.out.println("Rejecting connection players max");
+                    cmd.setStateTransition(Client.MAINMENUSTATE);
+                    try{
+                        temp.sendCommand(cmd);
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                    temp.stopThread();
+                    temp = null;
                 }
 
                 if(Server.DEBUG)
