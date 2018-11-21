@@ -29,11 +29,6 @@ public class Client extends StateBasedGame {
     public static final int OPTIONSMENUSTATE = 7;
     public static final int LOBBYSTATE = 8;
 
-    /**
-     * Set to true for debugging
-     */
-
-    public static boolean DEBUG = true;
 
     /**
      * These are all the game resources to include-
