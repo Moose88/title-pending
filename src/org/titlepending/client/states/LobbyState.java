@@ -82,6 +82,16 @@ public class LobbyState extends BasicGameState {
         setCannons = (int) savedShip.getNumber("cannons",0);
         setCrew = (int) savedShip.getNumber("crew",0);
 
+        setHaul = 0;
+        savedShip.setNumber("haul", setHaul);
+        setSails = 0;
+        savedShip.setNumber("sails", setSails);
+        setCannons = 0;
+        savedShip.setNumber("cannons", setCannons);
+        setCrew = 0;
+        savedShip.setNumber("crew", setCrew);
+        save();
+
         if(Client.DEBUG)
             System.out.println("Haul: " + setHaul + " Sails: " + setSails + " Cannons: " + setCannons + " Crew: " + setCrew);
 
