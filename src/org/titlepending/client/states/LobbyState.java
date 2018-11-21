@@ -31,7 +31,7 @@ public class LobbyState extends BasicGameState {
     private int[] haulMod = new int[3];
     private int[] sailMod = new int[3];
     private int[] cannonMod = new int[3];
-    private int[] crewMod = new int[3];
+    private String[] crewMod = new String[3];
 
     private int totalMod;
 
@@ -82,13 +82,13 @@ public class LobbyState extends BasicGameState {
         setCannons = (int) savedShip.getNumber("cannons",0);
         setCrew = (int) savedShip.getNumber("crew",0);
 
-        setHaul = 0;
+        setHaul = 2;
         savedShip.setNumber("haul", setHaul);
-        setSails = 0;
+        setSails = 2;
         savedShip.setNumber("sails", setSails);
-        setCannons = 0;
+        setCannons = 2;
         savedShip.setNumber("cannons", setCannons);
-        setCrew = 0;
+        setCrew = 2;
         savedShip.setNumber("crew", setCrew);
         save();
 
@@ -153,9 +153,9 @@ public class LobbyState extends BasicGameState {
         crewString[1] = "Other guy!";
         crewString[0] = "Non Binary Gendered Creature thing!";
 
-//        crewMod[2] = haulMod[setHaul] + 2;
-//        crewMod[1] = sailMod[setSails] + 2;
-//        crewMod[0] = cannonMod[setCannons] + 2;
+        crewMod[2] = "+ 2 cannon";
+        crewMod[1] = "+ 2 haul";
+        crewMod[0] = "+ 2 sail";
 
     }
 
@@ -237,8 +237,8 @@ public class LobbyState extends BasicGameState {
                 "Cannons: " + (cannonMod[setCannons]) + "\n" +
                 "\n" +
                 "Crew: " + crewString[setCrew] + "\n" +
-                "\n" +
-                "Total Modifier: " + totalMod;
+                crewMod[setCrew] + "\n" +
+                "Total mod: " + totalMod + " + 2";
 
         if(setCrew == 0) {
             g.setColor(someBlue);
@@ -248,11 +248,11 @@ public class LobbyState extends BasicGameState {
             g.setColor(someOther2);
         }
 
-        float x1 = ((client.ScreenWidth*.405f)-(g.getFont().getWidth(crewString[1])/3f));
+        float x1 = ((client.ScreenWidth*.385f)-(g.getFont().getWidth(crewString[1])/3f));
         float y1 = ((client.ScreenHeight*.085f)-(g.getFont().getHeight(lobbyStats)/3f));
 
         g.setFont(Client.fontStandard);
-        g.fillRect(x1, y1, g.getFont().getWidth(lobbyStats)+50, g.getFont().getHeight(lobbyStats)+10);
+        g.fillRect(client.ScreenWidth*.365f, y1, g.getFont().getWidth(lobbyStats)+150, g.getFont().getHeight(lobbyStats)+10);
         g.setColor(Color.white);
         g.drawString(lobbyStats, x1+10, y1+10);
         g.popTransform();
