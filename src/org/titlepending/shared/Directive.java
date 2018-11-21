@@ -13,6 +13,7 @@ public class Directive implements Serializable {
     private boolean lowerAnchor;
     private int id;
     private long time;
+    private long lobbyStartTime;
     public Directive(){
         turnLeft = turnRight = raiseAnchor = lowerAnchor = false;
     }
@@ -27,6 +28,7 @@ public class Directive implements Serializable {
     public void setLowerAnchor(){lowerAnchor = true;}
     public void setId(int id){this.id = id;}
     public void setTime(long time) {this.time = time;}
+    public void setLobbyStartTime(long lobbyStartTime){this.lobbyStartTime = lobbyStartTime;}
 
     public boolean isTurnRight(){return turnRight;}
     public boolean isTurnLeft(){return turnLeft;}
@@ -34,4 +36,5 @@ public class Directive implements Serializable {
     public boolean isLowerAnchor(){return lowerAnchor;}
     public int getId(){return id;}
     public long getTime(){return time;}
+    public long getLobbyStartTime(){return lobbyStartTime;}
 }

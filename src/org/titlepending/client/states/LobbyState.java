@@ -8,6 +8,8 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.state.transition.FadeInTransition;
 import org.newdawn.slick.state.transition.FadeOutTransition;
 import org.titlepending.client.Client;
+import org.titlepending.client.Updates;
+import org.titlepending.shared.Directive;
 
 import java.util.prefs.BackingStoreException;
 
@@ -29,6 +31,9 @@ public class LobbyState extends BasicGameState {
     private int setSails;
     private int setCannons;
     private int setCrew;
+    private int timer;
+    private long startTime;
+    private Directive timeUpdate;
 
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException{
@@ -40,6 +45,8 @@ public class LobbyState extends BasicGameState {
         this.setCannons = 0;
         this.setCrew = 0;
         this.client = (Client)game;
+        this.timer = 180000;
+        this.startTime = 0;
 
         savedShip = new SavedState("ship");
 
@@ -125,11 +132,24 @@ public class LobbyState extends BasicGameState {
     public void update(GameContainer container, StateBasedGame game,
                        int delta) throws SlickException{
 
+        if(!Updates.getInstance().getQueue().isEmpty()){
+            timeUpdate = Updates.getInstance().getQueue().poll();
+            if(startTime == 0){
+                startTime = timeUpdate.getLobbyStartTime();
+            }
+            timer -= System.currentTimeMillis() - startTime;
+
+            if(Client.DEBUG)
+                System.out.println(timer);
+        }
+
     }
 
     @Override
     public void keyPressed(int key, char c){
-        System.out.println(selection);
+        if(Client.DEBUG)
+            System.out.println(selection);
+
         if(key == Input.KEY_ESCAPE){
             backPressed();
         }
@@ -249,6 +269,7 @@ public class LobbyState extends BasicGameState {
     }
 
     private void backPressed(){
+        Updates.getInstance().getThread().stopThread();
         client.enterState(Client.MAINMENUSTATE, new FadeOutTransition(), new FadeInTransition());
     }
 

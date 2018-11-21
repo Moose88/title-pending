@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class Server {
 
     public static final boolean DEBUG = true;
-    private static List<ClientThread> players = new CopyOnWriteArrayList<>();
+    public static List<ClientThread> players = new CopyOnWriteArrayList<>();
     private static final int PORT = 8000;
     private static final int PLIMIT = 8;
     public static ConcurrentLinkedQueue<Directive> commands = new ConcurrentLinkedQueue<>();
@@ -38,7 +38,8 @@ public class Server {
         while(System.currentTimeMillis() - startTIme < lobbyTimer){
             for (ClientThread thread : players){
                 Directive timeUpdate = new Directive();
-                timeUpdate.setTime(System.currentTimeMillis());
+                timeUpdate.setLobbyStartTime(startTIme);
+                timeUpdate.setTime(startTIme);
                 thread.sendCommand(timeUpdate);
             }
             try {
