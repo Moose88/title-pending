@@ -1,6 +1,7 @@
 package org.titlepending.client.menus;
 
 import jig.ResourceManager;
+import org.newdawn.slick.state.transition.FadeOutTransition;
 import org.titlepending.client.Client;
 import org.titlepending.client.states.PlayingState;
 import org.newdawn.slick.*;
@@ -21,22 +22,21 @@ public class MenuState extends BaseMenuState {
         this.client = (Client)game;
         this.items = 4;
         this.selection = 0;
+
     }
 
     private boolean isSelected(int option){
-        if(selection == option)
-            return true;
-        return false;
+        return selection == option;
     }
 
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
         super.render(container, client, g);
 
-        /**
-         * This is a placeholder for our title image here
+        /** This is a placeholder for our title image here
+         *  Testing
          */
-        g.drawImage(ResourceManager.getImage(Client.STARTUP_BANNER_RSC), client.ScreenWidth/2 - ResourceManager.getImage(Client.STARTUP_BANNER_RSC).getWidth()/2, 100);
+        g.drawImage(ResourceManager.getImage(Client.STARTUP_BANNER_RSC), client.ScreenWidth/2f - ResourceManager.getImage(Client.STARTUP_BANNER_RSC).getWidth()/2f, 100);
 
         // Draw menu
         int yTop = (int) (client.ScreenHeight * 0.6); // one third down the string
@@ -60,7 +60,8 @@ public class MenuState extends BaseMenuState {
         if(key == Input.KEY_ENTER){
             switch(selection){
                 case PLAY:
-                    client.enterState(Client.CONNECTSTATE,new EmptyTransition(), new FadeInTransition());
+                    ResourceManager.getMusic(Client.TITLE_MUSIC).stop();
+                    client.enterState(Client.CONNECTSTATE, new FadeOutTransition(), new FadeInTransition());
                     break;
                 case OPTIONS:
                     client.enterState(Client.OPTIONSMENUSTATE,new EmptyTransition(), new FadeInTransition());
@@ -69,6 +70,7 @@ public class MenuState extends BaseMenuState {
                     client.enterState(Client.STATSSTATE,new EmptyTransition(), new FadeInTransition());
                     break;
                 case EXIT:
+                    ResourceManager.getMusic(Client.TITLE_MUSIC).stop();
                     client.getContainer().exit();
                     break;
                 default:

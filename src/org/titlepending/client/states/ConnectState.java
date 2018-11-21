@@ -6,11 +6,12 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.titlepending.client.Client;
+import org.titlepending.client.Updates;
+import org.titlepending.client.menus.BaseMenuState;
+import org.titlepending.shared.ClientThread;
+import org.titlepending.shared.Directive;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
 import java.net.Socket;
 
 public class ConnectState extends BasicGameState {
@@ -29,32 +30,54 @@ public class ConnectState extends BasicGameState {
      *
      */
 
+    private ClientThread thread;
+
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException{
+        thread = null;
 
     }
 
     public void enter(GameContainer container, StateBasedGame game)
         throws SlickException{
         Client client = (Client) game;
-        Socket s=null;
-        ObjectInputStream input =null;
-        System.out.println("Attempting to connect to server.");
-        int response = -1;
-        try{
-            s = new Socket("localhost",Client.PORT);
-            input = new ObjectInputStream(s.getInputStream());
-            response = input.read();
+        Socket s;
 
+        if(Client.DEBUG)
+            System.out.println("Attempting to connect to server.");
+
+        try{
+            s = new Socket(BaseMenuState.isIP,Client.PORT);
+            thread = new ClientThread(s,false);
+            thread.start();
+            Updates.getInstance().setThread(thread);
         } catch (IOException e){
             e.printStackTrace();
             client.enterState(Client.MAINMENUSTATE);
         }
-        if(response!=-1)
-            client.enterState(response);
+        boolean done = false;
 
-        System.out.println("Failed to establish connection");
-        client.enterState(Client.MAINMENUSTATE);
+        if(Client.DEBUG)
+             System.out.println("We got connected!");
+
+        while (Updates.getInstance().getQueue().isEmpty());
+
+        if (Client.DEBUG)
+            System.out.println("Receiving Updates instance.");
+        // This is what we're receiving
+        Directive input = Updates.getInstance().getQueue().poll();
+
+
+        if(Client.DEBUG && input != null)
+            System.out.println("Received from server\nState transition: "+input.getStateTransition()+"\nid: "+input.getId());
+        if(input!=null)
+            if(input.getStateTransition() == Client.LOBBYSTATE) {
+                client.enterState(Client.LOBBYSTATE);
+            }else{
+                thread.stopThread();
+                System.out.println("Server full");
+                client.enterState(Client.MAINMENUSTATE);
+            }
     }
 
     public void render(GameContainer container, StateBasedGame game,
