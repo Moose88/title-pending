@@ -10,11 +10,9 @@ import org.newdawn.slick.util.ResourceLoader;
 import org.titlepending.client.menus.MenuState;
 import org.titlepending.client.menus.OptionsState;
 import org.titlepending.client.states.*;
-import org.titlepending.shared.Nuntius;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Client extends StateBasedGame {
     public static final boolean DEBUG = true;
@@ -29,11 +27,6 @@ public class Client extends StateBasedGame {
     public static final int OPTIONSMENUSTATE = 7;
     public static final int LOBBYSTATE = 8;
 
-    /**
-     * Set to true for debugging
-     */
-
-    public static boolean DEBUG = true;
 
     /**
      * These are all the game resources to include-
@@ -87,6 +80,14 @@ public class Client extends StateBasedGame {
 
     @Override
     public void initStatesList(GameContainer container) throws SlickException{
+        ResourceManager.setFilterMethod(ResourceManager.FILTER_LINEAR);
+        ResourceManager.loadImage(TEST_RSC);
+        ResourceManager.loadImage(SHIP_RSC);
+        ResourceManager.loadImage(LOADING_SEA_RSC);
+        ResourceManager.loadImage(LOADING_SKY_RSC);
+        ResourceManager.loadSound(LOADING_SOUND);
+        ResourceManager.loadSound(SCREAM_SOUND);
+
         addState(new LoadState());
         addState(new MenuState());
         //addState(new StartState());
@@ -96,14 +97,6 @@ public class Client extends StateBasedGame {
         //addState(new StatsState());
         addState(new OptionsState());
         addState(new LobbyState());
-
-        ResourceManager.setFilterMethod(ResourceManager.FILTER_LINEAR);
-        ResourceManager.loadImage(TEST_RSC);
-        ResourceManager.loadImage(SHIP_RSC);
-        ResourceManager.loadImage(LOADING_SEA_RSC);
-        ResourceManager.loadImage(LOADING_SKY_RSC);
-        ResourceManager.loadSound(LOADING_SOUND);
-        ResourceManager.loadSound(SCREAM_SOUND);
 
         try{
             Font UIFont0 = Font.createFont(Font.TRUETYPE_FONT, ResourceLoader.getResourceAsStream(Client.FONT_RSC));

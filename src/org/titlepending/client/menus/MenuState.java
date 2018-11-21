@@ -60,12 +60,8 @@ public class MenuState extends BaseMenuState {
         if(key == Input.KEY_ENTER){
             switch(selection){
                 case PLAY:
-                    if(!Client.DEBUG) {
-                        ResourceManager.getMusic(Client.TITLE_MUSIC).stop();
-                        client.enterState(Client.CONNECTSTATE, new EmptyTransition(), new FadeInTransition());
-                    } else
-                        ResourceManager.getMusic(Client.TITLE_MUSIC).stop();
-                        client.enterState(Client.LOBBYSTATE, new FadeOutTransition(), new FadeInTransition());
+                    ResourceManager.getMusic(Client.TITLE_MUSIC).stop();
+                    client.enterState(Client.CONNECTSTATE, new FadeOutTransition(), new FadeInTransition());
                     break;
                 case OPTIONS:
                     client.enterState(Client.OPTIONSMENUSTATE,new EmptyTransition(), new FadeInTransition());

@@ -16,10 +16,12 @@ public class ClientThread extends Thread{
     private ObjectOutputStream out;
     private boolean isServer;
     private int clientId;
+    boolean done;
 
     public ClientThread (Socket socket, boolean isServer) throws IOException {
         this.socket = socket;
         this.isServer = isServer;
+        this.done=false;
         if(Client.DEBUG || Server.DEBUG)
             System.out.println("Setting up output stream");
         out = new ObjectOutputStream(socket.getOutputStream());
@@ -31,11 +33,10 @@ public class ClientThread extends Thread{
     }
 
     public void run(){
-        boolean done = false;
         try{
             while (!done){
                 try{
-                    Nuntius input = (Nuntius) in.readObject();
+                    Directive input = (Directive) in.readObject();
                     if(isServer){
                         //code to add to server queue
                         if(Server.DEBUG) {
@@ -60,6 +61,8 @@ public class ClientThread extends Thread{
                 in.close();
                 out.close();
                 socket.close();
+                if(isServer)
+                    Server.players.remove(this);
             }catch (IOException e){
                 e.printStackTrace();
             }
@@ -76,8 +79,10 @@ public class ClientThread extends Thread{
         return clientId;
     }
 
-    public void sendCommand(Nuntius cmd) throws IOException{
+    public void sendCommand(Directive cmd) throws IOException{
         out.writeObject(cmd);
         out.flush();
     }
+
+    public void stopThread(){done=true;}
 }

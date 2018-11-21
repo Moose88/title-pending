@@ -7,8 +7,9 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
+import org.titlepending.client.menus.BaseMenuState;
 import org.titlepending.shared.ClientThread;
-import org.titlepending.shared.Nuntius;
+import org.titlepending.shared.Directive;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -29,8 +30,11 @@ public class ConnectState extends BasicGameState {
      *
      */
 
+    private ClientThread thread;
+
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException{
+        thread = null;
 
     }
 
@@ -42,9 +46,8 @@ public class ConnectState extends BasicGameState {
         if(Client.DEBUG)
             System.out.println("Attempting to connect to server.");
 
-        ClientThread thread;
         try{
-            s = new Socket("localhost",Client.PORT);
+            s = new Socket(BaseMenuState.isIP,Client.PORT);
             thread = new ClientThread(s,false);
             thread.start();
             Updates.getInstance().setThread(thread);
@@ -62,13 +65,19 @@ public class ConnectState extends BasicGameState {
         if (Client.DEBUG)
             System.out.println("Receiving Updates instance.");
         // This is what we're receiving
-        Nuntius input = Updates.getInstance().getQueue().poll();
+        Directive input = Updates.getInstance().getQueue().poll();
 
 
         if(Client.DEBUG && input != null)
             System.out.println("Received from server\nState transition: "+input.getStateTransition()+"\nid: "+input.getId());
         if(input!=null)
-            client.enterState(input.getStateTransition());
+            if(input.getStateTransition() == Client.LOBBYSTATE) {
+                client.enterState(Client.LOBBYSTATE);
+            }else{
+                thread.stopThread();
+                System.out.println("Server full");
+                client.enterState(Client.MAINMENUSTATE);
+            }
     }
 
     public void render(GameContainer container, StateBasedGame game,

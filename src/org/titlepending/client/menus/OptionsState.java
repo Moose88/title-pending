@@ -82,7 +82,7 @@ public class OptionsState extends BaseMenuState {
         if(isResolution == 0){
             if(Client.DEBUG)
                 System.out.println("Setting to 4k");
-            Client.app.setDisplayMode(3840,2160,Client.app.isFullscreen());
+            Client.app.setDisplayMode(3840,2160, Client.app.isFullscreen());
         } else if(isResolution == 1){
             if(Client.DEBUG)
                 System.out.println("Setting 1920 x 1080");
