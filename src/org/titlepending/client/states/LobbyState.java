@@ -143,6 +143,10 @@ public class LobbyState extends BasicGameState {
         crewString[1] = "Other guy!";
         crewString[0] = "Non Binary Gendered Creature thing!";
 
+//        crewMod[2] = haulMod[setHaul] + 2;
+//        crewMod[1] = sailMod[setSails] + 2;
+//        crewMod[0] = cannonMod[setCannons] + 2;
+
     }
 
     private void save() {
@@ -216,22 +220,23 @@ public class LobbyState extends BasicGameState {
 
         String lobbyStats = "Modifiers: " + "\n" +
                 "\n" +
-                "Haul: " + haulMod[setHaul] + "\n" +
+                "Haul: " + (haulMod[setHaul]) + "\n" +
                 "\n" +
-                "Sails: " + sailMod[setSails] + "\n" +
+                "Sails: " + (sailMod[setSails]) + "\n" +
                 "\n" +
-                "Cannons: " + cannonMod[setCannons] + "\n" +
+                "Cannons: " + (cannonMod[setCannons]) + "\n" +
                 "\n" +
                 "Crew: " + crewString[setCrew] + "\n" +
                 "\n" +
                 "Total Modifier: " + totalMod;
 
-        if(setCrew == 0)
+        if(setCrew == 0) {
             g.setColor(someBlue);
-        else if(setCrew == 1)
+        }else if(setCrew == 1) {
             g.setColor(someOther);
-        else if(setCrew == 2)
+        }else if(setCrew == 2) {
             g.setColor(someOther2);
+        }
 
         float x1 = ((client.ScreenWidth*.405f)-(g.getFont().getWidth(crewString[1])/3f));
         float y1 = ((client.ScreenHeight*.085f)-(g.getFont().getHeight(lobbyStats)/3f));
@@ -300,57 +305,75 @@ public class LobbyState extends BasicGameState {
 
         // Left and right selection for Haul
         if(key == Input.KEY_LEFT && selection == HAUL){
-            if(setHaul >= 2)
-                setHaul = 0;
-            else
-                setHaul++;
+            if(setHaul >= 2) {
+                if(haulMod[0] + sailMod[setSails] + cannonMod[setCannons] <= 15)
+                    setHaul = 0;
+            }else {
+                if(haulMod[setHaul+1] + sailMod[setSails] + cannonMod[setCannons] <= 15)
+                    setHaul++;
+            }
             savedShip.setNumber("haul", setHaul);
             save();
         }
 
         if(key == Input.KEY_RIGHT && selection == HAUL){
-            if(setHaul <= 0)
-                setHaul = 2;
-            else
-                setHaul--;
+            if(setHaul <= 0) {
+                if(haulMod[2] + sailMod[setSails] + cannonMod[setCannons] <= 15)
+                    setHaul = 2;
+            }else {
+                if(haulMod[setHaul-1] + sailMod[setSails] + cannonMod[setCannons] <= 15)
+                    setHaul--;
+            }
             savedShip.setNumber("haul", setHaul);
             save();
         }
 
         // Left and right selection for Sails
         if(key == Input.KEY_LEFT && selection == SAILS){
-            if(setSails >= 2)
-                setSails = 0;
-            else
-                setSails++;
+            if(setSails >= 2) {
+                if(haulMod[setHaul] + sailMod[0] + cannonMod[setCannons] <= 15)
+                    setSails = 0;
+            }else {
+                if(haulMod[setHaul] + sailMod[setSails+1] + cannonMod[setCannons] <= 15)
+                    setSails++;
+            }
             savedShip.setNumber("sails", setSails);
             save();
         }
 
         if(key == Input.KEY_RIGHT && selection == SAILS){
-            if(setSails <= 0)
-                setSails = 2;
-            else
-                setSails--;
+            if(setSails <= 0) {
+                if(haulMod[setHaul] + sailMod[2] + cannonMod[setCannons] <= 15)
+                    setSails = 2;
+            }else {
+                if(haulMod[setHaul] + sailMod[setSails-1] + cannonMod[setCannons] <= 15)
+                    setSails--;
+            }
             savedShip.setNumber("sails", setSails);
             save();
         }
 
         // Left and right selection for Cannons
         if(key == Input.KEY_LEFT && selection == CANNONS){
-            if(setCannons >= 2)
-                setCannons = 0;
-            else
-                setCannons++;
+            if(setCannons >= 2){
+                if(haulMod[setHaul] + sailMod[setSails] + cannonMod[0] <= 15)
+                    setCannons = 0;
+            }else {
+                if(haulMod[setHaul] + sailMod[setSails] + cannonMod[setCannons+1] <= 15)
+                    setCannons++;
+            }
             savedShip.setNumber("cannons", setCannons);
             save();
         }
 
         if(key == Input.KEY_RIGHT && selection == CANNONS){
-            if(setCannons <= 0)
-                setCannons = 2;
-            else
-                setCannons--;
+            if(setCannons <= 0) {
+                if(haulMod[setHaul] + sailMod[setSails] + cannonMod[2] <= 15)
+                    setCannons = 2;
+            }else {
+                if(haulMod[setHaul] + sailMod[setSails] + cannonMod[setCannons-1] <= 15)
+                    setCannons--;
+            }
             savedShip.setNumber("cannons", setCannons);
             save();
         }
