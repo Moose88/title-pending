@@ -6,8 +6,11 @@ import org.titlepending.shared.CmdProcessor;
 import org.titlepending.shared.Directive;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -20,13 +23,29 @@ public class Server {
     public static List<ClientThread> players = new CopyOnWriteArrayList<>();
     private static final int PORT = 8000;
     private static final int PLIMIT = 2;
+    private static boolean inLobby;
     public static ConcurrentLinkedQueue<Directive> commands = new ConcurrentLinkedQueue<>();
 
     public static void main(String[] args) throws IOException{
+        if(Server.DEBUG){
+        InetAddress Ip= InetAddress.getLocalHost();
+        Enumeration a = NetworkInterface.getNetworkInterfaces();
+        while (a.hasMoreElements()){
+            NetworkInterface n = (NetworkInterface) a.nextElement();
+            Enumeration b = n.getInetAddresses();
+            while (b.hasMoreElements()){
+                InetAddress i = (InetAddress) b.nextElement();
+                System.out.println(i);
+            }
+        }
+            System.out.println("My IP: "+Ip.getLocalHost().getHostAddress() + "\nHost Name "+Ip.getHostName());
+        }
+
 
         if(Server.DEBUG)
             System.out.println("Game server started");
 
+        inLobby=true;
         new Handler().start();
         CmdProcessor processor = new CmdProcessor(true);
 
@@ -48,6 +67,7 @@ public class Server {
                 e.printStackTrace();
             }
         }
+        inLobby = false;
 
         if(Server.DEBUG)
             System.out.println("Starting game loop");
@@ -122,8 +142,8 @@ public class Server {
                 cmd.setStateTransition(Client.LOBBYSTATE);
 
                 if(Server.DEBUG) System.out.println("Attempting to send command to client");
-
-                if(temp!=null && players.size() <= PLIMIT){
+                if(Server.DEBUG) System.out.println("Number of connected plauers: "+players.size());
+                if(temp!=null && players.size() < PLIMIT){
                     try{
                         temp.sendCommand(cmd);
                     }catch (IOException e){
@@ -147,7 +167,7 @@ public class Server {
                 if(temp != null)
                     players.add(temp);
 
-                if(players.size()==0 && elapsedTime >= timer){ done=true;}
+                if(players.size()==0 && !inLobby){ done=true;}
             }
             System.out.println("Maximum players reached");
             try {
