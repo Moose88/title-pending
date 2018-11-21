@@ -32,7 +32,6 @@ public class LobbyState extends BasicGameState {
     private int setCannons;
     private int setCrew;
     private int timer;
-    private long startTime;
     private Directive timeUpdate;
 
     public void init(GameContainer container, StateBasedGame game)
@@ -45,8 +44,6 @@ public class LobbyState extends BasicGameState {
         this.setCannons = 0;
         this.setCrew = 0;
         this.client = (Client)game;
-        this.timer = 180000;
-        this.startTime = 0;
 
         savedShip = new SavedState("ship");
 
@@ -134,11 +131,7 @@ public class LobbyState extends BasicGameState {
 
         if(!Updates.getInstance().getQueue().isEmpty()){
             timeUpdate = Updates.getInstance().getQueue().poll();
-            if(startTime == 0){
-                startTime = timeUpdate.getLobbyStartTime();
-            }
-            timer -= System.currentTimeMillis() - startTime;
-
+            timer = timeUpdate.getTime();
             if(Client.DEBUG)
                 System.out.println(timer);
         }

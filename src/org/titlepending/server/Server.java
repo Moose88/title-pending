@@ -24,6 +24,7 @@ public class Server {
     private static final int PORT = 8000;
     private static final int PLIMIT = 2;
     private static boolean inLobby;
+    private static boolean inGame;
     public static ConcurrentLinkedQueue<Directive> commands = new ConcurrentLinkedQueue<>();
 
     public static void main(String[] args) throws IOException{
@@ -46,6 +47,7 @@ public class Server {
             System.out.println("Game server started");
 
         inLobby=true;
+        inGame=false;
         new Handler().start();
         CmdProcessor processor = new CmdProcessor(true);
 
@@ -53,12 +55,11 @@ public class Server {
             System.out.println("Starting lobby state");
         }
         int lobbyTimer = 180000;
-        long startTIme = System.currentTimeMillis();
-        while(System.currentTimeMillis() - startTIme < lobbyTimer){
+        int curPlayers = players.size();
+        while(lobbyTimer>0){
             for (ClientThread thread : players){
                 Directive timeUpdate = new Directive();
-                timeUpdate.setLobbyStartTime(startTIme);
-                timeUpdate.setTime(startTIme);
+                timeUpdate.setTime(lobbyTimer);
                 thread.sendCommand(timeUpdate);
             }
             try {
@@ -66,26 +67,28 @@ public class Server {
             }catch (InterruptedException e){
                 e.printStackTrace();
             }
+            lobbyTimer -= 1000;
+            if(curPlayers < players.size()){
+                lobbyTimer += 300000;
+                curPlayers = players.size();
+                if(lobbyTimer > 180000)
+                    lobbyTimer = 180000;
+            }
         }
+
+        inGame =true;
         inLobby = false;
 
         if(Server.DEBUG)
             System.out.println("Starting game loop");
 
-        while(true){
+        while(inGame){
             // Game logic goes here
             for(ClientThread thread : players)
                 //do updates
-
             while (!commands.isEmpty()){
                 Directive cmd = commands.poll();
                 processor.processCommand(cmd);
-
-            }
-
-            if(players.size()!=PLIMIT){
-
-            }else{
 
             }
         }
@@ -94,10 +97,8 @@ public class Server {
 
     private static class  Handler extends Thread{
         ServerSocket listener;
-        private int timer;
         long startTime;
         public Handler(){
-            timer = 180000;
             startTime = System.currentTimeMillis();
         }
 
@@ -113,7 +114,6 @@ public class Server {
                 System.out.println("Listening for new clients.");
 
             while(!done){
-                long elapsedTime = System.currentTimeMillis() -startTime;
                 Socket s = null;
                 try {
                     s = listener.accept();
@@ -142,7 +142,7 @@ public class Server {
                 cmd.setStateTransition(Client.LOBBYSTATE);
 
                 if(Server.DEBUG) System.out.println("Attempting to send command to client");
-                if(Server.DEBUG) System.out.println("Number of connected plauers: "+players.size());
+                if(Server.DEBUG) System.out.println("Number of connected players: "+players.size());
                 if(temp!=null && players.size() < PLIMIT){
                     try{
                         temp.sendCommand(cmd);
@@ -167,7 +167,7 @@ public class Server {
                 if(temp != null)
                     players.add(temp);
 
-                if(players.size()==0 && !inLobby){ done=true;}
+                if(players.size()==0 && !inLobby && !inGame){ done=true;}
             }
             System.out.println("Maximum players reached");
             try {
