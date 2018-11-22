@@ -11,6 +11,8 @@ import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
 import org.titlepending.shared.Directive;
 
+import java.util.concurrent.TimeUnit;
+
 public class LobbyState extends BasicGameState {
     private Client client;
     private int selection;
@@ -67,6 +69,8 @@ public class LobbyState extends BasicGameState {
     private static Image crewOne;
     private static Image crewTwo;
     private static Image crewThree;
+
+    public static int[] finalShip = new int[4];
 
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException{
@@ -204,6 +208,8 @@ public class LobbyState extends BasicGameState {
         //Draw menu background here
         g.drawImage(ResourceManager.getImage(Client.FRONT_MENU_RSC).getScaledCopy(3f), 0, 0);
 
+
+
         //Draw the model ship here for the center of the screen
         /**
          *  TODO: Center will be a model of the ship
@@ -253,7 +259,7 @@ public class LobbyState extends BasicGameState {
         }
 
         float x1 = ((client.ScreenWidth*.385f)-(g.getFont().getWidth(crewString[1])/3f));
-        float y1 = ((client.ScreenHeight*.085f)-(g.getFont().getHeight(lobbyStats)/3f));
+        float y1 = ((client.ScreenHeight*.1f)-(g.getFont().getHeight(lobbyStats)/3f));
 
         g.setFont(Client.fontStandard);
         g.fillRect(client.ScreenWidth*.365f, y1, g.getFont().getWidth(lobbyStats)+150, g.getFont().getHeight(lobbyStats)+10);
@@ -274,6 +280,25 @@ public class LobbyState extends BasicGameState {
         drawMenuItem("Exit", yTop + BACK * itemSpace, isSelected(BACK));
 
 
+        String time = String.format("%02d:%02d",
+                TimeUnit.MILLISECONDS.toMinutes(timer), // The change is in this line
+                TimeUnit.MILLISECONDS.toSeconds(timer) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timer)));
+
+
+
+        g.setFont(client.fontMenu);
+        if(timer >= 30000) {
+            g.setColor(Color.white);
+        }else {
+            g.setColor(Color.red);
+        }
+
+        g.drawString(time, client.ScreenWidth/2-g.getFont().getWidth(time)/2, 0);
+        g.setColor(Color.white);
+
+        g.setFont(Client.fontStandard);
+
     }
 
     public void update(GameContainer container, StateBasedGame game,
@@ -287,6 +312,10 @@ public class LobbyState extends BasicGameState {
         }
 
         totalMod = haulMod[setHaul] + sailMod[setSails] + cannonMod[setCannons];
+        finalShip[0] = setHaul;
+        finalShip[1] = setSails;
+        finalShip[2] = setCannons;
+        finalShip[3] = setCrew;
     }
 
     @Override
