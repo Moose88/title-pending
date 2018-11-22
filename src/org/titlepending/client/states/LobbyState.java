@@ -54,8 +54,7 @@ public class LobbyState extends BasicGameState {
     private String[] cannonString = new String[3];
     private String[] crewString = new String[3];
 
-    private static SpriteSheet ship_RSC_96 = new SpriteSheet(ResourceManager.getImage(Client.SHIP_RSC), 96, 96);
-    private static SpriteSheet ship_RSC_32 = new SpriteSheet(ResourceManager.getImage(Client.SHIP_RSC), 64, 16);
+    private static SpriteSheet ship_RSC_96 = new SpriteSheet(ResourceManager.getImage(Client.SHIP_RSC), 64, 96);
 
     private static Image smallHaul;
     private static Image medHaul;
@@ -108,13 +107,12 @@ public class LobbyState extends BasicGameState {
 
         // Haul Images
 
+        lgHaul = ship_RSC_96.getSubImage(1, 0).getScaledCopy(3f);
         medHaul = ship_RSC_96.getSubImage(0, 0).getScaledCopy(3f);
-        medHaul.rotate(90f);
+        smallHaul = ship_RSC_96.getSubImage(2, 0).getScaledCopy(3f);
 
         // Sail Images
 
-        oneSail = ship_RSC_32.getSubImage(3, 0).getScaledCopy(3f);
-        oneSail.rotate(90f);
 
         // Cannon Images
 
@@ -220,6 +218,7 @@ public class LobbyState extends BasicGameState {
          *  sails, cannons, etc
          */
 
+        g.drawImage(haul[setHaul], client.ScreenWidth/2 - haul[setHaul].getWidth()/2, client.ScreenHeight*.25f);
 
 
         //Draw the crew on the left
