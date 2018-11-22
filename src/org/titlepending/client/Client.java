@@ -106,7 +106,7 @@ public class Client extends StateBasedGame {
             //This font is the standard font for the rest of the game
             fontStandard = new UnicodeFont(UIFont1);
             fontStandard.addAsciiGlyphs();
-            fontStandard.getEffects().add(new OutlineEffect(5, Color.black));
+            //fontStandard.getEffects().add(new OutlineEffect(1, Color.black));
             fontStandard.getEffects().add(new ColorEffect(Color.white)); //You can change your color here, but you can also change it in the render{ ... }
             fontStandard.addAsciiGlyphs();
             fontStandard.loadGlyphs();

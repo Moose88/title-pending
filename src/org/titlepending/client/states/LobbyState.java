@@ -3,6 +3,7 @@ package org.titlepending.client.states;
 
 import jig.ResourceManager;
 import org.newdawn.slick.*;
+import org.newdawn.slick.font.effects.OutlineEffect;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.state.transition.FadeInTransition;
@@ -12,6 +13,8 @@ import org.titlepending.client.Updates;
 import org.titlepending.shared.Directive;
 
 import java.util.concurrent.TimeUnit;
+
+import static org.newdawn.slick.Color.black;
 
 public class LobbyState extends BasicGameState {
     private Client client;
@@ -191,7 +194,7 @@ public class LobbyState extends BasicGameState {
         if(isSelected){
             textColor = new Color(155,28,31);
         } else{
-            textColor = Color.black;
+            textColor = black;
         }
 
         if(text.equals("Ready"))
@@ -231,10 +234,6 @@ public class LobbyState extends BasicGameState {
          *  TODO: Display the stats on the right side
          */
 
-        Color someBlue = new Color(66, 134, 244);
-        Color someOther = new Color(66, 0, 250);
-        Color someOther2 = new Color(66, 134, 0);
-
         g.pushTransform();
         g.scale(2f,2f);
 
@@ -250,21 +249,10 @@ public class LobbyState extends BasicGameState {
                 crewMod[setCrew] + "\n" +
                 "Total mod: " + totalMod + " + 2";
 
-        if(setCrew == 0) {
-            g.setColor(someBlue);
-        }else if(setCrew == 1) {
-            g.setColor(someOther);
-        }else if(setCrew == 2) {
-            g.setColor(someOther2);
-        }
-
-        float x1 = ((client.ScreenWidth*.385f)-(g.getFont().getWidth(crewString[1])/3f));
-        float y1 = ((client.ScreenHeight*.1f)-(g.getFont().getHeight(lobbyStats)/3f));
 
         g.setFont(Client.fontStandard);
-        g.fillRect(client.ScreenWidth*.365f, y1, g.getFont().getWidth(lobbyStats)+150, g.getFont().getHeight(lobbyStats)+10);
-        g.setColor(Color.white);
-        g.drawString(lobbyStats, x1+10, y1+10);
+        g.setColor(Color.black);
+        g.drawString(lobbyStats, (float) (client.ScreenWidth*0.4), 0);
         g.popTransform();
 
 
