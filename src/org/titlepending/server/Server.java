@@ -22,7 +22,7 @@ public class Server {
     public static final boolean DEBUG = true;
     public static List<ClientThread> players = new CopyOnWriteArrayList<>();
     private static final int PORT = 8000;
-    private static final int PLIMIT = 2;
+    private static final int PLIMIT = 8;
     private static boolean inLobby;
     private static boolean inGame;
     public static ConcurrentLinkedQueue<Directive> commands = new ConcurrentLinkedQueue<>();
@@ -56,7 +56,7 @@ public class Server {
         }
         int lobbyTimer = 180000;
         int curPlayers = players.size();
-        while(lobbyTimer>0){
+        while(lobbyTimer>=0){
             for (ClientThread thread : players){
                 Directive timeUpdate = new Directive();
                 timeUpdate.setTime(lobbyTimer);
@@ -143,7 +143,9 @@ public class Server {
 
                 if(Server.DEBUG) System.out.println("Attempting to send command to client");
                 if(Server.DEBUG) System.out.println("Number of connected players: "+players.size());
-                if(temp!=null && players.size() < PLIMIT){
+                if(temp!=null
+                        && players.size() < PLIMIT
+                        && !inGame){
                     try{
                         temp.sendCommand(cmd);
                     }catch (IOException e){
