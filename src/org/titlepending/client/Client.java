@@ -94,7 +94,7 @@ public class Client extends StateBasedGame {
         addState(new ConnectState());
         addState(new PlayingState());
         addState(new GameOverState());
-        //addState(new StatsState());
+        addState(new StatsState());
         addState(new OptionsState());
         addState(new LobbyState());
 
