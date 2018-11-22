@@ -293,7 +293,7 @@ public class LobbyState extends BasicGameState {
 
 
         //Display the Menu strings/items
-        int yTop = (int) (client.ScreenHeight * 0.6); // two thirds down the string
+        int yTop = (int) (client.ScreenHeight * 0.55); // two thirds down the string
         int itemSpace = 95;
 
         drawMenuItem("< " + haulString[setHaul] + " >", yTop, isSelected(HAUL));
