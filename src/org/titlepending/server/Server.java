@@ -56,7 +56,7 @@ public class Server {
         }
         int lobbyTimer = 180000;
         int curPlayers = players.size();
-        while(lobbyTimer>0){
+        while(lobbyTimer>=0){
             for (ClientThread thread : players){
                 Directive timeUpdate = new Directive();
                 timeUpdate.setTime(lobbyTimer);
@@ -143,7 +143,9 @@ public class Server {
 
                 if(Server.DEBUG) System.out.println("Attempting to send command to client");
                 if(Server.DEBUG) System.out.println("Number of connected players: "+players.size());
-                if(temp!=null && players.size() < PLIMIT){
+                if(temp!=null
+                        && players.size() < PLIMIT
+                        && !inGame){
                     try{
                         temp.sendCommand(cmd);
                     }catch (IOException e){
