@@ -3,7 +3,6 @@ package org.titlepending.client.states;
 
 import jig.ResourceManager;
 import org.newdawn.slick.*;
-import org.newdawn.slick.font.effects.OutlineEffect;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.state.transition.FadeInTransition;
@@ -55,6 +54,7 @@ public class LobbyState extends BasicGameState {
     private String[] crewString = new String[3];
 
     private static SpriteSheet ship_RSC_96 = new SpriteSheet(ResourceManager.getImage(Client.SHIP_RSC), 64, 96);
+    private static SpriteSheet RSC_32_32 = new SpriteSheet(ResourceManager.getImage(Client.SHIP_RSC), 32, 32);
 
     private static Image smallHaul;
     private static Image medHaul;
@@ -249,9 +249,46 @@ public class LobbyState extends BasicGameState {
                 "Total mod: " + totalMod + " + 2";
 
 
+        // Top row of scroll
+        g.drawImage(RSC_32_32.getSubImage(4, 3).getScaledCopy(2f), (float) (client.ScreenWidth*0.4) - 75, 0);
+        g.drawImage(RSC_32_32.getSubImage(5, 3).getScaledCopy(2f), (float) (client.ScreenWidth*0.4) +
+                RSC_32_32.getSubImage(4,3).getScaledCopy(2f).getWidth() - 75, 0);
+        g.drawImage(RSC_32_32.getSubImage(5, 3).getScaledCopy(2f), (float) (client.ScreenWidth*0.4) +
+                RSC_32_32.getSubImage(4,3).getScaledCopy(2f).getWidth() * 2 - 75, 0);
+        g.drawImage(RSC_32_32.getSubImage(6, 3).getScaledCopy(2f), (float) (client.ScreenWidth*0.4) +
+                RSC_32_32.getSubImage(4,3).getScaledCopy(2f).getWidth() * 3 - 75, 0);
+
+        // Center filling for scroll
+        for(int i = 1; i < 11; i++) {
+            g.drawImage(RSC_32_32.getSubImage(4, 4).getScaledCopy(2f), (float) (client.ScreenWidth * 0.4) - 75,
+                    RSC_32_32.getSubImage(4, 3).getHeight() * i);
+            g.drawImage(RSC_32_32.getSubImage(5, 4).getScaledCopy(2f), (float) (client.ScreenWidth * 0.4) +
+                            RSC_32_32.getSubImage(4, 3).getScaledCopy(2f).getWidth() - 75,
+                    RSC_32_32.getSubImage(5, 3).getHeight() * i);
+            g.drawImage(RSC_32_32.getSubImage(5, 4).getScaledCopy(2f), (float) (client.ScreenWidth * 0.4) +
+                            RSC_32_32.getSubImage(4, 3).getScaledCopy(2f).getWidth() * 2 - 75,
+                    RSC_32_32.getSubImage(5, 3).getHeight() * i);
+            g.drawImage(RSC_32_32.getSubImage(6, 4).getScaledCopy(2f), (float) (client.ScreenWidth * 0.4) +
+                            RSC_32_32.getSubImage(4, 3).getScaledCopy(2f).getWidth() * 3 - 75,
+                    RSC_32_32.getSubImage(6, 3).getHeight() * i);
+        }
+
+        //Bottom filling for scroll
+        g.drawImage(RSC_32_32.getSubImage(4, 5).getScaledCopy(2f), (float) (client.ScreenWidth * 0.4) - 75,
+                RSC_32_32.getSubImage(4, 3).getHeight() * 11);
+        g.drawImage(RSC_32_32.getSubImage(5, 5).getScaledCopy(2f), (float) (client.ScreenWidth * 0.4) +
+                        RSC_32_32.getSubImage(4, 3).getScaledCopy(2f).getWidth() - 75,
+                RSC_32_32.getSubImage(5, 3).getHeight() * 11);
+        g.drawImage(RSC_32_32.getSubImage(5, 5).getScaledCopy(2f), (float) (client.ScreenWidth * 0.4) +
+                        RSC_32_32.getSubImage(4, 3).getScaledCopy(2f).getWidth() * 2 - 75,
+                RSC_32_32.getSubImage(5, 3).getHeight() * 11);
+        g.drawImage(RSC_32_32.getSubImage(6, 5).getScaledCopy(2f), (float) (client.ScreenWidth * 0.4) +
+                        RSC_32_32.getSubImage(4, 3).getScaledCopy(2f).getWidth() * 3 - 75,
+                RSC_32_32.getSubImage(6, 3).getHeight() * 11);
+
         g.setFont(Client.fontStandard);
         g.setColor(Color.black);
-        g.drawString(lobbyStats, (float) (client.ScreenWidth*0.4), 0);
+        g.drawString(lobbyStats, (float) (client.ScreenWidth*0.385), (float) (client.ScreenHeight*0.035));
         g.popTransform();
 
 
