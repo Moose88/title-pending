@@ -65,6 +65,8 @@ public class OptionsState extends BaseMenuState {
                     input.setAcceptingInput(false);
                     input.setBackgroundColor(Color.darkGray);
                     input.setFocus(false);
+                    savedState.setString("ipaddress", input.getText());
+                    save();
                 });
 
         if(isIP.equals("localhost")){
