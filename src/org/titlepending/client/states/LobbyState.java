@@ -113,8 +113,15 @@ public class LobbyState extends BasicGameState {
 
         // Sail Images
 
+        oneSail = ship_RSC_96.getSubImage(5, 0).getScaledCopy(3f);
+        twoSails = ship_RSC_96.getSubImage(4, 0).getScaledCopy(3f);
+        threeSails = ship_RSC_96.getSubImage(3, 0).getScaledCopy(3f);
 
         // Cannon Images
+
+        oneCannon = ship_RSC_96.getSubImage(6, 1).getScaledCopy(3f);
+        twoCannons = ship_RSC_96.getSubImage(5, 1).getScaledCopy(3f);
+        threeCannons = ship_RSC_96.getSubImage(4, 1).getScaledCopy(3f);
 
         // Crew Images
 
@@ -218,8 +225,9 @@ public class LobbyState extends BasicGameState {
          *  sails, cannons, etc
          */
 
+        g.drawImage(cannons[setCannons], client.ScreenWidth/2 - cannons[setCannons].getWidth()/2, client.ScreenHeight*.25f);
         g.drawImage(haul[setHaul], client.ScreenWidth/2 - haul[setHaul].getWidth()/2, client.ScreenHeight*.25f);
-
+        g.drawImage(sails[setSails], client.ScreenWidth/2 - sails[setSails].getWidth()/2, client.ScreenHeight*.25f);
 
         //Draw the crew on the left
         /**
@@ -237,15 +245,13 @@ public class LobbyState extends BasicGameState {
         g.scale(2f,2f);
 
         String lobbyStats = "Modifiers: " + "\n" +
-                "\n" +
                 "Haul: " + (haulMod[setHaul]) + "\n" +
-                "\n" +
                 "Sails: " + (sailMod[setSails]) + "\n" +
-                "\n" +
                 "Cannons: " + (cannonMod[setCannons]) + "\n" +
                 "\n" +
                 "Crew: " + crewString[setCrew] + "\n" +
                 crewMod[setCrew] + "\n" +
+                "\n" +
                 "Total mod: " + totalMod + " + 2";
 
 
@@ -259,7 +265,7 @@ public class LobbyState extends BasicGameState {
                 RSC_32_32.getSubImage(4,3).getScaledCopy(2f).getWidth() * 3 - 75, 0);
 
         // Center filling for scroll
-        for(int i = 1; i < 11; i++) {
+        for(int i = 1; i < 9; i++) {
             g.drawImage(RSC_32_32.getSubImage(4, 4).getScaledCopy(2f), (float) (client.ScreenWidth * 0.4) - 75,
                     RSC_32_32.getSubImage(4, 3).getHeight() * i);
             g.drawImage(RSC_32_32.getSubImage(5, 4).getScaledCopy(2f), (float) (client.ScreenWidth * 0.4) +
@@ -275,16 +281,16 @@ public class LobbyState extends BasicGameState {
 
         //Bottom filling for scroll
         g.drawImage(RSC_32_32.getSubImage(4, 5).getScaledCopy(2f), (float) (client.ScreenWidth * 0.4) - 75,
-                RSC_32_32.getSubImage(4, 3).getHeight() * 11);
+                RSC_32_32.getSubImage(4, 3).getHeight() * 10);
         g.drawImage(RSC_32_32.getSubImage(5, 5).getScaledCopy(2f), (float) (client.ScreenWidth * 0.4) +
                         RSC_32_32.getSubImage(4, 3).getScaledCopy(2f).getWidth() - 75,
-                RSC_32_32.getSubImage(5, 3).getHeight() * 11);
+                RSC_32_32.getSubImage(5, 3).getHeight() * 10);
         g.drawImage(RSC_32_32.getSubImage(5, 5).getScaledCopy(2f), (float) (client.ScreenWidth * 0.4) +
                         RSC_32_32.getSubImage(4, 3).getScaledCopy(2f).getWidth() * 2 - 75,
-                RSC_32_32.getSubImage(5, 3).getHeight() * 11);
+                RSC_32_32.getSubImage(5, 3).getHeight() * 10);
         g.drawImage(RSC_32_32.getSubImage(6, 5).getScaledCopy(2f), (float) (client.ScreenWidth * 0.4) +
                         RSC_32_32.getSubImage(4, 3).getScaledCopy(2f).getWidth() * 3 - 75,
-                RSC_32_32.getSubImage(6, 3).getHeight() * 11);
+                RSC_32_32.getSubImage(6, 3).getHeight() * 10);
 
         g.setFont(Client.fontStandard);
         g.setColor(Color.black);
