@@ -1,15 +1,13 @@
 package org.titlepending.server;
 
+import org.lwjgl.Sys;
 import org.titlepending.client.Client;
 import org.titlepending.shared.ClientThread;
 import org.titlepending.shared.CmdProcessor;
 import org.titlepending.shared.Directive;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -60,7 +58,14 @@ public class Server {
             for (ClientThread thread : players){
                 Directive timeUpdate = new Directive();
                 timeUpdate.setTime(lobbyTimer);
-                thread.sendCommand(timeUpdate);
+                try{
+                    thread.sendCommand(timeUpdate);
+                }catch (SocketException e){
+                    if(Server.DEBUG)
+                        System.out.println("Attempted to write to client that no longer exists");
+                    players.remove(thread);
+                    thread.stopThread();
+                }
             }
             try {
                 TimeUnit.SECONDS.sleep(1);
