@@ -4,7 +4,6 @@ import jig.Entity;
 import jig.ResourceManager;
 import org.newdawn.slick.*;
 import org.newdawn.slick.font.effects.ColorEffect;
-import org.newdawn.slick.font.effects.OutlineEffect;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.ResourceLoader;
 import org.titlepending.client.menus.MenuState;
@@ -16,7 +15,7 @@ import java.awt.Font;
 
 public class Client extends StateBasedGame {
     public static final boolean DEBUG = true;
-    public static final int STARTUPSTATE = 0;
+    //public static final int STARTUPSTATE = 0;
     public static final int CONNECTSTATE = 1;
     public static final int PLAYINGSTATE = 2;
     public static final int LOADSTATE = 3;
@@ -40,8 +39,8 @@ public class Client extends StateBasedGame {
 
     public static final String FRONT_MENU_RSC = "org/titlepending/resources/bgnd.png";
 
-    public static final String FONT_RSC = "org/titlepending/resources/Treamd.ttf";
-    public static final String TEST_RSC = "org/titlepending/resources/PVCwAb3.png";
+    private static final String FONT_RSC = "org/titlepending/resources/Treamd.ttf";
+    private static final String TEST_RSC = "org/titlepending/resources/PVCwAb3.png";
 
     public static final String TITLE_MUSIC = "org/titlepending/resources/TitleMusic.wav";
     public static final String LOADING_SOUND = "org/titlepending/resources/loadingSounds.wav";
@@ -69,7 +68,7 @@ public class Client extends StateBasedGame {
 
     public static AppGameContainer app;
 
-    public Client(String title, int width , int height) throws SlickException{
+    public Client(String title, int width , int height){
         super(title);
 
         ScreenHeight = height;
@@ -79,7 +78,7 @@ public class Client extends StateBasedGame {
     }
 
     @Override
-    public void initStatesList(GameContainer container) throws SlickException{
+    public void initStatesList(GameContainer container){
         ResourceManager.setFilterMethod(ResourceManager.FILTER_LINEAR);
         ResourceManager.loadImage(TEST_RSC);
         ResourceManager.loadImage(SHIP_RSC);
@@ -134,7 +133,7 @@ public class Client extends StateBasedGame {
             app.setDisplayMode(1920 ,1080,false);
             app.start();
 
-        }catch (SlickException e){
+        }catch (SlickException ignored){
 
         }
     }
