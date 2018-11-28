@@ -33,30 +33,30 @@ public class Client extends StateBasedGame {
      * Images, sounds, and music
      */
 
-    public static final String STARTUP_BANNER_RSC = "org/titlepending/resources/startstatebackground.png";
-    public static final String LOADING_SKY_RSC = "org/titlepending/resources/LoadSky.png";
-    public static final String LOADING_SEA_RSC = "org/titlepending/resources/LoadOcean.png";
-    public static final String SHIP_RSC = "org/titlepending/resources/images/ShipSS.png";
+    public static final String STARTUP_BANNER_RSC = "org/titlepending/resources/Images/startstatebackground.png";
+    public static final String LOADING_SKY_RSC = "org/titlepending/resources/Images/LoadSky.png";
+    public static final String LOADING_SEA_RSC = "org/titlepending/resources/Images/LoadOcean.png";
+    public static final String SHIP_RSC = "org/titlepending/resources/Images/ShipSS.png";
 
-    public static final String FRONT_MENU_RSC = "org/titlepending/resources/bgnd.png";
+    public static final String FRONT_MENU_RSC = "org/titlepending/resources/Images/bgnd.png";
 
-    public static final String FONT_RSC = "org/titlepending/resources/Treamd.ttf";
-    public static final String TEST_RSC = "org/titlepending/resources/PVCwAb3.png";
+    public static final String FONT_RSC = "org/titlepending/resources/Font/Treamd.ttf";
+    public static final String TEST_RSC = "org/titlepending/resources/Images/PVCwAb3.png";
 
-    public static final String TITLE_MUSIC = "org/titlepending/resources/TitleMusic.wav";
-    public static final String LOADING_SOUND = "org/titlepending/resources/loadingSounds.wav";
-    public static final String SCREAM_SOUND = "org/titlepending/resources/AAAGH1.wav";
+    public static final String TITLE_MUSIC = "org/titlepending/resources/Music/TitleMusic.wav";
+    public static final String LOADING_SOUND = "org/titlepending/resources/Sounds/loadingSounds.wav";
+    public static final String SCREAM_SOUND = "org/titlepending/resources/Sounds/AAAGH1.wav";
 
-    public static final String SOUND1 = "org/titlepending/resources/explosion sounds/Explosion1.wav";
-    public static final String SOUND2 = "org/titlepending/resources/explosion sounds/Explosion2.wav";
-    public static final String SOUND3 = "org/titlepending/resources/explosion sounds/Explosion3.wav";
-    public static final String SOUND4 = "org/titlepending/resources/explosion sounds/Explosion4.wav";
-    public static final String SOUND5 = "org/titlepending/resources/explosion sounds/Explosion5.wav";
-    public static final String SOUND6 = "org/titlepending/resources/explosion sounds/Explosion6.wav";
-    public static final String SOUND7 = "org/titlepending/resources/explosion sounds/Explosion7.wav";
-    public static final String SOUND8 = "org/titlepending/resources/explosion sounds/Explosion8.wav";
-    public static final String SOUND9 = "org/titlepending/resources/explosion sounds/Explosion9.wav";
-    public static final String SOUND10 = "org/titlepending/resources/explosion sounds/Explosion10.wav";
+    public static final String SOUND1 = "org/titlepending/resources/Sounds/Explosion1.wav";
+    public static final String SOUND2 = "org/titlepending/resources/Sounds/Explosion2.wav";
+    public static final String SOUND3 = "org/titlepending/resources/Sounds/Explosion3.wav";
+    public static final String SOUND4 = "org/titlepending/resources/Sounds/Explosion4.wav";
+    public static final String SOUND5 = "org/titlepending/resources/Sounds/Explosion5.wav";
+    public static final String SOUND6 = "org/titlepending/resources/Sounds/Explosion6.wav";
+    public static final String SOUND7 = "org/titlepending/resources/Sounds/Explosion7.wav";
+    public static final String SOUND8 = "org/titlepending/resources/Sounds/Explosion8.wav";
+    public static final String SOUND9 = "org/titlepending/resources/Sounds/Explosion9.wav";
+    public static final String SOUND10 = "org/titlepending/resources/Sounds/Explosion10.wav";
 
 
     public static UnicodeFont fontStandard;
