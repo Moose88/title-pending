@@ -18,7 +18,7 @@ public class Client extends StateBasedGame {
     //public static final int STARTUPSTATE = 0;
     public static final int CONNECTSTATE = 1;
     public static final int PLAYINGSTATE = 2;
-    public static final int LOADSTATE = 3;
+    public static final int LOADSTATE = 0;
     public static final int GAMEOVERSTATE = 4;
     public static final int PORT = 8000;
     public static final int MAINMENUSTATE = 5;
@@ -48,8 +48,9 @@ public class Client extends StateBasedGame {
     public static final String LOBBY_MUSIC = "org/titlepending/resources/lobby_music.wav";
 
     // Sounds
-    public static final String LOADING_SOUND = "org/titlepending/resources/loadingSounds.wav";
+    public static final String LOADING_SOUND = "org/titlepending/resources/WaveSound.wav";
     public static final String SCREAM_SOUND = "org/titlepending/resources/AAAGH1.wav";
+    public static final String MENU_CLICK = "org/titlepending/resources/MenuClick.wav";
 
     // Testing resources go here
     public static final String SOUND1 = "org/titlepending/resources/explosion sounds/Explosion1.wav";
@@ -84,12 +85,15 @@ public class Client extends StateBasedGame {
     public void initStatesList(GameContainer container){
 
         ResourceManager.setFilterMethod(ResourceManager.FILTER_LINEAR);
+
+        // Resources being used/during loading
         ResourceManager.loadImage(TEST_RSC);
         ResourceManager.loadImage(SHIP_RSC);
         ResourceManager.loadImage(LOADING_SEA_RSC);
         ResourceManager.loadImage(LOADING_SKY_RSC);
         ResourceManager.loadSound(LOADING_SOUND);
         ResourceManager.loadSound(SCREAM_SOUND);
+        ResourceManager.loadSound(MENU_CLICK);
 
         addState(new LoadState());
         addState(new MenuState());

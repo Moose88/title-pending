@@ -178,7 +178,7 @@ public class LobbyState extends BasicGameState {
     }
 
     public void enter(GameContainer container, StateBasedGame game) {
-        ResourceManager.getMusic(Client.LOBBY_MUSIC).loop();
+        ResourceManager.getMusic(Client.LOBBY_MUSIC).loop(1, 3f);
 
     }
 
@@ -339,30 +339,31 @@ public class LobbyState extends BasicGameState {
 
     @Override
     public void keyPressed(int key, char c){
+
         if(Client.DEBUG) {
             System.out.println("Haul: " + setHaul + " Sails: " + setSails + " Cannons: " + setCannons + " Crew: " + setCrew);
         }
-
-        /*
-           TODO: If total modifier goes over 15, you cannot go to the bigger option, only the lower option.
-         */
-
 
         if(key == Input.KEY_ESCAPE){
             backPressed();
         }
         if (key == Input.KEY_UP && selection != BACK){
-                selection--;
+            ResourceManager.getSound(Client.MENU_CLICK).play();
+            selection--;
         } else if(selection == BACK && key == Input.KEY_RIGHT){
+            ResourceManager.getSound(Client.MENU_CLICK).play();
             selection--;
         } else if(selection == BACK && key == Input.KEY_UP){
+            ResourceManager.getSound(Client.MENU_CLICK).play();
             selection = CREW;
         } else if(key == Input.KEY_LEFT && selection == READY){
+            ResourceManager.getSound(Client.MENU_CLICK).play();
             selection += 1;
         }
 
         if (key == Input.KEY_DOWN && selection != READY) {
-                selection++;
+            ResourceManager.getSound(Client.MENU_CLICK).play();
+            selection++;
         }
 
         if (selection < 0)
@@ -375,11 +376,15 @@ public class LobbyState extends BasicGameState {
         // Left and right selection for Haul
         if(key == Input.KEY_LEFT && selection == HAUL){
             if(setHaul >= 2) {
-                if(haulMod[0] + sailMod[setSails] + cannonMod[setCannons] <= 15)
+                if(haulMod[0] + sailMod[setSails] + cannonMod[setCannons] <= 15){
+                    ResourceManager.getSound(Client.MENU_CLICK).play();
                     setHaul = 0;
+                }
             }else {
-                if(haulMod[setHaul+1] + sailMod[setSails] + cannonMod[setCannons] <= 15)
+                if (haulMod[setHaul + 1] + sailMod[setSails] + cannonMod[setCannons] <= 15){
+                    ResourceManager.getSound(Client.MENU_CLICK).play();
                     setHaul++;
+                }
             }
             savedShip.setNumber("haul", setHaul);
             save();
@@ -387,11 +392,15 @@ public class LobbyState extends BasicGameState {
 
         if(key == Input.KEY_RIGHT && selection == HAUL){
             if(setHaul <= 0) {
-                if(haulMod[2] + sailMod[setSails] + cannonMod[setCannons] <= 15)
+                if(haulMod[2] + sailMod[setSails] + cannonMod[setCannons] <= 15) {
+                    ResourceManager.getSound(Client.MENU_CLICK).play();
                     setHaul = 2;
+                }
             }else {
-                if(haulMod[setHaul-1] + sailMod[setSails] + cannonMod[setCannons] <= 15)
+                if(haulMod[setHaul-1] + sailMod[setSails] + cannonMod[setCannons] <= 15) {
+                    ResourceManager.getSound(Client.MENU_CLICK).play();
                     setHaul--;
+                }
             }
             savedShip.setNumber("haul", setHaul);
             save();
@@ -400,11 +409,15 @@ public class LobbyState extends BasicGameState {
         // Left and right selection for Sails
         if(key == Input.KEY_LEFT && selection == SAILS){
             if(setSails >= 2) {
-                if(haulMod[setHaul] + sailMod[0] + cannonMod[setCannons] <= 15)
+                if(haulMod[setHaul] + sailMod[0] + cannonMod[setCannons] <= 15) {
+                    ResourceManager.getSound(Client.MENU_CLICK).play();
                     setSails = 0;
+                }
             }else {
-                if(haulMod[setHaul] + sailMod[setSails+1] + cannonMod[setCannons] <= 15)
+                if(haulMod[setHaul] + sailMod[setSails+1] + cannonMod[setCannons] <= 15) {
+                    ResourceManager.getSound(Client.MENU_CLICK).play();
                     setSails++;
+                }
             }
             savedShip.setNumber("sails", setSails);
             save();
@@ -412,11 +425,15 @@ public class LobbyState extends BasicGameState {
 
         if(key == Input.KEY_RIGHT && selection == SAILS){
             if(setSails <= 0) {
-                if(haulMod[setHaul] + sailMod[2] + cannonMod[setCannons] <= 15)
+                if(haulMod[setHaul] + sailMod[2] + cannonMod[setCannons] <= 15) {
+                    ResourceManager.getSound(Client.MENU_CLICK).play();
                     setSails = 2;
+                }
             }else {
-                if(haulMod[setHaul] + sailMod[setSails-1] + cannonMod[setCannons] <= 15)
+                if(haulMod[setHaul] + sailMod[setSails-1] + cannonMod[setCannons] <= 15) {
+                    ResourceManager.getSound(Client.MENU_CLICK).play();
                     setSails--;
+                }
             }
             savedShip.setNumber("sails", setSails);
             save();
@@ -425,11 +442,15 @@ public class LobbyState extends BasicGameState {
         // Left and right selection for Cannons
         if(key == Input.KEY_LEFT && selection == CANNONS){
             if(setCannons >= 2){
-                if(haulMod[setHaul] + sailMod[setSails] + cannonMod[0] <= 15)
+                if(haulMod[setHaul] + sailMod[setSails] + cannonMod[0] <= 15) {
+                    ResourceManager.getSound(Client.MENU_CLICK).play();
                     setCannons = 0;
+                }
             }else {
-                if(haulMod[setHaul] + sailMod[setSails] + cannonMod[setCannons+1] <= 15)
+                if(haulMod[setHaul] + sailMod[setSails] + cannonMod[setCannons+1] <= 15) {
+                    ResourceManager.getSound(Client.MENU_CLICK).play();
                     setCannons++;
+                }
             }
             savedShip.setNumber("cannons", setCannons);
             save();
@@ -437,11 +458,15 @@ public class LobbyState extends BasicGameState {
 
         if(key == Input.KEY_RIGHT && selection == CANNONS){
             if(setCannons <= 0) {
-                if(haulMod[setHaul] + sailMod[setSails] + cannonMod[2] <= 15)
+                if(haulMod[setHaul] + sailMod[setSails] + cannonMod[2] <= 15) {
+                    ResourceManager.getSound(Client.MENU_CLICK).play();
                     setCannons = 2;
+                }
             }else {
-                if(haulMod[setHaul] + sailMod[setSails] + cannonMod[setCannons-1] <= 15)
+                if(haulMod[setHaul] + sailMod[setSails] + cannonMod[setCannons-1] <= 15) {
+                    ResourceManager.getSound(Client.MENU_CLICK).play();
                     setCannons--;
+                }
             }
             savedShip.setNumber("cannons", setCannons);
             save();
@@ -449,19 +474,25 @@ public class LobbyState extends BasicGameState {
 
         // Left and right selection for Crew
         if(key == Input.KEY_LEFT && selection == CREW){
-            if(setCrew >= 2)
+            if(setCrew >= 2) {
+                ResourceManager.getSound(Client.MENU_CLICK).play();
                 setCrew = 0;
-            else
+            }else {
+                ResourceManager.getSound(Client.MENU_CLICK).play();
                 setCrew++;
+            }
             savedShip.setNumber("crew", setCrew);
             save();
         }
 
         if(key == Input.KEY_RIGHT && selection == CREW){
-            if(setCrew <= 0)
+            if(setCrew <= 0) {
+                ResourceManager.getSound(Client.MENU_CLICK).play();
                 setCrew = 2;
-            else
+            }else{
+                ResourceManager.getSound(Client.MENU_CLICK).play();
                 setCrew--;
+            }
             savedShip.setNumber("crew", setCrew);
             save();
         }
