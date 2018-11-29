@@ -34,7 +34,6 @@ public class LobbyState extends BasicGameState {
     private int setCannons;
     private int setCrew;
     private int timer;
-    private Directive timeUpdate;
 
     private int[] haulMod = new int[3];
     private int[] sailMod = new int[3];
@@ -56,23 +55,11 @@ public class LobbyState extends BasicGameState {
     private static SpriteSheet ship_RSC_96 = new SpriteSheet(ResourceManager.getImage(Client.SHIP_RSC), 64, 96);
     private static SpriteSheet RSC_32_32 = new SpriteSheet(ResourceManager.getImage(Client.SHIP_RSC), 32, 32);
 
-    private static Image smallHaul;
-    private static Image medHaul;
-    private static Image lgHaul;
-
-    private static Image oneSail;
-    private static Image twoSails;
-    private static Image threeSails;
-
-    private static Image oneCannon;
-    private static Image twoCannons;
-    private static Image threeCannons;
-
     private static Image crewOne;
     private static Image crewTwo;
     private static Image crewThree;
 
-    public static int[] finalShip = new int[4];
+    private static int[] finalShip = new int[4];
 
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException{
@@ -92,38 +79,25 @@ public class LobbyState extends BasicGameState {
         setCannons = (int) savedShip.getNumber("cannons",0);
         setCrew = (int) savedShip.getNumber("crew",0);
 
-        setHaul = 2;
-        savedShip.setNumber("haul", setHaul);
-        setSails = 2;
-        savedShip.setNumber("sails", setSails);
-        setCannons = 2;
-        savedShip.setNumber("cannons", setCannons);
-        setCrew = 2;
-        savedShip.setNumber("crew", setCrew);
-        save();
+//        setHaul = 2;
+//        savedShip.setNumber("haul", setHaul);
+//        setSails = 2;
+//        savedShip.setNumber("sails", setSails);
+//        setCannons = 2;
+//        savedShip.setNumber("cannons", setCannons);
+//        setCrew = 2;
+//        savedShip.setNumber("crew", setCrew);
+//        save();
 
-        if(Client.DEBUG)
+        if(Client.DEBUG) {
             System.out.println("Haul: " + setHaul + " Sails: " + setSails + " Cannons: " + setCannons + " Crew: " + setCrew);
+        }
 
-        // Haul Images
+        // Haul Images, Mod values and Names/Arrays
 
-        lgHaul = ship_RSC_96.getSubImage(1, 0).getScaledCopy(3f);
-        medHaul = ship_RSC_96.getSubImage(0, 0).getScaledCopy(3f);
-        smallHaul = ship_RSC_96.getSubImage(2, 0).getScaledCopy(3f);
-
-        // Sail Images
-
-        oneSail = ship_RSC_96.getSubImage(5, 0).getScaledCopy(3f);
-        twoSails = ship_RSC_96.getSubImage(4, 0).getScaledCopy(3f);
-        threeSails = ship_RSC_96.getSubImage(3, 0).getScaledCopy(3f);
-
-        // Cannon Images
-
-        oneCannon = ship_RSC_96.getSubImage(6, 1).getScaledCopy(3f);
-        twoCannons = ship_RSC_96.getSubImage(5, 1).getScaledCopy(3f);
-        threeCannons = ship_RSC_96.getSubImage(4, 1).getScaledCopy(3f);
-
-        // Crew Images
+        Image lgHaul = ship_RSC_96.getSubImage(1, 0).getScaledCopy(3f);
+        Image medHaul = ship_RSC_96.getSubImage(0, 0).getScaledCopy(3f);
+        Image smallHaul = ship_RSC_96.getSubImage(2, 0).getScaledCopy(3f);
 
         haul[2] = smallHaul;
         haul[1] = medHaul;
@@ -137,6 +111,12 @@ public class LobbyState extends BasicGameState {
         haulMod[1] = 5;
         haulMod[0] = 7;
 
+        // Sail Images, Mod values and Names/Arrays
+
+        Image oneSail = ship_RSC_96.getSubImage(5, 0).getScaledCopy(3f);
+        Image twoSails = ship_RSC_96.getSubImage(4, 0).getScaledCopy(3f);
+        Image threeSails = ship_RSC_96.getSubImage(3, 0).getScaledCopy(3f);
+
         sails[2] = oneSail;
         sails[1] = twoSails;
         sails[0] = threeSails;
@@ -149,6 +129,12 @@ public class LobbyState extends BasicGameState {
         sailMod[1] = 5;
         sailMod[0] = 7;
 
+        // Cannon Images, Mod values and Names/Arrays
+
+        Image oneCannon = ship_RSC_96.getSubImage(6, 1).getScaledCopy(3f);
+        Image twoCannons = ship_RSC_96.getSubImage(5, 1).getScaledCopy(3f);
+        Image threeCannons = ship_RSC_96.getSubImage(4, 1).getScaledCopy(3f);
+
         cannons[2] = oneCannon;
         cannons[1] = twoCannons;
         cannons[0] = threeCannons;
@@ -160,6 +146,10 @@ public class LobbyState extends BasicGameState {
         cannonMod[2] = 3;
         cannonMod[1] = 5;
         cannonMod[0] = 7;
+
+        // Crew Images, Mod values and Names/Arrays
+
+        // Assign images to crew here
 
         crew[2] = crewOne;
         crew[1] = crewTwo;
@@ -187,8 +177,8 @@ public class LobbyState extends BasicGameState {
         return selection == option;
     }
 
-    public void enter(GameContainer container, StateBasedGame game)
-            throws SlickException{
+    public void enter(GameContainer container, StateBasedGame game) {
+        ResourceManager.getMusic(Client.LOBBY_MUSIC).loop();
 
     }
 
@@ -202,16 +192,21 @@ public class LobbyState extends BasicGameState {
             textColor = black;
         }
 
-        if(text.equals("Ready"))
-            client.fontMenu.drawString((client.ScreenWidth*4f/5f)-(textWidth/2f), client.ScreenHeight-client.fontMenu.getHeight(text)-20, text ,textColor);
-        else if(text.equals("Exit"))
-            client.fontMenu.drawString((client.ScreenWidth/5f)-(textWidth/2f), client.ScreenHeight-client.fontMenu.getHeight(text)-20, text ,textColor);
-        else
-            client.fontMenu.drawString((client.ScreenWidth/2f)-(textWidth/2f), yPos, text ,textColor);
+        switch (text) {
+            case "Ready":
+                client.fontMenu.drawString((client.ScreenWidth * 4f / 5f) - (textWidth / 2f), client.ScreenHeight - client.fontMenu.getHeight(text) - 20, text, textColor);
+                break;
+            case "Exit":
+                client.fontMenu.drawString((client.ScreenWidth / 5f) - (textWidth / 2f), client.ScreenHeight - client.fontMenu.getHeight(text) - 20, text, textColor);
+                break;
+            default:
+                client.fontMenu.drawString((client.ScreenWidth / 2f) - (textWidth / 2f), yPos, text, textColor);
+                break;
+        }
     }
 
 
-    public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException{
+    public void render(GameContainer container, StateBasedGame game, Graphics g) {
 
         //Draw menu background here
         g.drawImage(ResourceManager.getImage(Client.FRONT_MENU_RSC).getScaledCopy(3f), 0, 0);
@@ -219,27 +214,19 @@ public class LobbyState extends BasicGameState {
 
 
         //Draw the model ship here for the center of the screen
-        /**
-         *  TODO: Center will be a model of the ship
-         *  should show the haul
-         *  sails, cannons, etc
-         */
 
         g.drawImage(cannons[setCannons], client.ScreenWidth/2 - cannons[setCannons].getWidth()/2, client.ScreenHeight*.25f);
         g.drawImage(haul[setHaul], client.ScreenWidth/2 - haul[setHaul].getWidth()/2, client.ScreenHeight*.25f);
         g.drawImage(sails[setSails], client.ScreenWidth/2 - sails[setSails].getWidth()/2, client.ScreenHeight*.25f);
 
         //Draw the crew on the left
-        /**
-         *  TODO: Render a splash of the crew image
+        /*
+           TODO: Render a splash of the crew image
          */
 
 
 
         //Display the stats on the right
-        /**
-         *  TODO: Display the stats on the right side
-         */
 
         g.pushTransform();
         g.scale(2f,2f);
@@ -249,7 +236,8 @@ public class LobbyState extends BasicGameState {
                 "Sails: " + (sailMod[setSails]) + "\n" +
                 "Cannons: " + (cannonMod[setCannons]) + "\n" +
                 "\n" +
-                "Crew: " + crewString[setCrew] + "\n" +
+                "Captain:\n" +
+                crewString[setCrew] + "\n" +
                 crewMod[setCrew] + "\n" +
                 "\n" +
                 "Total mod: " + totalMod + " + 2";
@@ -332,10 +320,11 @@ public class LobbyState extends BasicGameState {
     }
 
     public void update(GameContainer container, StateBasedGame game,
-                       int delta) throws SlickException{
+                       int delta) {
 
         if(!Updates.getInstance().getQueue().isEmpty()){
-            timeUpdate = Updates.getInstance().getQueue().poll();
+            Directive timeUpdate = Updates.getInstance().getQueue().poll();
+            assert timeUpdate != null;
             timer = timeUpdate.getTime();
             if(Client.DEBUG)
                 System.out.println(timer);
@@ -351,11 +340,11 @@ public class LobbyState extends BasicGameState {
     @Override
     public void keyPressed(int key, char c){
         if(Client.DEBUG) {
-            System.out.println(selection);
             System.out.println("Haul: " + setHaul + " Sails: " + setSails + " Cannons: " + setCannons + " Crew: " + setCrew);
         }
-        /**
-         *  TODO: If total modifier goes over 15, you cannot go to the bigger option, only the lower option.
+
+        /*
+           TODO: If total modifier goes over 15, you cannot go to the bigger option, only the lower option.
          */
 
 
@@ -378,8 +367,6 @@ public class LobbyState extends BasicGameState {
 
         if (selection < 0)
             selection += items;
-
-        System.out.println(selection);
 
         // Stop crash from zero
         if(items > 0)
@@ -483,6 +470,8 @@ public class LobbyState extends BasicGameState {
             switch(selection){
                 case READY:
                     // Check if all 8 players ready, go when true
+                    if(Client.DEBUG)
+                        System.out.println("Final ship values: " + finalShip[0] + " " + finalShip[1] + " " + finalShip[2] + " " + finalShip[3]);
 
                     break;
                 case BACK:
@@ -496,6 +485,8 @@ public class LobbyState extends BasicGameState {
     }
 
     private void backPressed(){
+        ResourceManager.getMusic(Client.LOBBY_MUSIC).stop();
+        ResourceManager.getMusic(Client.TITLE_MUSIC).loop();
         Updates.getInstance().getThread().stopThread();
         client.enterState(Client.MAINMENUSTATE, new FadeOutTransition(), new FadeInTransition());
     }

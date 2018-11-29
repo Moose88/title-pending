@@ -14,7 +14,7 @@ import java.awt.Color;
 import java.awt.Font;
 
 public class Client extends StateBasedGame {
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     //public static final int STARTUPSTATE = 0;
     public static final int CONNECTSTATE = 1;
     public static final int PLAYINGSTATE = 2;
@@ -32,20 +32,26 @@ public class Client extends StateBasedGame {
      * Images, sounds, and music
      */
 
+    // Backgrounds and images
     public static final String STARTUP_BANNER_RSC = "org/titlepending/resources/startstatebackground.png";
     public static final String LOADING_SKY_RSC = "org/titlepending/resources/LoadSky.png";
     public static final String LOADING_SEA_RSC = "org/titlepending/resources/LoadOcean.png";
     public static final String SHIP_RSC = "org/titlepending/resources/images/ShipSS.png";
-
     public static final String FRONT_MENU_RSC = "org/titlepending/resources/bgnd.png";
-
-    private static final String FONT_RSC = "org/titlepending/resources/Treamd.ttf";
     private static final String TEST_RSC = "org/titlepending/resources/PVCwAb3.png";
 
+    // Fonts
+    private static final String FONT_RSC = "org/titlepending/resources/Treamd.ttf";
+
+    // Music
     public static final String TITLE_MUSIC = "org/titlepending/resources/TitleMusic.wav";
+    public static final String LOBBY_MUSIC = "org/titlepending/resources/lobby_music.wav";
+
+    // Sounds
     public static final String LOADING_SOUND = "org/titlepending/resources/loadingSounds.wav";
     public static final String SCREAM_SOUND = "org/titlepending/resources/AAAGH1.wav";
 
+    // Testing resources go here
     public static final String SOUND1 = "org/titlepending/resources/explosion sounds/Explosion1.wav";
     public static final String SOUND2 = "org/titlepending/resources/explosion sounds/Explosion2.wav";
     public static final String SOUND3 = "org/titlepending/resources/explosion sounds/Explosion3.wav";
@@ -57,11 +63,8 @@ public class Client extends StateBasedGame {
     public static final String SOUND9 = "org/titlepending/resources/explosion sounds/Explosion9.wav";
     public static final String SOUND10 = "org/titlepending/resources/explosion sounds/Explosion10.wav";
 
-
     public static UnicodeFont fontStandard;
     public UnicodeFont fontMenu;
-
-
 
     public final int ScreenWidth;
     public final int ScreenHeight;
@@ -79,6 +82,7 @@ public class Client extends StateBasedGame {
 
     @Override
     public void initStatesList(GameContainer container){
+
         ResourceManager.setFilterMethod(ResourceManager.FILTER_LINEAR);
         ResourceManager.loadImage(TEST_RSC);
         ResourceManager.loadImage(SHIP_RSC);

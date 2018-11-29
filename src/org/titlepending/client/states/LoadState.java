@@ -1,7 +1,6 @@
 package org.titlepending.client.states;
 
 import jig.ResourceManager;
-import jig.Vector;
 import org.newdawn.slick.*;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -20,18 +19,12 @@ public class LoadState extends BasicGameState {
     private String lastLoaded;
     private int soFar = 2000;
     private int totalResources;
-    private int remainingResources;
-    public Vector boatPosition;
-    public boatGuy boatDude;
+    private boatGuy boatDude;
 
 
-    public void init(GameContainer container, StateBasedGame game)
-            throws SlickException {
+    public void init(GameContainer container, StateBasedGame game) {
         LoadingList.setDeferredLoading(true);
 
-
-
-        boatPosition = new Vector(0, 500);
 
         //Load your resources here using ResourceManager
         ResourceManager.loadImage(Client.STARTUP_BANNER_RSC);
@@ -49,11 +42,11 @@ public class LoadState extends BasicGameState {
         ResourceManager.loadSound(Client.SOUND10);
 
         ResourceManager.loadMusic(Client.TITLE_MUSIC);
+        ResourceManager.loadMusic(Client.LOBBY_MUSIC);
 
     }
 
-    public void enter(GameContainer container, StateBasedGame game)
-            throws SlickException{
+    public void enter(GameContainer container, StateBasedGame game) {
 
         boatDude = new boatGuy();
         boatDude.movement(0);
@@ -64,16 +57,16 @@ public class LoadState extends BasicGameState {
     }
 
     public void render(GameContainer container, StateBasedGame game,
-                       Graphics g) throws SlickException{
+                       Graphics g) {
 
         Client client = (Client)game;
 
         // Background splash for the loading screen
         g.drawImage(ResourceManager.getImage(Client.LOADING_SKY_RSC).getScaledCopy(client.ScreenWidth, client.ScreenHeight*5/7), 0, 0);
 
-        String statement = new String("Loaded: " + lastLoaded);
+        String statement = "Loaded: " + lastLoaded;
 
-        int textWidth = client.fontStandard.getWidth(statement);
+        int textWidth = Client.fontStandard.getWidth(statement);
 
         g.drawString(statement, (client.ScreenWidth/2 - textWidth/2), client.ScreenHeight*.9f);
 
@@ -91,7 +84,7 @@ public class LoadState extends BasicGameState {
     }
 
     public void update(GameContainer container, StateBasedGame game,
-                       int delta) throws SlickException{
+                       int delta) {
         Client client = (Client)game;
 
 
@@ -105,6 +98,7 @@ public class LoadState extends BasicGameState {
             runTimer = 0;
         else
             runTimer = 1000;
+
         if(soFar >= runTimer) {
 
             if (LoadingList.get().getRemainingResources() > 0) {
@@ -112,7 +106,7 @@ public class LoadState extends BasicGameState {
                 DeferredResource nextResource = LoadingList.get().getNext();
 
                 totalResources = LoadingList.get().getTotalResources();
-                remainingResources = LoadingList.get().getRemainingResources();
+                int remainingResources = LoadingList.get().getRemainingResources();
 
                 boatDude.movement((float)(client.ScreenWidth/totalResources) * (totalResources - remainingResources));
 
@@ -135,7 +129,7 @@ public class LoadState extends BasicGameState {
                 lastLoaded = nextResource.getDescription();
             } else {
                 // loading is complete, do normal update here
-                //ResourceManager.getSound(Client.LOADING_SOUND).stop();
+                // ResourceManager.getSound(Client.LOADING_SOUND).stop();
                 ResourceManager.getSound(Client.SCREAM_SOUND).stop();
                 ResourceManager.getMusic(Client.TITLE_MUSIC).loop();
                 client.enterState(Client.MAINMENUSTATE,new EmptyTransition(), new EmptyTransition());

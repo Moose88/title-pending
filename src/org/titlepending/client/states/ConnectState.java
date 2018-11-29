@@ -5,6 +5,9 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.state.transition.EmptyTransition;
+import org.newdawn.slick.state.transition.FadeInTransition;
+import org.newdawn.slick.state.transition.FadeOutTransition;
 import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
 import org.titlepending.client.menus.BaseMenuState;
@@ -72,11 +75,11 @@ public class ConnectState extends BasicGameState {
             System.out.println("Received from server\nState transition: "+input.getStateTransition()+"\nid: "+input.getId());
         if(input!=null)
             if(input.getStateTransition() == Client.LOBBYSTATE) {
-                client.enterState(Client.LOBBYSTATE);
+                client.enterState(Client.LOBBYSTATE, new EmptyTransition(), new FadeInTransition());
             }else{
                 thread.stopThread();
                 System.out.println("Server full");
-                client.enterState(Client.MAINMENUSTATE);
+                client.enterState(Client.MAINMENUSTATE, new EmptyTransition(), new FadeInTransition());
             }
     }
 
