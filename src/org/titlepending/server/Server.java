@@ -2,6 +2,7 @@ package org.titlepending.server;
 
 import org.lwjgl.Sys;
 import org.titlepending.client.Client;
+import org.titlepending.client.Updates;
 import org.titlepending.shared.ClientThread;
 import org.titlepending.shared.CmdProcessor;
 import org.titlepending.shared.Directive;
@@ -52,14 +53,32 @@ public class Server {
         if(Server.DEBUG){
             System.out.println("Starting lobby state");
         }
+
+        // Timer for the lobby
+
+        // Check that if current players say ready OR timer == 0, move into playing state.
+        // Once we transition, the server will need to assign a finalShip array to each
+        // player ID.
+
+        /**
+         * @param lobbyTimer:
+         * @param curPlayers:
+         */
+
         int lobbyTimer = 180000;
         int curPlayers = players.size();
-        while(lobbyTimer>=0){
+        boolean ready = false;
+        Directive cmd;
+
+        while(lobbyTimer >= 0){
             for (ClientThread thread : players){
                 Directive timeUpdate = new Directive();
+
                 timeUpdate.setTime(lobbyTimer);
+
                 try{
                     thread.sendCommand(timeUpdate);
+
                 }catch (SocketException e){
                     if(Server.DEBUG)
                         System.out.println("Attempted to write to client that no longer exists");
@@ -72,6 +91,7 @@ public class Server {
             }catch (InterruptedException e){
                 e.printStackTrace();
             }
+
             lobbyTimer -= 1000;
             if(curPlayers < players.size()){
                 lobbyTimer += 300000;
@@ -79,7 +99,30 @@ public class Server {
                 if(lobbyTimer > 180000)
                     lobbyTimer = 180000;
             }
+            if(commands.size()>0) {
+                cmd = commands.poll();
+                /*
+                    do stuff with cmd here
+                 */
+                processor.processCommand(cmd);
+
+                for(ClientThread thread : players){
+                    if(cmd.getready() == true){
+                        System.out.println("WE READY BOIS!!");
+                    }
+                }
+
+                System.out.println("Player " + cmd.getId() + " gives a ready check of:  " + cmd.getready());
+            }
+
         }
+
+        if(Client.DEBUG)
+            System.out.println("I'm outside the loop");
+
+        // Send the players into the game and have the server take their
+        // finalShip arrays and assign them to each id for applicable
+        // game logic.
 
         inGame =true;
         inLobby = false;
@@ -89,10 +132,14 @@ public class Server {
 
         while(inGame){
             // Game logic goes here
-            for(ClientThread thread : players)
+
+            for(ClientThread thread : players) {
                 //do updates
+
+            }
+
             while (!commands.isEmpty()){
-                Directive cmd = commands.poll();
+                cmd = commands.poll();
                 processor.processCommand(cmd);
 
             }

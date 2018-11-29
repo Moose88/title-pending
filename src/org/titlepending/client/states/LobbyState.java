@@ -11,6 +11,7 @@ import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
 import org.titlepending.shared.Directive;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class LobbyState extends BasicGameState {
@@ -33,6 +34,7 @@ public class LobbyState extends BasicGameState {
     private int setCrew;
     private int timer;
     private Directive timeUpdate;
+    private Directive ready = new Directive();
 
     private int[] haulMod = new int[3];
     private int[] sailMod = new int[3];
@@ -75,6 +77,7 @@ public class LobbyState extends BasicGameState {
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException{
 
+        this.ready.setReady(false);
         this.items = 6;
         this.selection = 0;
         this.setHaul = 0;
@@ -453,7 +456,8 @@ public class LobbyState extends BasicGameState {
             switch(selection){
                 case READY:
                     // Check if all 8 players ready, go when true
-
+                    ready.setReady(true);
+                    sendCommand(ready);
                     break;
                 case BACK:
                     backPressed();
@@ -470,7 +474,14 @@ public class LobbyState extends BasicGameState {
         client.enterState(Client.MAINMENUSTATE, new FadeOutTransition(), new FadeInTransition());
     }
 
-
+    private void sendCommand(Directive cmd){
+        cmd.setId(Updates.getInstance().getThread().getClientId());
+        try{
+            Updates.getInstance().getThread().sendCommand(cmd);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
 
     public int getID(){ return Client.LOBBYSTATE; }
 

@@ -59,6 +59,7 @@ public class PlayingState extends BasicGameState {
         }
 
     }
+
     private void sendCommand(Directive cmd){
         cmd.setId(Updates.getInstance().getThread().getClientId());
         try{
@@ -67,6 +68,7 @@ public class PlayingState extends BasicGameState {
             e.printStackTrace();
         }
     }
+
     public boolean isGameInProgress(){
         return false;
     }
