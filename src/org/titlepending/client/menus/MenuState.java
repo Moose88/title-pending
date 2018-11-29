@@ -13,8 +13,8 @@ public class MenuState extends BaseMenuState {
 
     private static SpriteSheet RSC_32_32 = new SpriteSheet(ResourceManager.getImage(Client.SHIP_RSC), 32, 32);
     private final static int PLAY = 0;
-    private final static int OPTIONS = 1;
-    private final static int STATS = 2;
+    private final static int HTP = 1;
+    private final static int OPTIONS = 2;
     private final static int EXIT =3;
 
 
@@ -92,8 +92,8 @@ public class MenuState extends BaseMenuState {
         int yTop = (int) (client.ScreenHeight * 0.6); // one third down the string
         int itemSpace = 95;
         drawMenuItem("Join Lobby", yTop, isSelected(PLAY));
+        drawMenuItem("How To Play", yTop+ HTP *itemSpace, isSelected(HTP));
         drawMenuItem("Options", yTop+OPTIONS*itemSpace, isSelected(OPTIONS));
-        drawMenuItem("Stats", yTop+STATS*itemSpace, isSelected(STATS));
         drawMenuItem("Exit", yTop+EXIT*itemSpace, isSelected(EXIT));
     }
 
@@ -113,11 +113,11 @@ public class MenuState extends BaseMenuState {
                     ResourceManager.getMusic(Client.TITLE_MUSIC).stop();
                     client.enterState(Client.CONNECTSTATE, new FadeOutTransition(), new EmptyTransition());
                     break;
+                case HTP:
+                    client.enterState(Client.STATSSTATE,new FadeOutTransition(), new FadeInTransition());
+                    break;
                 case OPTIONS:
                     client.enterState(Client.OPTIONSMENUSTATE,new FadeOutTransition(), new FadeInTransition());
-                    break;
-                case STATS:
-                    client.enterState(Client.STATSSTATE,new FadeOutTransition(), new FadeInTransition());
                     break;
                 case EXIT:
                     ResourceManager.getMusic(Client.TITLE_MUSIC).stop();

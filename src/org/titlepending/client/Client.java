@@ -14,7 +14,7 @@ import java.awt.Color;
 import java.awt.Font;
 
 public class Client extends StateBasedGame {
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
     //public static final int STARTUPSTATE = 0;
     public static final int CONNECTSTATE = 1;
     public static final int PLAYINGSTATE = 2;
@@ -46,6 +46,7 @@ public class Client extends StateBasedGame {
     // Music
     public static final String TITLE_MUSIC = "org/titlepending/resources/TitleMusic.wav";
     public static final String LOBBY_MUSIC = "org/titlepending/resources/lobby_music.wav";
+    public static final String HTP_MUSIC = "org/titlepending/resources/HTP_Music.wav";
 
     // Sounds
     public static final String LOADING_SOUND = "org/titlepending/resources/WaveSound.wav";
@@ -101,7 +102,7 @@ public class Client extends StateBasedGame {
         addState(new ConnectState());
         addState(new PlayingState());
         addState(new GameOverState());
-        addState(new StatsState());
+        addState(new HowToPlay());
         addState(new OptionsState());
         addState(new LobbyState());
 

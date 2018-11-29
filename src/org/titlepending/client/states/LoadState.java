@@ -43,6 +43,7 @@ public class LoadState extends BasicGameState {
 
         ResourceManager.loadMusic(Client.TITLE_MUSIC);
         ResourceManager.loadMusic(Client.LOBBY_MUSIC);
+        ResourceManager.loadMusic(Client.HTP_MUSIC);
 
     }
 
