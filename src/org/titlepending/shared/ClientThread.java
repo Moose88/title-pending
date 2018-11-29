@@ -17,7 +17,7 @@ public class ClientThread extends Thread{
     private ObjectOutputStream out;
     private boolean isServer;
     private int clientId;
-    boolean done;
+    private boolean done;
 
     public ClientThread (Socket socket, boolean isServer) throws IOException {
         this.socket = socket;
