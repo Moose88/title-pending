@@ -179,6 +179,9 @@ public class LobbyState extends BasicGameState {
 
     public void enter(GameContainer container, StateBasedGame game) {
         ResourceManager.getMusic(Client.LOBBY_MUSIC).loop(1, 3f);
+        if(setCrew == 2){
+            ResourceManager.getSound(Client.SCREAM_SOUND).loop(1.2f, 0.5f);
+        }
 
     }
 
@@ -481,6 +484,13 @@ public class LobbyState extends BasicGameState {
                 ResourceManager.getSound(Client.MENU_CLICK).play();
                 setCrew++;
             }
+
+            if(setCrew ==  2){
+                ResourceManager.getSound(Client.SCREAM_SOUND).loop(1.2f, 0.5f);
+            } else {
+                ResourceManager.getSound(Client.SCREAM_SOUND).stop();
+            }
+
             savedShip.setNumber("crew", setCrew);
             save();
         }
@@ -493,6 +503,12 @@ public class LobbyState extends BasicGameState {
                 ResourceManager.getSound(Client.MENU_CLICK).play();
                 setCrew--;
             }
+            if(setCrew ==  2){
+                ResourceManager.getSound(Client.SCREAM_SOUND).loop(1.2f, 0.5f);
+            } else {
+                ResourceManager.getSound(Client.SCREAM_SOUND).stop();
+            }
+
             savedShip.setNumber("crew", setCrew);
             save();
         }
@@ -516,6 +532,7 @@ public class LobbyState extends BasicGameState {
     }
 
     private void backPressed(){
+        ResourceManager.getSound(Client.SCREAM_SOUND).stop();
         ResourceManager.getMusic(Client.LOBBY_MUSIC).stop();
         ResourceManager.getMusic(Client.TITLE_MUSIC).loop();
         Updates.getInstance().getThread().stopThread();
