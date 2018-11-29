@@ -49,7 +49,7 @@ public class HowToPlay extends BasicGameState {
     @Override
     public void enter(GameContainer container, StateBasedGame game)
             throws SlickException{
-        ResourceManager.getMusic(Client.HTP_MUSIC).loop();
+        //ResourceManager.getMusic(Client.HTP_MUSIC).loop();
 
     }
 
@@ -181,8 +181,8 @@ public class HowToPlay extends BasicGameState {
                     }
                     break;
                 case EXIT:
-                    ResourceManager.getMusic(Client.HTP_MUSIC).stop();
-                    ResourceManager.getMusic(Client.TITLE_MUSIC).loop();
+                    //ResourceManager.getMusic(Client.HTP_MUSIC).stop();
+                    //ResourceManager.getMusic(Client.TITLE_MUSIC).loop();
                     client.enterState(Client.MAINMENUSTATE, new FadeOutTransition(), new FadeInTransition());
                     break;
                 default:
