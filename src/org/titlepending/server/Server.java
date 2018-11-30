@@ -67,6 +67,7 @@ public class Server {
 
         int lobbyTimer = 180000;
         int curPlayers = players.size();
+        int curReady = 0;
         boolean ready = false;
         Directive cmd;
 
@@ -105,18 +106,23 @@ public class Server {
                     do stuff with cmd here
                  */
                 processor.processCommand(cmd);
-
-                for(ClientThread thread : players){
-                    System.out.println(thread.getClientId());
-                }
+                if(cmd.getready() == true)
+                    curReady++;
+                else if(cmd.getready() == false)
+                    curReady--;
 
                 System.out.println("Player " + cmd.getId() + " gives a ready check of:  " + cmd.getready());
+                System.out.println("Total number of players: " + curPlayers);
+                System.out.println("Number of players ready: " + curReady);
+
+                if(curReady == curPlayers && curPlayers >= 2) {
+                    System.out.println("We are ready to play the game");
+                    break;
+                }
+
             }
 
         }
-
-        if(Client.DEBUG)
-            System.out.println("I'm outside the loop");
 
         // Send the players into the game and have the server take their
         // finalShip arrays and assign them to each id for applicable

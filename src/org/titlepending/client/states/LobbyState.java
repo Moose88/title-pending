@@ -20,6 +20,7 @@ public class LobbyState extends BasicGameState {
     private Client client;
     private int selection;
     private int items;
+    private boolean readyset = false;
 
     private SavedState savedShip;
 
@@ -36,8 +37,6 @@ public class LobbyState extends BasicGameState {
     private int setCrew;
     private int timer;
 
-    private Directive timeUpdate;
-    private Directive ready = new Directive();
 
     private int[] haulMod = new int[3];
     private int[] sailMod = new int[3];
@@ -69,7 +68,6 @@ public class LobbyState extends BasicGameState {
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException{
 
-        this.ready.setReady(false);
         this.items = 6;
         this.selection = 0;
         this.setHaul = 0;
@@ -197,7 +195,9 @@ public class LobbyState extends BasicGameState {
         Color textColor;
         if(isSelected){
             textColor = new Color(155,28,31);
-        } else{
+        } else if(isSelected && readyset) {
+            textColor = new Color(Color.green);
+        }else{
             textColor = black;
         }
 
@@ -348,18 +348,29 @@ public class LobbyState extends BasicGameState {
         finalShip[1] = setSails;
         finalShip[2] = setCannons;
         finalShip[3] = setCrew;
+
     }
+
 
     @Override
     public void keyPressed(int key, char c){
+        Directive ready = new Directive();
+
+        if(readyset && key != Input.KEY_ESCAPE)
+            return;
 
         if(Client.DEBUG) {
             System.out.println("Haul: " + setHaul + " Sails: " + setSails + " Cannons: " + setCannons + " Crew: " + setCrew);
         }
 
-        if(key == Input.KEY_ESCAPE){
+        if(key == Input.KEY_ESCAPE && readyset){
+            readyset = false;
+            ready.setReady(false);
+            sendCommand(ready);
+        } else if (key == Input.KEY_ESCAPE){
             backPressed();
         }
+
         if (key == Input.KEY_UP && selection != BACK){
             ResourceManager.getSound(Client.MENU_CLICK).play();
             selection--;
@@ -527,6 +538,10 @@ public class LobbyState extends BasicGameState {
                     ready.setReady(true);
                     sendCommand(ready);
 
+                    readyset = true;
+                    // TODO: Lock the keyboard here, so that players cannot make any addition input until game starts.
+
+
                     if(Client.DEBUG)
                         System.out.println("Final ship values: " + finalShip[0] + " " + finalShip[1] + " " + finalShip[2] + " " + finalShip[3]);
 
@@ -541,7 +556,6 @@ public class LobbyState extends BasicGameState {
             }
         }
     }
-
     private void backPressed(){
         ResourceManager.getSound(Client.SCREAM_SOUND).stop();
         ResourceManager.getMusic(Client.LOBBY_MUSIC).stop();

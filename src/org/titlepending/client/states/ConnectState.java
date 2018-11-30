@@ -74,6 +74,7 @@ public class ConnectState extends BasicGameState {
             System.out.println("Received from server\nState transition: "+input.getStateTransition()+"\nid: "+input.getId());
         if(input!=null)
             if(input.getStateTransition() == Client.LOBBYSTATE) {
+                thread.setClientId(input.getId());
                 client.enterState(Client.LOBBYSTATE, new EmptyTransition(), new FadeInTransition());
             }else{
                 thread.stopThread();
