@@ -39,6 +39,7 @@ public class Client extends StateBasedGame {
     public static final String SHIP_RSC = "org/titlepending/resources/images/ShipSS.png";
     public static final String FRONT_MENU_RSC = "org/titlepending/resources/bgnd.png";
     private static final String TEST_RSC = "org/titlepending/resources/PVCwAb3.png";
+    public static final String CHARACTER_RSC = "org/titlepending/resources/images/Characters.png";
 
     // Fonts
     private static final String FONT_RSC = "org/titlepending/resources/Treamd.ttf";

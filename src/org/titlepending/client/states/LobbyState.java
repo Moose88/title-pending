@@ -54,10 +54,11 @@ public class LobbyState extends BasicGameState {
 
     private static SpriteSheet ship_RSC_96 = new SpriteSheet(ResourceManager.getImage(Client.SHIP_RSC), 64, 96);
     private static SpriteSheet RSC_32_32 = new SpriteSheet(ResourceManager.getImage(Client.SHIP_RSC), 32, 32);
+    private static SpriteSheet CHAR_256_256 = new SpriteSheet(ResourceManager.getImage(Client.CHARACTER_RSC), 256, 256);
 
-    private static Image crewOne;
-    private static Image crewTwo;
-    private static Image crewThree;
+    private static Image crewOne = CHAR_256_256.getSubImage(0, 0).getScaledCopy(3f);
+    private static Image crewTwo = CHAR_256_256.getSubImage(1, 0).getScaledCopy(3f);
+    private static Image crewThree = CHAR_256_256.getSubImage(2, 0).getScaledCopy(3f);
 
     private static int[] finalShip = new int[4];
 
@@ -131,9 +132,9 @@ public class LobbyState extends BasicGameState {
 
         // Cannon Images, Mod values and Names/Arrays
 
-        Image oneCannon = ship_RSC_96.getSubImage(6, 1).getScaledCopy(3f);
-        Image twoCannons = ship_RSC_96.getSubImage(5, 1).getScaledCopy(3f);
-        Image threeCannons = ship_RSC_96.getSubImage(4, 1).getScaledCopy(3f);
+        Image oneCannon = ship_RSC_96.getSubImage(6, 1).getScaledCopy(2.5f);
+        Image twoCannons = ship_RSC_96.getSubImage(5, 1).getScaledCopy(2.5f);
+        Image threeCannons = ship_RSC_96.getSubImage(4, 1).getScaledCopy(2.5f);
 
         cannons[2] = oneCannon;
         cannons[1] = twoCannons;
@@ -156,12 +157,12 @@ public class LobbyState extends BasicGameState {
         crew[0] = crewThree;
 
         crewString[2] = "Zog!";
-        crewString[1] = "Other guy!";
-        crewString[0] = "Non Binary Gendered Creature thing!";
+        crewString[1] = "Dirk!";
+        crewString[0] = "Terry!";
 
-        crewMod[2] = "+ 2 cannon";
-        crewMod[1] = "+ 2 hull";
-        crewMod[0] = "+ 2 sail";
+        crewMod[2] = "Bonus to cannons";
+        crewMod[1] = "Bonus to hull";
+        crewMod[0] = "Bonus to sails";
 
     }
 
@@ -227,6 +228,8 @@ public class LobbyState extends BasicGameState {
            TODO: Render a splash of the crew image
          */
 
+        g.drawImage(crew[setCrew], client.ScreenWidth/6 - crew[setCrew].getWidth()/2, client.ScreenHeight/2 - crew[setCrew].getHeight()/2);
+
 
 
         //Display the stats on the right
@@ -234,22 +237,18 @@ public class LobbyState extends BasicGameState {
         g.pushTransform();
         g.scale(2f,2f);
 
-        String lobbyStats = "Modifiers: " + "\n" +
-
-                "Haul: " + (haulMod[setHaul]) + "\n" +
-
+        String lobbyStats = "Construction Cost: " + "\n" +
                 "\n" +
-                "Hull: " + (haulMod[setHaul]) + "\n" +
-                "\n" +
-
-                "Sails: " + (sailMod[setSails]) + "\n" +
-                "Cannons: " + (cannonMod[setCannons]) + "\n" +
+                "Hull: " + (haulMod[setHaul]) + " gold coins." + "\n" +
+                "Sails: " + (sailMod[setSails]) + " gold coins." +  "\n" +
+                "Cannons: " + (cannonMod[setCannons]) + " gold coins." +  "\n" +
                 "\n" +
                 "Captain:\n" +
-                crewString[setCrew] + "\n" +
-                crewMod[setCrew] + "\n" +
+                "   " + crewString[setCrew] + "\n" +
+                "   " + crewMod[setCrew] + "\n" +
                 "\n" +
-                "Total mod: " + totalMod + " + 2";
+                "Total cost: " + "\n" +
+                "   " + totalMod + " gold coins.";
 
 
         // Top row of scroll
@@ -262,7 +261,7 @@ public class LobbyState extends BasicGameState {
                 RSC_32_32.getSubImage(4,3).getScaledCopy(2f).getWidth() * 3 - 75, 0);
 
         // Center filling for scroll
-        for(int i = 1; i < 9; i++) {
+        for(int i = 1; i < 11; i++) {
             g.drawImage(RSC_32_32.getSubImage(4, 4).getScaledCopy(2f), (float) (client.ScreenWidth * 0.4) - 75,
                     RSC_32_32.getSubImage(4, 3).getHeight() * i);
             g.drawImage(RSC_32_32.getSubImage(5, 4).getScaledCopy(2f), (float) (client.ScreenWidth * 0.4) +
@@ -278,20 +277,20 @@ public class LobbyState extends BasicGameState {
 
         //Bottom filling for scroll
         g.drawImage(RSC_32_32.getSubImage(4, 5).getScaledCopy(2f), (float) (client.ScreenWidth * 0.4) - 75,
-                RSC_32_32.getSubImage(4, 3).getHeight() * 10);
+                RSC_32_32.getSubImage(4, 3).getHeight() * 12);
         g.drawImage(RSC_32_32.getSubImage(5, 5).getScaledCopy(2f), (float) (client.ScreenWidth * 0.4) +
                         RSC_32_32.getSubImage(4, 3).getScaledCopy(2f).getWidth() - 75,
-                RSC_32_32.getSubImage(5, 3).getHeight() * 10);
+                RSC_32_32.getSubImage(5, 3).getHeight() * 12);
         g.drawImage(RSC_32_32.getSubImage(5, 5).getScaledCopy(2f), (float) (client.ScreenWidth * 0.4) +
                         RSC_32_32.getSubImage(4, 3).getScaledCopy(2f).getWidth() * 2 - 75,
-                RSC_32_32.getSubImage(5, 3).getHeight() * 10);
+                RSC_32_32.getSubImage(5, 3).getHeight() * 12);
         g.drawImage(RSC_32_32.getSubImage(6, 5).getScaledCopy(2f), (float) (client.ScreenWidth * 0.4) +
                         RSC_32_32.getSubImage(4, 3).getScaledCopy(2f).getWidth() * 3 - 75,
-                RSC_32_32.getSubImage(6, 3).getHeight() * 10);
+                RSC_32_32.getSubImage(6, 3).getHeight() * 12);
 
         g.setFont(Client.fontStandard);
         g.setColor(Color.black);
-        g.drawString(lobbyStats, (float) (client.ScreenWidth*0.385), (float) (client.ScreenHeight*0.035));
+        g.drawString(lobbyStats, (float) (client.ScreenWidth*0.365), (float) (client.ScreenHeight*0.035));
         g.popTransform();
 
 
@@ -491,12 +490,6 @@ public class LobbyState extends BasicGameState {
                 setCrew++;
             }
 
-            if(setCrew ==  2){
-                ResourceManager.getSound(Client.SCREAM_SOUND).loop(1.2f, 0.5f);
-            } else {
-                ResourceManager.getSound(Client.SCREAM_SOUND).stop();
-            }
-
             savedShip.setNumber("crew", setCrew);
             save();
         }
@@ -509,14 +502,16 @@ public class LobbyState extends BasicGameState {
                 ResourceManager.getSound(Client.MENU_CLICK).play();
                 setCrew--;
             }
-            if(setCrew ==  2){
-                ResourceManager.getSound(Client.SCREAM_SOUND).loop(1.2f, 0.5f);
-            } else {
-                ResourceManager.getSound(Client.SCREAM_SOUND).stop();
-            }
+
 
             savedShip.setNumber("crew", setCrew);
             save();
+        }
+
+        if(setCrew ==  2){
+            ResourceManager.getSound(Client.SCREAM_SOUND).loop(1.6f, 0.5f);
+        } else {
+            ResourceManager.getSound(Client.SCREAM_SOUND).stop();
         }
 
         if(key == Input.KEY_ENTER){

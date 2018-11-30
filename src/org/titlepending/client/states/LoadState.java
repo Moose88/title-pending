@@ -29,6 +29,7 @@ public class LoadState extends BasicGameState {
         //Load your resources here using ResourceManager
         ResourceManager.loadImage(Client.STARTUP_BANNER_RSC);
         ResourceManager.loadImage(Client.FRONT_MENU_RSC);
+        ResourceManager.loadImage(Client.CHARACTER_RSC);
 
         ResourceManager.loadSound(Client.SOUND1);
         ResourceManager.loadSound(Client.SOUND2);
@@ -51,7 +52,7 @@ public class LoadState extends BasicGameState {
 
         boatDude = new boatGuy();
         boatDude.movement(0);
-        ResourceManager.getSound(Client.SCREAM_SOUND).loop(1.2f, 0.05f);
+        ResourceManager.getSound(Client.SCREAM_SOUND).loop(1.6f, 0.07f);
         ResourceManager.getSound(Client.LOADING_SOUND).loop();
 
 

@@ -64,8 +64,10 @@ public class MenuState extends BaseMenuState {
         centerScroll[2].setRotation(90f);
 
         // Draws the left and right columns of the title scroll
-        String title1 = "TITLE";
-        String title2 = "PENDING!!";
+
+        //This is a placeholder
+        
+        String title2 = "RUM & HIDE";
 
         for(int i = 0; i < 3; i++){
             g.drawImage(leftScroll[i], client.ScreenWidth/2 - 500, i*leftScroll[i].getHeight() + 20);
@@ -81,10 +83,8 @@ public class MenuState extends BaseMenuState {
         g.pushTransform();
         g.scale(1.5f, 1.5f);
         g.setFont(client.fontMenu);
-        g.setColor(new Color(97,106,107));
-        g.drawString(title1, (client.ScreenWidth/2-g.getFont().getWidth(title1)*.75f)/1.5f, client.ScreenHeight/2 * .10f);
         g.setColor(new Color(39, 59, 70));
-        g.drawString(title2, (client.ScreenWidth/2-g.getFont().getWidth(title2)*.75f)/1.5f, client.ScreenHeight/2 *.15f + g.getFont().getHeight(title1)/2f);
+        g.drawString(title2, (client.ScreenWidth/2-g.getFont().getWidth(title2)*.75f)/1.5f, client.ScreenHeight/2 *.15f + g.getFont().getHeight(title2)/2f);
         g.setColor(Color.white);
         g.popTransform();
 
