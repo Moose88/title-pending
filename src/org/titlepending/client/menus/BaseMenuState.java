@@ -36,16 +36,22 @@ public abstract class BaseMenuState extends BasicGameState {
 
     @Override
     public void keyPressed(int key, char c){
+
         if(key == Input.KEY_ESCAPE){
+            ResourceManager.getSound(Client.MENU_CLICK).play();
             backPressed();
         }
         if (key == Input.KEY_UP) {
-            if(!typing)
+            if(!typing) {
+                ResourceManager.getSound(Client.MENU_CLICK).play();
                 selection--;
+            }
         }
         if (key == Input.KEY_DOWN) {
-            if(!typing)
+            if(!typing){
+                ResourceManager.getSound(Client.MENU_CLICK).play();
                 selection++;
+            }
         }
 
         if (selection < 0)
