@@ -103,9 +103,9 @@ public class LobbyState extends BasicGameState {
         haul[1] = medHaul;
         haul[0] = lgHaul;
 
-        haulString[2] = "Small Haul";
-        haulString[1] = "Medium Haul";
-        haulString[0] = "Large Haul";
+        haulString[2] = "Small Hull";
+        haulString[1] = "Medium Hull";
+        haulString[0] = "Large Hull";
 
         haulMod[2] = 3;
         haulMod[1] = 5;
@@ -160,7 +160,7 @@ public class LobbyState extends BasicGameState {
         crewString[0] = "Non Binary Gendered Creature thing!";
 
         crewMod[2] = "+ 2 cannon";
-        crewMod[1] = "+ 2 haul";
+        crewMod[1] = "+ 2 hull";
         crewMod[0] = "+ 2 sail";
 
     }
@@ -235,7 +235,13 @@ public class LobbyState extends BasicGameState {
         g.scale(2f,2f);
 
         String lobbyStats = "Modifiers: " + "\n" +
+
                 "Haul: " + (haulMod[setHaul]) + "\n" +
+
+                "\n" +
+                "Hull: " + (haulMod[setHaul]) + "\n" +
+                "\n" +
+
                 "Sails: " + (sailMod[setSails]) + "\n" +
                 "Cannons: " + (cannonMod[setCannons]) + "\n" +
                 "\n" +
