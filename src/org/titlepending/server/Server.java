@@ -107,9 +107,7 @@ public class Server {
                 processor.processCommand(cmd);
 
                 for(ClientThread thread : players){
-                    if(cmd.getready() == true){
-                        System.out.println("WE READY BOIS!!");
-                    }
+                    System.out.println(thread.getClientId());
                 }
 
                 System.out.println("Player " + cmd.getId() + " gives a ready check of:  " + cmd.getready());
@@ -181,6 +179,7 @@ public class Server {
                     e.printStackTrace();
                 }
                 int id = ThreadLocalRandom.current().nextInt(0,1000000);
+                System.out.println("Assigned ID: " + id);
                 if(temp != null) temp.setClientId(id);
 
                 if(Server.DEBUG) System.out.println("Starting thread with id: "+id);
