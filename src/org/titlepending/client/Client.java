@@ -4,7 +4,6 @@ import jig.Entity;
 import jig.ResourceManager;
 import org.newdawn.slick.*;
 import org.newdawn.slick.font.effects.ColorEffect;
-import org.newdawn.slick.font.effects.OutlineEffect;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.ResourceLoader;
 import org.titlepending.client.menus.MenuState;
@@ -16,37 +15,46 @@ import java.awt.Font;
 
 public class Client extends StateBasedGame {
     public static final boolean DEBUG = true;
-    public static final int STARTUPSTATE = 0;
+    //public static final int STARTUPSTATE = 0;
     public static final int CONNECTSTATE = 1;
     public static final int PLAYINGSTATE = 2;
-    public static final int LOADSTATE = 3;
+    public static final int LOADSTATE = 0;
     public static final int GAMEOVERSTATE = 4;
     public static final int PORT = 8000;
     public static final int MAINMENUSTATE = 5;
     public static final int STATSSTATE = 6;
     public static final int OPTIONSMENUSTATE = 7;
     public static final int LOBBYSTATE = 8;
-
+    public static final int REJECTSTATE= 9;
 
     /**
      * These are all the game resources to include-
      * Images, sounds, and music
      */
 
+    // Backgrounds and images
     public static final String STARTUP_BANNER_RSC = "org/titlepending/resources/startstatebackground.png";
     public static final String LOADING_SKY_RSC = "org/titlepending/resources/LoadSky.png";
     public static final String LOADING_SEA_RSC = "org/titlepending/resources/LoadOcean.png";
     public static final String SHIP_RSC = "org/titlepending/resources/images/ShipSS.png";
-
     public static final String FRONT_MENU_RSC = "org/titlepending/resources/bgnd.png";
+    private static final String TEST_RSC = "org/titlepending/resources/PVCwAb3.png";
+    public static final String CHARACTER_RSC = "org/titlepending/resources/images/Characters.png";
 
-    public static final String FONT_RSC = "org/titlepending/resources/Treamd.ttf";
-    public static final String TEST_RSC = "org/titlepending/resources/PVCwAb3.png";
+    // Fonts
+    private static final String FONT_RSC = "org/titlepending/resources/Treamd.ttf";
 
+    // Music
     public static final String TITLE_MUSIC = "org/titlepending/resources/TitleMusic.wav";
-    public static final String LOADING_SOUND = "org/titlepending/resources/loadingSounds.wav";
-    public static final String SCREAM_SOUND = "org/titlepending/resources/AAAGH1.wav";
+    public static final String LOBBY_MUSIC = "org/titlepending/resources/lobby_music.wav";
+    public static final String HTP_MUSIC = "org/titlepending/resources/HTP_Music.wav";
 
+    // Sounds
+    public static final String LOADING_SOUND = "org/titlepending/resources/WaveSound.wav";
+    public static final String SCREAM_SOUND = "org/titlepending/resources/AAAGH1.wav";
+    public static final String MENU_CLICK = "org/titlepending/resources/MenuClick.wav";
+
+    // Testing resources go here
     public static final String SOUND1 = "org/titlepending/resources/explosion sounds/Explosion1.wav";
     public static final String SOUND2 = "org/titlepending/resources/explosion sounds/Explosion2.wav";
     public static final String SOUND3 = "org/titlepending/resources/explosion sounds/Explosion3.wav";
@@ -58,18 +66,15 @@ public class Client extends StateBasedGame {
     public static final String SOUND9 = "org/titlepending/resources/explosion sounds/Explosion9.wav";
     public static final String SOUND10 = "org/titlepending/resources/explosion sounds/Explosion10.wav";
 
-
     public static UnicodeFont fontStandard;
     public UnicodeFont fontMenu;
-
-
 
     public final int ScreenWidth;
     public final int ScreenHeight;
 
     public static AppGameContainer app;
 
-    public Client(String title, int width , int height) throws SlickException{
+    public Client(String title, int width , int height){
         super(title);
 
         ScreenHeight = height;
@@ -79,14 +84,18 @@ public class Client extends StateBasedGame {
     }
 
     @Override
-    public void initStatesList(GameContainer container) throws SlickException{
+    public void initStatesList(GameContainer container){
+
         ResourceManager.setFilterMethod(ResourceManager.FILTER_LINEAR);
+
+        // Resources being used/during loading
         ResourceManager.loadImage(TEST_RSC);
         ResourceManager.loadImage(SHIP_RSC);
         ResourceManager.loadImage(LOADING_SEA_RSC);
         ResourceManager.loadImage(LOADING_SKY_RSC);
         ResourceManager.loadSound(LOADING_SOUND);
         ResourceManager.loadSound(SCREAM_SOUND);
+        ResourceManager.loadSound(MENU_CLICK);
 
         addState(new LoadState());
         addState(new MenuState());
@@ -94,9 +103,10 @@ public class Client extends StateBasedGame {
         addState(new ConnectState());
         addState(new PlayingState());
         addState(new GameOverState());
-        addState(new StatsState());
+        addState(new HowToPlay());
         addState(new OptionsState());
         addState(new LobbyState());
+        addState(new RejectedState());
 
         try{
             Font UIFont0 = Font.createFont(Font.TRUETYPE_FONT, ResourceLoader.getResourceAsStream(Client.FONT_RSC));
@@ -106,7 +116,7 @@ public class Client extends StateBasedGame {
             //This font is the standard font for the rest of the game
             fontStandard = new UnicodeFont(UIFont1);
             fontStandard.addAsciiGlyphs();
-            fontStandard.getEffects().add(new OutlineEffect(5, Color.black));
+            //fontStandard.getEffects().add(new OutlineEffect(1, Color.black));
             fontStandard.getEffects().add(new ColorEffect(Color.white)); //You can change your color here, but you can also change it in the render{ ... }
             fontStandard.addAsciiGlyphs();
             fontStandard.loadGlyphs();
@@ -134,7 +144,7 @@ public class Client extends StateBasedGame {
             app.setDisplayMode(1920 ,1080,false);
             app.start();
 
-        }catch (SlickException e){
+        }catch (SlickException ignored){
 
         }
     }

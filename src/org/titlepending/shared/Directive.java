@@ -7,6 +7,7 @@ import java.io.Serializable;
  */
 public class Directive implements Serializable {
     private int stateTransition;
+    private boolean ready;
     private boolean turnLeft;
     private boolean turnRight;
     private boolean raiseAnchor;
@@ -15,7 +16,7 @@ public class Directive implements Serializable {
     private int time;
 
     public Directive(){
-        turnLeft = turnRight = raiseAnchor = lowerAnchor = false;
+        ready = turnLeft = turnRight = raiseAnchor = lowerAnchor = false;
     }
 
     public void setStateTransition(int stateTransition){this.stateTransition = stateTransition;}
@@ -26,6 +27,7 @@ public class Directive implements Serializable {
     public void setTurnRight(){turnRight = true;}
     public void setRaiseAnchor(){raiseAnchor = true;}
     public void setLowerAnchor(){lowerAnchor = true;}
+    public void setReady(boolean ready){this.ready = ready;}
     public void setId(int id){this.id = id;}
     public void setTime(int time) {this.time = time;}
 
@@ -33,6 +35,7 @@ public class Directive implements Serializable {
     public boolean isTurnLeft(){return turnLeft;}
     public boolean isRaiseAnchor(){return raiseAnchor;}
     public boolean isLowerAnchor(){return lowerAnchor;}
+    public boolean getready(){return ready;}
     public int getId(){return id;}
     public int getTime(){return time;}
 

@@ -5,6 +5,9 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.state.transition.EmptyTransition;
+import org.newdawn.slick.state.transition.FadeInTransition;
+import org.newdawn.slick.state.transition.FadeOutTransition;
 import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
 import org.titlepending.client.menus.BaseMenuState;
@@ -43,22 +46,21 @@ public class ConnectState extends BasicGameState {
         Client client = (Client) game;
         Socket s;
 
+
         if(Client.DEBUG)
             System.out.println("Attempting to connect to server.");
-
         try{
             s = new Socket(BaseMenuState.isIP,Client.PORT);
             thread = new ClientThread(s,false);
             thread.start();
             Updates.getInstance().setThread(thread);
         } catch (IOException e){
-            e.printStackTrace();
-            client.enterState(Client.MAINMENUSTATE);
+            if(Client.DEBUG)
+                System.out.println("Connection Rejected");
+            client.enterState(Client.REJECTSTATE);
         }
-        boolean done = false;
 
-        if(Client.DEBUG)
-             System.out.println("We got connected!");
+
 
         while (Updates.getInstance().getQueue().isEmpty());
 
@@ -72,12 +74,14 @@ public class ConnectState extends BasicGameState {
             System.out.println("Received from server\nState transition: "+input.getStateTransition()+"\nid: "+input.getId());
         if(input!=null)
             if(input.getStateTransition() == Client.LOBBYSTATE) {
-                client.enterState(Client.LOBBYSTATE);
+                thread.setClientId(input.getId());
+                client.enterState(Client.LOBBYSTATE, new EmptyTransition(), new FadeInTransition());
             }else{
                 thread.stopThread();
                 System.out.println("Server full");
-                client.enterState(Client.MAINMENUSTATE);
+                client.enterState(Client.MAINMENUSTATE, new EmptyTransition(), new FadeInTransition());
             }
+
     }
 
     public void render(GameContainer container, StateBasedGame game,
@@ -87,6 +91,15 @@ public class ConnectState extends BasicGameState {
 
     public void update(GameContainer container, StateBasedGame game,
                        int delta) throws SlickException{
+
+        Client client = (Client) game;
+        Directive input = Updates.getInstance().getQueue().poll();
+
+
+        if(Client.DEBUG && input != null)
+            System.out.println("Received from server\nState transition: "+input.getStateTransition()+"\nid: "+input.getId());
+        if(input!=null)
+            client.enterState(input.getStateTransition());
 
     }
     public int getID(){return Client.CONNECTSTATE; }

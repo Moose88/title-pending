@@ -1,15 +1,12 @@
 package org.titlepending.server;
 
-import org.titlepending.client.Client;
+
 import org.titlepending.shared.ClientThread;
 import org.titlepending.shared.CmdProcessor;
 import org.titlepending.shared.Directive;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -22,10 +19,20 @@ public class Server {
     public static final boolean DEBUG = true;
     public static List<ClientThread> players = new CopyOnWriteArrayList<>();
     private static final int PORT = 8000;
-    private static final int PLIMIT = 2;
+    private static final int PLIMIT = 8;
     private static boolean inLobby;
     private static boolean inGame;
     public static ConcurrentLinkedQueue<Directive> commands = new ConcurrentLinkedQueue<>();
+
+    public static final int CONNECTSTATE = 1;
+    public static final int PLAYINGSTATE = 2;
+    public static final int LOADSTATE = 0;
+    public static final int GAMEOVERSTATE = 4;
+    public static final int MAINMENUSTATE = 5;
+    public static final int STATSSTATE = 6;
+    public static final int OPTIONSMENUSTATE = 7;
+    public static final int LOBBYSTATE = 8;
+    public static final int REJECTSTATE= 9;
 
     public static void main(String[] args) throws IOException{
         if(Server.DEBUG){
@@ -54,19 +61,46 @@ public class Server {
         if(Server.DEBUG){
             System.out.println("Starting lobby state");
         }
+
+        // Timer for the lobby
+
+        // Check that if current players say ready OR timer == 0, move into playing state.
+        // Once we transition, the server will need to assign a finalShip array to each
+        // player ID.
+
+        /**
+         * @param lobbyTimer:
+         * @param curPlayers:
+         */
+
         int lobbyTimer = 180000;
         int curPlayers = players.size();
-        while(lobbyTimer>0){
+        int curReady = 0;
+        boolean ready = false;
+        Directive cmd;
+
+        while(lobbyTimer >= 0){
             for (ClientThread thread : players){
                 Directive timeUpdate = new Directive();
+
                 timeUpdate.setTime(lobbyTimer);
-                thread.sendCommand(timeUpdate);
+
+                try{
+                    thread.sendCommand(timeUpdate);
+
+                }catch (SocketException e){
+                    if(Server.DEBUG)
+                        System.out.println("Attempted to write to client that no longer exists");
+                    players.remove(thread);
+                    thread.stopThread();
+                }
             }
             try {
                 TimeUnit.SECONDS.sleep(1);
             }catch (InterruptedException e){
                 e.printStackTrace();
             }
+
             lobbyTimer -= 1000;
             if(curPlayers < players.size()){
                 lobbyTimer += 300000;
@@ -74,7 +108,33 @@ public class Server {
                 if(lobbyTimer > 180000)
                     lobbyTimer = 180000;
             }
+            if(commands.size()>0) {
+                cmd = commands.poll();
+                /*
+                    do stuff with cmd here
+                 */
+                processor.processCommand(cmd);
+                if(cmd.getready())
+                    curReady++;
+                else if(!cmd.getready())
+                    curReady--;
+
+                System.out.println("Player " + cmd.getId() + " gives a ready check of:  " + cmd.getready());
+                System.out.println("Total number of players: " + curPlayers);
+                System.out.println("Number of players ready: " + curReady);
+
+                if(curReady == curPlayers && curPlayers >= 2) {
+                    System.out.println("We are ready to play the game");
+                    break;
+                }
+
+            }
+
         }
+
+        // Send the players into the game and have the server take their
+        // finalShip arrays and assign them to each id for applicable
+        // game logic.
 
         inGame =true;
         inLobby = false;
@@ -84,10 +144,14 @@ public class Server {
 
         while(inGame){
             // Game logic goes here
-            for(ClientThread thread : players)
+
+            for(ClientThread thread : players) {
                 //do updates
+
+            }
+
             while (!commands.isEmpty()){
-                Directive cmd = commands.poll();
+                cmd = commands.poll();
                 processor.processCommand(cmd);
 
             }
@@ -129,6 +193,7 @@ public class Server {
                     e.printStackTrace();
                 }
                 int id = ThreadLocalRandom.current().nextInt(0,1000000);
+                System.out.println("Assigned ID: " + id);
                 if(temp != null) temp.setClientId(id);
 
                 if(Server.DEBUG) System.out.println("Starting thread with id: "+id);
@@ -139,11 +204,13 @@ public class Server {
 
                 Directive cmd = new Directive();
                 cmd.setId(id);
-                cmd.setStateTransition(Client.LOBBYSTATE);
+                cmd.setStateTransition(LOBBYSTATE);
 
                 if(Server.DEBUG) System.out.println("Attempting to send command to client");
-                if(Server.DEBUG) System.out.println("Number of connected players: "+players.size());
-                if(temp!=null && players.size() < PLIMIT){
+                if(Server.DEBUG) System.out.println("Number of connected players: "+ players.size());
+                if(temp!=null
+                        && players.size() < PLIMIT
+                        && !inGame){
                     try{
                         temp.sendCommand(cmd);
                     }catch (IOException e){
@@ -152,7 +219,7 @@ public class Server {
                 }else if(temp !=null) {
                     if(Server.DEBUG)
                         System.out.println("Rejecting connection players max");
-                    cmd.setStateTransition(Client.MAINMENUSTATE);
+                    cmd.setStateTransition(MAINMENUSTATE);
                     try{
                         temp.sendCommand(cmd);
                     }catch (IOException e){
