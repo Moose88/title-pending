@@ -1,7 +1,6 @@
 package org.titlepending.server;
 
-import org.lwjgl.Sys;
-import org.titlepending.client.Client;
+
 import org.titlepending.shared.ClientThread;
 import org.titlepending.shared.CmdProcessor;
 import org.titlepending.shared.Directive;
@@ -24,6 +23,16 @@ public class Server {
     private static boolean inLobby;
     private static boolean inGame;
     public static ConcurrentLinkedQueue<Directive> commands = new ConcurrentLinkedQueue<>();
+
+    public static final int CONNECTSTATE = 1;
+    public static final int PLAYINGSTATE = 2;
+    public static final int LOADSTATE = 0;
+    public static final int GAMEOVERSTATE = 4;
+    public static final int MAINMENUSTATE = 5;
+    public static final int STATSSTATE = 6;
+    public static final int OPTIONSMENUSTATE = 7;
+    public static final int LOBBYSTATE = 8;
+    public static final int REJECTSTATE= 9;
 
     public static void main(String[] args) throws IOException{
         if(Server.DEBUG){
@@ -195,10 +204,10 @@ public class Server {
 
                 Directive cmd = new Directive();
                 cmd.setId(id);
-                cmd.setStateTransition(Client.LOBBYSTATE);
+                cmd.setStateTransition(LOBBYSTATE);
 
                 if(Server.DEBUG) System.out.println("Attempting to send command to client");
-                if(Server.DEBUG) System.out.println("Number of connected players: "+players.size());
+                if(Server.DEBUG) System.out.println("Number of connected players: "+ players.size());
                 if(temp!=null
                         && players.size() < PLIMIT
                         && !inGame){
@@ -210,7 +219,7 @@ public class Server {
                 }else if(temp !=null) {
                     if(Server.DEBUG)
                         System.out.println("Rejecting connection players max");
-                    cmd.setStateTransition(Client.MAINMENUSTATE);
+                    cmd.setStateTransition(MAINMENUSTATE);
                     try{
                         temp.sendCommand(cmd);
                     }catch (IOException e){
