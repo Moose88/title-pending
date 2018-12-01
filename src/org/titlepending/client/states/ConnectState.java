@@ -7,7 +7,6 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.state.transition.EmptyTransition;
 import org.newdawn.slick.state.transition.FadeInTransition;
-import org.newdawn.slick.state.transition.FadeOutTransition;
 import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
 import org.titlepending.client.menus.BaseMenuState;
@@ -57,10 +56,12 @@ public class ConnectState extends BasicGameState {
         } catch (IOException e){
             if(Client.DEBUG)
                 System.out.println("Connection Rejected");
+            if(thread!=null)
+                thread.stopThread();
             client.enterState(Client.REJECTSTATE);
         }
 
-
+        System.out.println("Successfully connected to server");
 
         while (Updates.getInstance().getQueue().isEmpty());
 
