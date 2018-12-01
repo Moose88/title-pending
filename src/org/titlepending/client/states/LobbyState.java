@@ -349,6 +349,10 @@ public class LobbyState extends BasicGameState {
         finalShip[2] = setCannons;
         finalShip[3] = setCrew;
 
+        // Here, send the finalShip array to the server for your specific UID, either when the timer is up,
+        // or when all players enter the ready state. This can be done that when Updates is !empty, we first
+        // send our finalShip array to the server, and then receive the command (aka, transition state).
+
     }
 
 
@@ -533,14 +537,10 @@ public class LobbyState extends BasicGameState {
         if(key == Input.KEY_ENTER){
             switch(selection){
                 case READY:
-                    // Check if all 8 players ready, go when true
 
                     ready.setReady(true);
                     sendCommand(ready);
-
                     readyset = true;
-                    // TODO: Lock the keyboard here, so that players cannot make any addition input until game starts.
-
 
                     if(Client.DEBUG)
                         System.out.println("Final ship values: " + finalShip[0] + " " + finalShip[1] + " " + finalShip[2] + " " + finalShip[3]);
@@ -556,6 +556,7 @@ public class LobbyState extends BasicGameState {
             }
         }
     }
+
     private void backPressed(){
         ResourceManager.getSound(Client.SCREAM_SOUND).stop();
         ResourceManager.getMusic(Client.LOBBY_MUSIC).stop();

@@ -2,7 +2,6 @@ package org.titlepending.server;
 
 import org.lwjgl.Sys;
 import org.titlepending.client.Client;
-import org.titlepending.client.Updates;
 import org.titlepending.shared.ClientThread;
 import org.titlepending.shared.CmdProcessor;
 import org.titlepending.shared.Directive;
@@ -106,9 +105,9 @@ public class Server {
                     do stuff with cmd here
                  */
                 processor.processCommand(cmd);
-                if(cmd.getready() == true)
+                if(cmd.getready())
                     curReady++;
-                else if(cmd.getready() == false)
+                else if(!cmd.getready())
                     curReady--;
 
                 System.out.println("Player " + cmd.getId() + " gives a ready check of:  " + cmd.getready());
