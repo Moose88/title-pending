@@ -33,10 +33,11 @@ public class ConnectState extends BasicGameState {
      */
 
     private ClientThread thread;
-
+    private boolean connectSuccess;
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException{
         thread = null;
+        connectSuccess = false;
 
     }
 
@@ -53,35 +54,15 @@ public class ConnectState extends BasicGameState {
             thread = new ClientThread(s,false);
             thread.start();
             Updates.getInstance().setThread(thread);
-        } catch (IOException e){
-            if(Client.DEBUG)
+            connectSuccess = true;
+        } catch (IOException e) {
+            if (Client.DEBUG)
                 System.out.println("Connection Rejected");
-            if(thread!=null)
+            if (thread != null)
                 thread.stopThread();
             client.enterState(Client.REJECTSTATE);
+            connectSuccess = false;
         }
-
-        System.out.println("Successfully connected to server");
-
-        while (Updates.getInstance().getQueue().isEmpty());
-
-        if (Client.DEBUG)
-            System.out.println("Receiving Updates instance.");
-        // This is what we're receiving
-        Directive input = Updates.getInstance().getQueue().poll();
-
-
-        if(Client.DEBUG && input != null)
-            System.out.println("Received from server\nState transition: "+input.getStateTransition()+"\nid: "+input.getId());
-        if(input!=null)
-            if(input.getStateTransition() == Client.LOBBYSTATE) {
-                thread.setClientId(input.getId());
-                client.enterState(Client.LOBBYSTATE, new EmptyTransition(), new FadeInTransition());
-            }else{
-                thread.stopThread();
-                System.out.println("Server full");
-                client.enterState(Client.MAINMENUSTATE, new EmptyTransition(), new FadeInTransition());
-            }
 
     }
 
@@ -93,14 +74,28 @@ public class ConnectState extends BasicGameState {
     public void update(GameContainer container, StateBasedGame game,
                        int delta) throws SlickException{
 
+
         Client client = (Client) game;
+        if(!connectSuccess)
+            client.enterState(Client.REJECTSTATE);
+        else
+            while (Updates.getInstance().getQueue().isEmpty()); //wait for input from server
+
         Directive input = Updates.getInstance().getQueue().poll();
 
-
-        if(Client.DEBUG && input != null)
-            System.out.println("Received from server\nState transition: "+input.getStateTransition()+"\nid: "+input.getId());
-        if(input!=null)
-            client.enterState(input.getStateTransition());
+        if(input!=null) {
+            if(Client.DEBUG)
+                System.out.println("Received from server\nState transition: "+input.getStateTransition()+"\nid: "+input.getId());
+            if(input.getStateTransition() == Client.LOBBYSTATE) {
+                thread.setClientId(input.getId());
+                client.enterState(Client.LOBBYSTATE, new EmptyTransition(), new FadeInTransition());
+            }else{
+                if(thread!=null)
+                    thread.stopThread();
+                System.out.println("Server full");
+                client.enterState(Client.REJECTSTATE, new EmptyTransition(), new FadeInTransition());
+            }
+        }
 
     }
     public int getID(){return Client.CONNECTSTATE; }
