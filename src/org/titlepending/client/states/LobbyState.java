@@ -193,10 +193,10 @@ public class LobbyState extends BasicGameState {
                 int textWidth = client.fontMenu.getWidth(text);
         // render some text to the screen
         Color textColor;
-        if(isSelected){
+        if(isSelected && !readyset){
             textColor = new Color(155,28,31);
-        } else if(isSelected && readyset) {
-            textColor = new Color(Color.green);
+        } else if(isSelected) {
+            textColor = new Color(39, 174, 96);
         }else{
             textColor = black;
         }
