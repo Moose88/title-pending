@@ -2,6 +2,7 @@ package org.titlepending.client.states;
 
 
 import jig.ResourceManager;
+import org.lwjgl.Sys;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -342,16 +343,19 @@ public class LobbyState extends BasicGameState {
             Directive statusUpdate = Updates.getInstance().getQueue().poll();
             assert statusUpdate != null;
             timer = statusUpdate.getTime();
-            if(Client.DEBUG)
-                System.out.println(timer);
 
-            if(timer > 0) {
+            if(Client.DEBUG) System.out.println("Client timer: " + timer);
+            if(Client.DEBUG) System.out.println("Server timer: " + statusUpdate.getTime());
+            if(Client.DEBUG) System.out.println("Current state: " + statusUpdate.getStateTransition());
+
+            if(statusUpdate.getTime() > 0) {
                 if (statusUpdate.getStateTransition() == Client.PLAYINGSTATE) {
                     if (Client.DEBUG)
-                        System.out.println("We're going to the state: " + statusUpdate.getStateTransition());
+                        System.out.println("Not enough players: " + statusUpdate.getStateTransition());
                     client.enterState(Client.PLAYINGSTATE);
                 }
             } else {
+                // TODO: Need the state to wait for the server to say go to lobby/rejecting or play state. Instead it moves before the server says go
                 if (Client.DEBUG)
                     System.out.println("We're going to the state: " + statusUpdate.getStateTransition());
                 client.enterState(statusUpdate.getStateTransition());

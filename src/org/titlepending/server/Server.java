@@ -82,11 +82,19 @@ public class Server {
         int curReady = 0;
         Directive cmd;
 
+        if(DEBUG)
+            System.out.println("Waiting for players");
+        while(curPlayers == 0){curPlayers = players.size();}
+
+        if(DEBUG)
+            System.out.println("We got a player, starting timer");
+
         while(lobbyTimer >= 0){
             for (ClientThread thread : players){
                 Directive timeUpdate = new Directive();
                 timeUpdate.setTime(lobbyTimer);
                 if(Server.DEBUG) System.out.println("Timer is: " + timeUpdate.getTime());
+                if(DEBUG) System.out.println("Current players: " + curPlayers);
 
                 try{
                     thread.sendCommand(timeUpdate);
@@ -135,8 +143,6 @@ public class Server {
                 if(DEBUG) curReady = 2;
                 if(curReady == curPlayers && curPlayers >= 2) {
                     System.out.println("We are ready to play the game");
-                    //cmd.setStateTransition(PLAYINGSTATE);
-
                     break;
                 }
 
@@ -152,7 +158,7 @@ public class Server {
         if(DEBUG) curPlayers = 2;
         if(curPlayers < 2){
             // Return the client to the lobby state and say not enough players
-            if(DEBUG) System.out.println("I'm in the correct spot...");
+            if(DEBUG) System.out.println("Not enough players, returning them to lobby state.");
             state.setStateTransition(LOBBYSTATE);
             for(ClientThread thread : players){
                 thread.sendCommand(state);
