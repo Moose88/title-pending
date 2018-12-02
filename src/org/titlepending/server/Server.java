@@ -156,7 +156,7 @@ public class Server {
         // finalShip arrays and assign them to each id for applicable
         // game logic.
 
-        //TODO: test this I'm not sure if it works
+        //final timer sent to client with transition state
         cmd = new Directive();
         cmd.setStateTransition(PLAYINGSTATE);
         cmd.setTime(lobbyTimer);
