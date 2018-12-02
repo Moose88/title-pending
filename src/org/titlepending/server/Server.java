@@ -1,9 +1,6 @@
 package org.titlepending.server;
 
 
-import org.lwjgl.Sys;
-import org.titlepending.client.Client;
-import org.titlepending.client.Updates;
 import org.titlepending.shared.ClientThread;
 import org.titlepending.shared.CmdProcessor;
 import org.titlepending.shared.Directive;
@@ -75,26 +72,33 @@ public class Server {
 
         // TODO: Bug where server starts counting down before players connect or enter lobby
 
-        int lobbyTimer = 180000;
-        if(DEBUG)
+        /** moved handling of this issue into lobby while loop to get rid of busy loop **/
+//        if(DEBUG)
+//            lobbyTimer = 10000;
+//
+//        if(DEBUG) {
+//            System.out.println("Waiting for players");
+//        }
+//        while(curPlayers == 0){curPlayers = players.size();}
+//
+//        if(DEBUG) {
+//            System.out.println("We got a player, starting timer");
+//        }
+
+        int lobbyTimer;
+        if(DEBUG) {
             lobbyTimer = 10000;
-        int curPlayers = players.size();
+        }else {
+            lobbyTimer = 180000;
+        }
+
         int curReady = 0;
         Directive cmd;
-
-        if(DEBUG)
-            System.out.println("Waiting for players");
-        while(curPlayers == 0){curPlayers = players.size();}
-
-        if(DEBUG)
-            System.out.println("We got a player, starting timer");
-
         while(lobbyTimer >= 0){
+            if(DEBUG) System.out.println("Timer is: " + lobbyTimer+"\nCurrent players: "+players.size());
             for (ClientThread thread : players){
                 Directive timeUpdate = new Directive();
                 timeUpdate.setTime(lobbyTimer);
-                if(Server.DEBUG) System.out.println("Timer is: " + timeUpdate.getTime());
-                if(DEBUG) System.out.println("Current players: " + curPlayers);
 
                 try{
                     thread.sendCommand(timeUpdate);
@@ -112,18 +116,9 @@ public class Server {
                 e.printStackTrace();
             }
 
-            lobbyTimer -= 1000;
+            if(players.size() != 0)
+                lobbyTimer -= 1000;
 
-
-            if(curPlayers < players.size()){
-                if(DEBUG)
-                    lobbyTimer += 10000;
-                else
-                    lobbyTimer += 30000;
-                curPlayers = players.size();
-                if(lobbyTimer > 180000)
-                    lobbyTimer = 180000;
-            }
             if(commands.size()>0) {
                 cmd = commands.poll();
                 /*
@@ -134,18 +129,25 @@ public class Server {
                     curReady++;
                 else if(!cmd.getready())
                     curReady--;
-
-                System.out.println("Player " + cmd.getId() + " gives a ready check of:  " + cmd.getready());
-                System.out.println("Total number of players: " + curPlayers);
-                System.out.println("Number of players ready: " + curReady);
-
-                if(DEBUG) curPlayers = 2;
-                if(DEBUG) curReady = 2;
-                if(curReady == curPlayers && curPlayers >= 2) {
-                    System.out.println("We are ready to play the game");
-                    break;
+                if(DEBUG) {
+                    System.out.println("Player " + cmd.getId() + " gives a ready check of:  " + cmd.getready());
+                    System.out.println("Total number of players: " + players.size());
+                    System.out.println("Number of players ready: " + curReady);
                 }
 
+
+            }
+
+            if(players.size()<2 && players.size()>0)
+                if(DEBUG)
+                    lobbyTimer = 10000;
+                else
+                    lobbyTimer += 30000;
+
+            if(curReady == players.size() && players.size() >= 2) {
+                if(DEBUG)
+                    System.out.println("We are ready to play the game");
+                lobbyTimer = 0;
             }
 
         }
@@ -154,24 +156,30 @@ public class Server {
         // finalShip arrays and assign them to each id for applicable
         // game logic.
 
-        Directive state = new Directive();
-        if(DEBUG) curPlayers = 2;
-        if(curPlayers < 2){
-            // Return the client to the lobby state and say not enough players
-            if(DEBUG) System.out.println("Not enough players, returning them to lobby state.");
-            state.setStateTransition(LOBBYSTATE);
-            for(ClientThread thread : players){
-                thread.sendCommand(state);
-            }
-            // TODO: Here, we should restart the server somehow if needed
+        //TODO: test this I'm not sure if it works
+        cmd = new Directive();
+        cmd.setStateTransition(PLAYINGSTATE);
+        cmd.setTime(lobbyTimer);
+        for(ClientThread player : players)
+            player.sendCommand(cmd);
+        /** this should all be handled in the lobby while loop now **/
 
-        } else {
-            if(DEBUG) System.out.println("Lets play!");
-            state.setStateTransition(PLAYINGSTATE);
-            for(ClientThread thread : players){
-                thread.sendCommand(state);
-            }
-        }
+//        if(players.size() < 2){
+//            // Return the client to the lobby state and say not enough players
+//            if(DEBUG) System.out.println("Not enough players, returning them to lobby state.");
+//            state.setStateTransition(LOBBYSTATE);
+//            for(ClientThread thread : players){
+//                thread.sendCommand(state);
+//            }
+//            // TODO: Here, we should restart the server somehow if needed
+//
+//        } else {
+//            if(DEBUG) System.out.println("Lets play!");
+//            state.setStateTransition(PLAYINGSTATE);
+//            for(ClientThread thread : players){
+//                thread.sendCommand(state);
+//            }
+//        }
 
 
         // get a command to receive the id of the client and finalShip array to assign to the server
