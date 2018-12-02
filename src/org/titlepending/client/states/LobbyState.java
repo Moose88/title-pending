@@ -339,13 +339,24 @@ public class LobbyState extends BasicGameState {
 
 
         if(!Updates.getInstance().getQueue().isEmpty()){
-            Directive timeUpdate = Updates.getInstance().getQueue().poll();
-            assert timeUpdate != null;
-            timer = timeUpdate.getTime();
+            Directive statusUpdate = Updates.getInstance().getQueue().poll();
+            assert statusUpdate != null;
+            timer = statusUpdate.getTime();
             if(Client.DEBUG)
                 System.out.println(timer);
 
-            //Directive state = Updates.getInstance().getQueue().poll();
+            if(timer > 0) {
+                if (statusUpdate.getStateTransition() == Client.PLAYINGSTATE) {
+                    if (Client.DEBUG)
+                        System.out.println("We're going to the state: " + statusUpdate.getStateTransition());
+                    client.enterState(Client.PLAYINGSTATE);
+                }
+            } else {
+                if (Client.DEBUG)
+                    System.out.println("We're going to the state: " + statusUpdate.getStateTransition());
+                client.enterState(statusUpdate.getStateTransition());
+            }
+
         }
 
         totalMod = haulMod[setHaul] + sailMod[setSails] + cannonMod[setCannons];

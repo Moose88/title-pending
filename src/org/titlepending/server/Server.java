@@ -2,6 +2,7 @@ package org.titlepending.server;
 
 
 import org.lwjgl.Sys;
+import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
 import org.titlepending.shared.ClientThread;
 import org.titlepending.shared.CmdProcessor;
@@ -78,16 +79,17 @@ public class Server {
          */
 
         int lobbyTimer = 180000;
+        if(DEBUG)
+            lobbyTimer = 10000;
         int curPlayers = players.size();
         int curReady = 0;
-        //boolean ready = false;
         Directive cmd;
 
         while(lobbyTimer >= 0){
             for (ClientThread thread : players){
                 Directive timeUpdate = new Directive();
-
                 timeUpdate.setTime(lobbyTimer);
+                if(Server.DEBUG) System.out.println("Timer is: " + timeUpdate.getTime());
 
                 try{
                     thread.sendCommand(timeUpdate);
@@ -106,8 +108,8 @@ public class Server {
             }
 
             lobbyTimer -= 1000;
-            if(curPlayers < players.size()){
-                lobbyTimer += 300000;
+            if(curPlayers < players.size() && curPlayers > 1){
+                lobbyTimer += 30000;
                 curPlayers = players.size();
                 if(lobbyTimer > 180000)
                     lobbyTimer = 180000;
@@ -127,7 +129,7 @@ public class Server {
                 System.out.println("Total number of players: " + curPlayers);
                 System.out.println("Number of players ready: " + curReady);
 
-                if(curReady == curPlayers && curPlayers >= 1) {
+                if(curReady == curPlayers && curPlayers >= 2) {
                     System.out.println("We are ready to play the game");
                     //cmd.setStateTransition(PLAYINGSTATE);
 
@@ -138,29 +140,39 @@ public class Server {
 
         }
 
-        Directive state = new Directive();
-//        if(curPlayers < 2){
-//            // Return the client to the lobby state and say not enough players
-//            state.setStateTransition(LOBBYSTATE);
-//            Updates.getInstance().addToQueue(state);
-//        }
-
         // Send the players into the game and have the server take their
         // finalShip arrays and assign them to each id for applicable
         // game logic.
+
+        Directive state = new Directive();
+        if(curPlayers < 2){
+            // Return the client to the lobby state and say not enough players
+            if(DEBUG) System.out.println("Not enough players");
+            state.setStateTransition(LOBBYSTATE);
+            for(ClientThread thread : players){
+                thread.sendCommand(state);
+            }
+            // TODO: Here, we should restart the server somehow
+
+        } else {
+            if(DEBUG) System.out.println("Lets play!");
+            state.setStateTransition(PLAYINGSTATE);
+            for(ClientThread thread : players){
+                thread.sendCommand(state);
+            }
+        }
+
 
         // get a command to receive the id of the client and finalShip array to assign to the server
         // send a command to proceed to the play state with the rendered ship image
 
         // Setup the client id's to their ship arrays here
 
-        System.out.println("Lets play!");
-        state.setStateTransition(PLAYINGSTATE);
-//        state.setId(Updates.getInstance().getThread().getClientId());
-//        Updates.getInstance().addToQueue(state);
-//        Updates.getInstance().getThread().sendCommand(state);
 
 
+
+
+        // I obviously don't know what the fuck I'm doing...
         inGame =true;
         inLobby = false;
 
@@ -256,6 +268,7 @@ public class Server {
 
                 if(Server.DEBUG)
                     System.out.println("Adding thread to players list");
+                if(Server.DEBUG) System.out.println("Number of connected players: "+ players.size());
                 if(temp != null)
                     players.add(temp);
 
