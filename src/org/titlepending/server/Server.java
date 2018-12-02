@@ -1,6 +1,8 @@
 package org.titlepending.server;
 
 
+import org.lwjgl.Sys;
+import org.titlepending.client.Updates;
 import org.titlepending.shared.ClientThread;
 import org.titlepending.shared.CmdProcessor;
 import org.titlepending.shared.Directive;
@@ -33,6 +35,8 @@ public class Server {
     public static final int OPTIONSMENUSTATE = 7;
     public static final int LOBBYSTATE = 8;
     public static final int REJECTSTATE= 9;
+
+    private static int[][] playingShips;
 
     public static void main(String[] args) throws IOException{
         if(Server.DEBUG){
@@ -76,7 +80,7 @@ public class Server {
         int lobbyTimer = 180000;
         int curPlayers = players.size();
         int curReady = 0;
-        boolean ready = false;
+        //boolean ready = false;
         Directive cmd;
 
         while(lobbyTimer >= 0){
@@ -123,8 +127,10 @@ public class Server {
                 System.out.println("Total number of players: " + curPlayers);
                 System.out.println("Number of players ready: " + curReady);
 
-                if(curReady == curPlayers && curPlayers >= 2) {
+                if(curReady == curPlayers && curPlayers >= 1) {
                     System.out.println("We are ready to play the game");
+                    //cmd.setStateTransition(PLAYINGSTATE);
+
                     break;
                 }
 
@@ -132,9 +138,28 @@ public class Server {
 
         }
 
+        Directive state = new Directive();
+//        if(curPlayers < 2){
+//            // Return the client to the lobby state and say not enough players
+//            state.setStateTransition(LOBBYSTATE);
+//            Updates.getInstance().addToQueue(state);
+//        }
+
         // Send the players into the game and have the server take their
         // finalShip arrays and assign them to each id for applicable
         // game logic.
+
+        // get a command to receive the id of the client and finalShip array to assign to the server
+        // send a command to proceed to the play state with the rendered ship image
+
+        // Setup the client id's to their ship arrays here
+
+        System.out.println("Lets play!");
+        state.setStateTransition(PLAYINGSTATE);
+//        state.setId(Updates.getInstance().getThread().getClientId());
+//        Updates.getInstance().addToQueue(state);
+//        Updates.getInstance().getThread().sendCommand(state);
+
 
         inGame =true;
         inLobby = false;

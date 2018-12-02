@@ -5,6 +5,7 @@ import jig.ResourceManager;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.state.transition.EmptyTransition;
 import org.newdawn.slick.state.transition.FadeInTransition;
 import org.newdawn.slick.state.transition.FadeOutTransition;
 import org.titlepending.client.Client;
@@ -135,9 +136,9 @@ public class LobbyState extends BasicGameState {
 
         // Cannon Images, Mod values and Names/Arrays
 
-        Image oneCannon = ship_RSC_96.getSubImage(6, 1).getScaledCopy(2.5f);
-        Image twoCannons = ship_RSC_96.getSubImage(5, 1).getScaledCopy(2.5f);
-        Image threeCannons = ship_RSC_96.getSubImage(4, 1).getScaledCopy(2.5f);
+        Image oneCannon = ship_RSC_96.getSubImage(6, 1).getScaledCopy(3f);
+        Image twoCannons = ship_RSC_96.getSubImage(5, 1).getScaledCopy(3f);
+        Image threeCannons = ship_RSC_96.getSubImage(4, 1).getScaledCopy(3f);
 
         cannons[2] = oneCannon;
         cannons[1] = twoCannons;
@@ -335,12 +336,16 @@ public class LobbyState extends BasicGameState {
     public void update(GameContainer container, StateBasedGame game,
                        int delta) {
 
+
+
         if(!Updates.getInstance().getQueue().isEmpty()){
             Directive timeUpdate = Updates.getInstance().getQueue().poll();
             assert timeUpdate != null;
             timer = timeUpdate.getTime();
             if(Client.DEBUG)
                 System.out.println(timer);
+
+            //Directive state = Updates.getInstance().getQueue().poll();
         }
 
         totalMod = haulMod[setHaul] + sailMod[setSails] + cannonMod[setCannons];
@@ -352,6 +357,7 @@ public class LobbyState extends BasicGameState {
         // Here, send the finalShip array to the server for your specific UID, either when the timer is up,
         // or when all players enter the ready state. This can be done that when Updates is !empty, we first
         // send our finalShip array to the server, and then receive the command (aka, transition state).
+
 
     }
 
