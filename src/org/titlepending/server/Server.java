@@ -169,10 +169,6 @@ public class Server {
         // Setup the client id's to their ship arrays here
 
 
-
-
-
-        // I obviously don't know what the fuck I'm doing...
         inGame =true;
         inLobby = false;
 
