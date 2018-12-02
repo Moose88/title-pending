@@ -195,7 +195,7 @@ public class Server {
         inGame =true;
         inLobby = false;
 
-        if(Server.DEBUG)
+        if(DEBUG)
             System.out.println("Starting game loop");
 
         while(inGame){

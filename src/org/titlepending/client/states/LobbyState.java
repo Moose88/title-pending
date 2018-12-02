@@ -348,7 +348,7 @@ public class LobbyState extends BasicGameState {
                 if(Client.DEBUG)
                     System.out.println("State Transition: "+stateTransition);
 
-                //TODO: send client current ship configuration
+                // TODO: send client current ship configuration
                 client.enterState(stateTransition);
             }
         }
