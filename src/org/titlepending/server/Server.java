@@ -38,16 +38,16 @@ public class Server {
 
     public static void main(String[] args) throws IOException{
         if(Server.DEBUG){
-        InetAddress Ip= InetAddress.getLocalHost();
-        Enumeration a = NetworkInterface.getNetworkInterfaces();
-        while (a.hasMoreElements()){
-            NetworkInterface n = (NetworkInterface) a.nextElement();
-            Enumeration b = n.getInetAddresses();
-            while (b.hasMoreElements()){
-                InetAddress i = (InetAddress) b.nextElement();
-                System.out.println(i);
+            InetAddress Ip= InetAddress.getLocalHost();
+            Enumeration a = NetworkInterface.getNetworkInterfaces();
+            while (a.hasMoreElements()){
+                NetworkInterface n = (NetworkInterface) a.nextElement();
+                Enumeration b = n.getInetAddresses();
+                while (b.hasMoreElements()){
+                    InetAddress i = (InetAddress) b.nextElement();
+                    System.out.println(i);
+                }
             }
-        }
             System.out.println("My IP: "+Ip.getLocalHost().getHostAddress() + "\nHost Name "+Ip.getHostName());
         }
 
@@ -94,7 +94,7 @@ public class Server {
 
         int curReady = 0;
         Directive cmd;
-        while(lobbyTimer >= 0){
+        while(lobbyTimer > 0){
             if(DEBUG) System.out.println("Timer is: " + lobbyTimer+"\nCurrent players: "+players.size());
             for (ClientThread thread : players){
                 Directive timeUpdate = new Directive();
@@ -138,7 +138,7 @@ public class Server {
 
             }
 
-            if(players.size()<2 && players.size()>0)
+            if(players.size()==1 && lobbyTimer <= 30000)
                 if(DEBUG)
                     lobbyTimer = 10000;
                 else
@@ -171,7 +171,7 @@ public class Server {
 //            for(ClientThread thread : players){
 //                thread.sendCommand(state);
 //            }
-//            // TODO: Here, we should restart the server somehow if needed
+             // TODO: Here, we should restart the server somehow if needed
 //
 //        } else {
 //            if(DEBUG) System.out.println("Lets play!");

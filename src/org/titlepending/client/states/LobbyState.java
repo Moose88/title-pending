@@ -337,30 +337,20 @@ public class LobbyState extends BasicGameState {
     public void update(GameContainer container, StateBasedGame game,
                        int delta) {
 
-
-
         if(!Updates.getInstance().getQueue().isEmpty()){
             Directive statusUpdate = Updates.getInstance().getQueue().poll();
             assert statusUpdate != null;
             timer = statusUpdate.getTime();
 
-            if(Client.DEBUG) System.out.println("Client timer: " + timer);
-            if(Client.DEBUG) System.out.println("Server timer: " + statusUpdate.getTime());
-            if(Client.DEBUG) System.out.println("Current state: " + statusUpdate.getStateTransition());
+            if(Client.DEBUG) System.out.println("Client timer: " + timer +"\nServer timer: "+statusUpdate.getTime()+"\nCurrent state: "+statusUpdate.getStateTransition());
+            if(statusUpdate.getTime() == 0) {
+                int stateTransition = statusUpdate.getStateTransition();
+                if(Client.DEBUG)
+                    System.out.println("State Transition: "+stateTransition);
 
-            if(statusUpdate.getTime() > 0) {
-                if (statusUpdate.getStateTransition() == Client.PLAYINGSTATE) {
-                    if (Client.DEBUG)
-                        System.out.println("Not enough players: " + statusUpdate.getStateTransition());
-                    client.enterState(Client.PLAYINGSTATE);
-                }
-            } else {
-                // TODO: Need the state to wait for the server to say go to lobby/rejecting or play state. Instead it moves before the server says go
-                if (Client.DEBUG)
-                    System.out.println("We're going to the state: " + statusUpdate.getStateTransition());
-                client.enterState(statusUpdate.getStateTransition());
+                //TODO: send client current ship configuration
+                client.enterState(stateTransition);
             }
-
         }
 
         totalMod = haulMod[setHaul] + sailMod[setSails] + cannonMod[setCannons];

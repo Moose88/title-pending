@@ -15,7 +15,6 @@ import java.awt.Font;
 
 public class Client extends StateBasedGame {
     public static final boolean DEBUG = true;
-    //public static final int STARTUPSTATE = 0;
     public static final int CONNECTSTATE = 1;
     public static final int PLAYINGSTATE = 2;
     public static final int LOADSTATE = 0;
