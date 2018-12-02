@@ -73,10 +73,7 @@ public class Server {
         // Once we transition, the server will need to assign a finalShip array to each
         // player ID.
 
-        /**
-         * @param lobbyTimer:
-         * @param curPlayers:
-         */
+        // TODO: Bug where server starts counting down before players connect or enter lobby
 
         int lobbyTimer = 180000;
         if(DEBUG)
@@ -108,8 +105,13 @@ public class Server {
             }
 
             lobbyTimer -= 1000;
-            if(curPlayers < players.size() && curPlayers > 1){
-                lobbyTimer += 30000;
+
+
+            if(curPlayers < players.size()){
+                if(DEBUG)
+                    lobbyTimer += 10000;
+                else
+                    lobbyTimer += 30000;
                 curPlayers = players.size();
                 if(lobbyTimer > 180000)
                     lobbyTimer = 180000;
@@ -129,6 +131,8 @@ public class Server {
                 System.out.println("Total number of players: " + curPlayers);
                 System.out.println("Number of players ready: " + curReady);
 
+                if(DEBUG) curPlayers = 2;
+                if(DEBUG) curReady = 2;
                 if(curReady == curPlayers && curPlayers >= 2) {
                     System.out.println("We are ready to play the game");
                     //cmd.setStateTransition(PLAYINGSTATE);
@@ -145,14 +149,15 @@ public class Server {
         // game logic.
 
         Directive state = new Directive();
+        if(DEBUG) curPlayers = 2;
         if(curPlayers < 2){
             // Return the client to the lobby state and say not enough players
-            if(DEBUG) System.out.println("Not enough players");
+            if(DEBUG) System.out.println("I'm in the correct spot...");
             state.setStateTransition(LOBBYSTATE);
             for(ClientThread thread : players){
                 thread.sendCommand(state);
             }
-            // TODO: Here, we should restart the server somehow
+            // TODO: Here, we should restart the server somehow if needed
 
         } else {
             if(DEBUG) System.out.println("Lets play!");
@@ -169,6 +174,10 @@ public class Server {
         // Setup the client id's to their ship arrays here
 
 
+
+
+
+        // I obviously don't know what the fuck I'm doing...
         inGame =true;
         inLobby = false;
 
