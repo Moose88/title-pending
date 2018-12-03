@@ -212,18 +212,24 @@ public class Server {
             timer -= 1000;
         }
 
-        for(Directive command : commands){
+
+        while(!commands.isEmpty()){
             /** construct player ships here **/
+            cmd = commands.poll();
             if(DEBUG){
-                System.out.println("Received from Client: "+command.getId());
-                System.out.println("Hull: "+command.getShip()[0]);
-                System.out.println("Sails: "+command.getShip()[1]);
-                System.out.println("Cannon: "+command.getShip()[2]);
-                System.out.println("Captain: "+command.getShip()[3]);
+                System.out.println("Received from Client: "+cmd.getId());
+                System.out.println("Hull: "+cmd.getShip()[0]);
+                System.out.println("Sails: "+cmd.getShip()[1]);
+                System.out.println("Cannon: "+cmd.getShip()[2]);
+                System.out.println("Captain: "+cmd.getShip()[3]);
             }
         }
 
-
+        for(ClientThread player : players){
+            cmd = new Directive();
+            cmd.setStateTransition(PLAYINGSTATE);
+            player.sendCommand(cmd);
+        }
         // I obviously don't know what the fuck I'm doing...
         inGame =true;
         inLobby = false;
