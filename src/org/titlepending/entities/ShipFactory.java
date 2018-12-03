@@ -13,15 +13,18 @@ public class ShipFactory {
         return instance;
     }
 
-    public Ship createNewPlayerShip(float x, float y, float vx, float vy){
-        Ship temp = new Ship(x,y,vx,vy);
-
+    public Ship createNewPlayerShip(float x, float y, int[] stats){
+        Ship temp = new Ship(x,y);
+        temp.setStats(stats);
+        temp.addSprites();
         return temp;
     }
 
-    public Ship createNewNpcShip(float x, float y, float vx, float vy){
-        Ship temp = new Ship(x,y,vx,vy);
-
+    public Ship createNewNpcShip(float x, float y){
+        Ship temp = new Ship(x,y);
+        int[] npcStats = new int[] {2,2,2,2};
+        temp.setStats(npcStats);
+        temp.addSprites();
         return temp;
     }
 
