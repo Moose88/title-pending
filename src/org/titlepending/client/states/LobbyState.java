@@ -2,11 +2,9 @@ package org.titlepending.client.states;
 
 
 import jig.ResourceManager;
-import org.lwjgl.Sys;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.state.transition.EmptyTransition;
 import org.newdawn.slick.state.transition.FadeInTransition;
 import org.newdawn.slick.state.transition.FadeOutTransition;
 import org.titlepending.client.Client;
@@ -23,36 +21,36 @@ public class LobbyState extends BasicGameState {
     private int selection;
     private int items;
     private boolean readyset = false;
-
+    private boolean enteringGame = false;
     private SavedState savedShip;
 
-    private final static int HAUL = 0;
+    private final static int HULL = 0;
     private final static int SAILS = 1;
     private final static int CANNONS = 2;
     private final static int CREW = 3;
     private final static int READY = 4;
     private final static int BACK = 5;
 
-    private int setHaul;
+    private int setHull;
     private int setSails;
     private int setCannons;
     private int setCrew;
     private int timer;
 
 
-    private int[] haulMod = new int[3];
+    private int[] hullMod = new int[3];
     private int[] sailMod = new int[3];
     private int[] cannonMod = new int[3];
     private String[] crewMod = new String[3];
 
     private int totalMod;
 
-    private Image[] haul = new Image[3];
+    private Image[] hull = new Image[3];
     private Image[] sails = new Image[3];
     private Image[] cannons = new Image[3];
     private Image[] crew = new Image[3];
 
-    private String[] haulString = new String[3];
+    private String[] hullString = new String[3];
     private String[] sailString = new String[3];
     private String[] cannonString = new String[3];
     private String[] crewString = new String[3];
@@ -72,7 +70,7 @@ public class LobbyState extends BasicGameState {
 
         this.items = 6;
         this.selection = 0;
-        this.setHaul = 0;
+        this.setHull = 0;
         this.setSails = 0;
         this.setCannons = 0;
         this.setCrew = 0;
@@ -80,13 +78,13 @@ public class LobbyState extends BasicGameState {
 
         savedShip = new SavedState("ship");
 
-        setHaul = (int) savedShip.getNumber("haul",0);
+        setHull = (int) savedShip.getNumber("hull",0);
         setSails = (int) savedShip.getNumber("sails",0);
         setCannons = (int) savedShip.getNumber("cannons",0);
         setCrew = (int) savedShip.getNumber("crew",0);
 
-//        setHaul = 2;
-//        savedShip.setNumber("haul", setHaul);
+//        setHull = 2;
+//        savedShip.setNumber("hull", setHull);
 //        setSails = 2;
 //        savedShip.setNumber("sails", setSails);
 //        setCannons = 2;
@@ -96,7 +94,7 @@ public class LobbyState extends BasicGameState {
 //        save();
 
         if(Client.DEBUG) {
-            System.out.println("Haul: " + setHaul + " Sails: " + setSails + " Cannons: " + setCannons + " Crew: " + setCrew);
+            System.out.println("Hull: " + setHull + " Sails: " + setSails + " Cannons: " + setCannons + " Crew: " + setCrew);
         }
 
         // Haul Images, Mod values and Names/Arrays
@@ -105,17 +103,17 @@ public class LobbyState extends BasicGameState {
         Image medHaul = ship_RSC_96.getSubImage(0, 0).getScaledCopy(3f);
         Image smallHaul = ship_RSC_96.getSubImage(2, 0).getScaledCopy(3f);
 
-        haul[2] = smallHaul;
-        haul[1] = medHaul;
-        haul[0] = lgHaul;
+        hull[2] = smallHaul;
+        hull[1] = medHaul;
+        hull[0] = lgHaul;
 
-        haulString[2] = "Small Hull";
-        haulString[1] = "Medium Hull";
-        haulString[0] = "Large Hull";
+        hullString[2] = "Small Hull";
+        hullString[1] = "Medium Hull";
+        hullString[0] = "Large Hull";
 
-        haulMod[2] = 3;
-        haulMod[1] = 5;
-        haulMod[0] = 7;
+        hullMod[2] = 3;
+        hullMod[1] = 5;
+        hullMod[0] = 7;
 
         // Sail Images, Mod values and Names/Arrays
 
@@ -191,6 +189,19 @@ public class LobbyState extends BasicGameState {
 
     }
 
+    public void leave(GameContainer container, StateBasedGame game){
+        if(enteringGame){
+            Directive cmd = new Directive();
+            cmd.setShip(finalShip);
+            cmd.setId(Updates.getInstance().getThread().getClientId());
+            try {
+                Updates.getInstance().getThread().sendCommand(cmd);
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void drawMenuItem(String text, int yPos, boolean isSelected){
                 int textWidth = client.fontMenu.getWidth(text);
         // render some text to the screen
@@ -227,7 +238,7 @@ public class LobbyState extends BasicGameState {
         //Draw the model ship here for the center of the screen
 
         g.drawImage(cannons[setCannons], client.ScreenWidth/2 - cannons[setCannons].getWidth()/2, client.ScreenHeight*.25f);
-        g.drawImage(haul[setHaul], client.ScreenWidth/2 - haul[setHaul].getWidth()/2, client.ScreenHeight*.25f);
+        g.drawImage(hull[setHull], client.ScreenWidth/2 - hull[setHull].getWidth()/2, client.ScreenHeight*.25f);
         g.drawImage(sails[setSails], client.ScreenWidth/2 - sails[setSails].getWidth()/2, client.ScreenHeight*.25f);
 
         //Draw the crew on the left
@@ -246,7 +257,7 @@ public class LobbyState extends BasicGameState {
 
         String lobbyStats = "Construction Cost: " + "\n" +
                 "\n" +
-                "Hull: " + (haulMod[setHaul]) + " gold coins." + "\n" +
+                "Hull: " + (hullMod[setHull]) + " gold coins." + "\n" +
                 "Sails: " + (sailMod[setSails]) + " gold coins." +  "\n" +
                 "Cannons: " + (cannonMod[setCannons]) + " gold coins." +  "\n" +
                 "\n" +
@@ -305,7 +316,7 @@ public class LobbyState extends BasicGameState {
         int yTop = (int) (client.ScreenHeight * 0.55); // two thirds down the string
         int itemSpace = 95;
 
-        drawMenuItem("< " + haulString[setHaul] + " >", yTop, isSelected(HAUL));
+        drawMenuItem("< " + hullString[setHull] + " >", yTop, isSelected(HULL));
         drawMenuItem("< " + sailString[setSails] + " >", yTop + SAILS * itemSpace, isSelected(SAILS));
         drawMenuItem("< " + cannonString[setCannons] + " >", yTop + CANNONS * itemSpace, isSelected(CANNONS));
         drawMenuItem("< " + crewString[setCrew] + " >", yTop + CREW * itemSpace, isSelected(CREW));
@@ -349,12 +360,13 @@ public class LobbyState extends BasicGameState {
                     System.out.println("State Transition: "+stateTransition);
 
                 // TODO: send client current ship configuration
+                enteringGame = true;
                 client.enterState(stateTransition);
             }
         }
 
-        totalMod = haulMod[setHaul] + sailMod[setSails] + cannonMod[setCannons];
-        finalShip[0] = setHaul;
+        totalMod = hullMod[setHull] + sailMod[setSails] + cannonMod[setCannons];
+        finalShip[0] = setHull;
         finalShip[1] = setSails;
         finalShip[2] = setCannons;
         finalShip[3] = setCrew;
@@ -375,7 +387,7 @@ public class LobbyState extends BasicGameState {
             return;
 
         if(Client.DEBUG) {
-            System.out.println("Haul: " + setHaul + " Sails: " + setSails + " Cannons: " + setCannons + " Crew: " + setCrew);
+            System.out.println("Haul: " + setHull + " Sails: " + setSails + " Cannons: " + setCannons + " Crew: " + setCrew);
         }
 
         if(key == Input.KEY_ESCAPE && readyset){
@@ -413,47 +425,47 @@ public class LobbyState extends BasicGameState {
             selection = selection % items;
 
         // Left and right selection for Haul
-        if(key == Input.KEY_LEFT && selection == HAUL){
-            if(setHaul >= 2) {
-                if(haulMod[0] + sailMod[setSails] + cannonMod[setCannons] <= 15){
+        if(key == Input.KEY_LEFT && selection == HULL){
+            if(setHull >= 2) {
+                if(hullMod[0] + sailMod[setSails] + cannonMod[setCannons] <= 15){
                     ResourceManager.getSound(Client.MENU_CLICK).play();
-                    setHaul = 0;
+                    setHull = 0;
                 }
             }else {
-                if (haulMod[setHaul + 1] + sailMod[setSails] + cannonMod[setCannons] <= 15){
+                if (hullMod[setHull + 1] + sailMod[setSails] + cannonMod[setCannons] <= 15){
                     ResourceManager.getSound(Client.MENU_CLICK).play();
-                    setHaul++;
+                    setHull++;
                 }
             }
-            savedShip.setNumber("haul", setHaul);
+            savedShip.setNumber("hull", setHull);
             save();
         }
 
-        if(key == Input.KEY_RIGHT && selection == HAUL){
-            if(setHaul <= 0) {
-                if(haulMod[2] + sailMod[setSails] + cannonMod[setCannons] <= 15) {
+        if(key == Input.KEY_RIGHT && selection == HULL){
+            if(setHull <= 0) {
+                if(hullMod[2] + sailMod[setSails] + cannonMod[setCannons] <= 15) {
                     ResourceManager.getSound(Client.MENU_CLICK).play();
-                    setHaul = 2;
+                    setHull = 2;
                 }
             }else {
-                if(haulMod[setHaul-1] + sailMod[setSails] + cannonMod[setCannons] <= 15) {
+                if(hullMod[setHull -1] + sailMod[setSails] + cannonMod[setCannons] <= 15) {
                     ResourceManager.getSound(Client.MENU_CLICK).play();
-                    setHaul--;
+                    setHull--;
                 }
             }
-            savedShip.setNumber("haul", setHaul);
+            savedShip.setNumber("hull", setHull);
             save();
         }
 
         // Left and right selection for Sails
         if(key == Input.KEY_LEFT && selection == SAILS){
             if(setSails >= 2) {
-                if(haulMod[setHaul] + sailMod[0] + cannonMod[setCannons] <= 15) {
+                if(hullMod[setHull] + sailMod[0] + cannonMod[setCannons] <= 15) {
                     ResourceManager.getSound(Client.MENU_CLICK).play();
                     setSails = 0;
                 }
             }else {
-                if(haulMod[setHaul] + sailMod[setSails+1] + cannonMod[setCannons] <= 15) {
+                if(hullMod[setHull] + sailMod[setSails+1] + cannonMod[setCannons] <= 15) {
                     ResourceManager.getSound(Client.MENU_CLICK).play();
                     setSails++;
                 }
@@ -464,12 +476,12 @@ public class LobbyState extends BasicGameState {
 
         if(key == Input.KEY_RIGHT && selection == SAILS){
             if(setSails <= 0) {
-                if(haulMod[setHaul] + sailMod[2] + cannonMod[setCannons] <= 15) {
+                if(hullMod[setHull] + sailMod[2] + cannonMod[setCannons] <= 15) {
                     ResourceManager.getSound(Client.MENU_CLICK).play();
                     setSails = 2;
                 }
             }else {
-                if(haulMod[setHaul] + sailMod[setSails-1] + cannonMod[setCannons] <= 15) {
+                if(hullMod[setHull] + sailMod[setSails-1] + cannonMod[setCannons] <= 15) {
                     ResourceManager.getSound(Client.MENU_CLICK).play();
                     setSails--;
                 }
@@ -481,12 +493,12 @@ public class LobbyState extends BasicGameState {
         // Left and right selection for Cannons
         if(key == Input.KEY_LEFT && selection == CANNONS){
             if(setCannons >= 2){
-                if(haulMod[setHaul] + sailMod[setSails] + cannonMod[0] <= 15) {
+                if(hullMod[setHull] + sailMod[setSails] + cannonMod[0] <= 15) {
                     ResourceManager.getSound(Client.MENU_CLICK).play();
                     setCannons = 0;
                 }
             }else {
-                if(haulMod[setHaul] + sailMod[setSails] + cannonMod[setCannons+1] <= 15) {
+                if(hullMod[setHull] + sailMod[setSails] + cannonMod[setCannons+1] <= 15) {
                     ResourceManager.getSound(Client.MENU_CLICK).play();
                     setCannons++;
                 }
@@ -497,12 +509,12 @@ public class LobbyState extends BasicGameState {
 
         if(key == Input.KEY_RIGHT && selection == CANNONS){
             if(setCannons <= 0) {
-                if(haulMod[setHaul] + sailMod[setSails] + cannonMod[2] <= 15) {
+                if(hullMod[setHull] + sailMod[setSails] + cannonMod[2] <= 15) {
                     ResourceManager.getSound(Client.MENU_CLICK).play();
                     setCannons = 2;
                 }
             }else {
-                if(haulMod[setHaul] + sailMod[setSails] + cannonMod[setCannons-1] <= 15) {
+                if(hullMod[setHull] + sailMod[setSails] + cannonMod[setCannons-1] <= 15) {
                     ResourceManager.getSound(Client.MENU_CLICK).play();
                     setCannons--;
                 }

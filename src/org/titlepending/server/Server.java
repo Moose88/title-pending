@@ -84,6 +84,7 @@ public class Server {
 //        if(DEBUG) {
 //            System.out.println("We got a player, starting timer");
 //        }
+        /** moved handling of this issue into lobby while loop to get rid of busy loop **/
 
         int lobbyTimer;
         if(DEBUG) {
@@ -121,9 +122,9 @@ public class Server {
 
             if(commands.size()>0) {
                 cmd = commands.poll();
-                /*
+                /**
                     do stuff with cmd here
-                 */
+                 **/
                 processor.processCommand(cmd);
                 if(cmd.getready())
                     curReady++;
@@ -131,8 +132,7 @@ public class Server {
                     curReady--;
                 if(DEBUG) {
                     System.out.println("Player " + cmd.getId() + " gives a ready check of:  " + cmd.getready());
-                    System.out.println("Total number of players: " + players.size());
-                    System.out.println("Number of players ready: " + curReady);
+                    System.out.println("Total number of players: " + players.size()+"\nNumber of ready players: "+curReady);
                 }
 
 
@@ -156,12 +156,14 @@ public class Server {
         // finalShip arrays and assign them to each id for applicable
         // game logic.
 
-        //final timer sent to client with transition state
+        /**final timer sent to client with transition state**/
         cmd = new Directive();
         cmd.setStateTransition(PLAYINGSTATE);
         cmd.setTime(lobbyTimer);
         for(ClientThread player : players)
             player.sendCommand(cmd);
+
+
         /** this should all be handled in the lobby while loop now **/
 
 //        if(players.size() < 2){
@@ -180,10 +182,12 @@ public class Server {
 //                thread.sendCommand(state);
 //            }
 //        }
+        /** this should all be handled in the lobby while loop now **/
 
 
         // get a command to receive the id of the client and finalShip array to assign to the server
         // send a command to proceed to the play state with the rendered ship image
+
 
         // Setup the client id's to their ship arrays here
 
