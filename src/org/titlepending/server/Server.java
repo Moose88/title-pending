@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 
 public class Server {
 
@@ -98,22 +97,22 @@ public class Server {
         Directive cmd;
         while(lobbyTimer > 0){
             if(DEBUG) System.out.println("Timer is: " + lobbyTimer+"\nCurrent players: "+players.size());
-            for (ClientThread thread : players){
+            for (ClientThread player : players){
                 Directive timeUpdate = new Directive();
                 timeUpdate.setTime(lobbyTimer);
 
                 try{
-                    thread.sendCommand(timeUpdate);
+                    player.sendCommand(timeUpdate);
 
                 }catch (SocketException e){
                     if(Server.DEBUG)
-                        System.out.println("Attempted to write to client that no longer exists");
-                    players.remove(thread);
-                    thread.stopThread();
+                        System.out.println("Attempted to write to client that no longer exists.");
+                    players.remove(player);
+                    player.stopThread();
                 }
             }
             try {
-                TimeUnit.SECONDS.sleep(1);
+                Thread.sleep(1000);
             }catch (InterruptedException e){
                 e.printStackTrace();
             }
@@ -136,14 +135,15 @@ public class Server {
 
 
             }
-
+            /** maintain active lobby if only one player is in **/
             if(players.size()==1 && lobbyTimer <= 30000)
                 if(DEBUG)
                     lobbyTimer = 10000;
                 else
                     lobbyTimer += 30000;
 
-            if(curReady == players.size() && players.size() >= 2) {
+            if(curReady == players.size()
+                    && players.size() >= 2) {
                 if(DEBUG)
                     System.out.println("We are ready to play the game");
                 lobbyTimer = 0;
@@ -160,7 +160,13 @@ public class Server {
         cmd.setStateTransition(WAITINGSTATE);
         cmd.setTime(lobbyTimer);
         for(ClientThread player : players)
-            player.sendCommand(cmd);
+            try{
+                player.sendCommand(cmd);
+            }catch (SocketException e){
+                if(DEBUG)
+                    System.out.println("Attempted to write to player that doesn't exist.");
+                player.stopThread();
+            }
 
 
         /** this should all be handled in the lobby while loop now **/
@@ -190,7 +196,6 @@ public class Server {
 
         // Setup the client id's to their ship arrays here
 
-        ArrayList<Ship> ships = new ArrayList<>();
 
         /** Give 30 seconds for each client to send its ship data **/
         int timer = 30000;
@@ -213,8 +218,10 @@ public class Server {
         }
 
 
+        ArrayList<Ship> ships = new ArrayList<>();
         while(!commands.isEmpty()){
             /** construct player ships here **/
+            // TODO: Need to actually construct the player ships
             cmd = commands.poll();
             if(DEBUG){
                 System.out.println("Received from Client: "+cmd.getId());
@@ -228,9 +235,15 @@ public class Server {
         for(ClientThread player : players){
             cmd = new Directive();
             cmd.setStateTransition(PLAYINGSTATE);
-            player.sendCommand(cmd);
+            try{
+                player.sendCommand(cmd);
+            }catch (SocketException e){
+                if(DEBUG)
+                    System.out.println("Attempted to write to client that no longer exists.");
+                player.stopThread();
+            }
         }
-        // I obviously don't know what the fuck I'm doing...
+
         inGame =true;
         inLobby = false;
 
@@ -279,7 +292,7 @@ public class Server {
                 }catch (IOException e){
                     e.printStackTrace();
                 }
-                if(Server.DEBUG)
+                if(DEBUG)
                     System.out.println("New connection received\nSetting up client thread");
                 ClientThread temp = null;
                 try {
@@ -291,18 +304,18 @@ public class Server {
                 System.out.println("Assigned ID: " + id);
                 if(temp != null) temp.setClientId(id);
 
-                if(Server.DEBUG) System.out.println("Starting thread with id: "+id);
+                if(DEBUG) System.out.println("Starting thread with id: "+id);
 
                 if(temp != null) temp.start();
 
-                if(Server.DEBUG) System.out.println("Building initial command");
+                if(DEBUG) System.out.println("Building initial command");
 
                 Directive cmd = new Directive();
                 cmd.setId(id);
                 cmd.setStateTransition(LOBBYSTATE);
 
-                if(Server.DEBUG) System.out.println("Attempting to send command to client");
-                if(Server.DEBUG) System.out.println("Number of connected players: "+ players.size());
+                if(DEBUG) System.out.println("Attempting to send command to client");
+
                 if(temp!=null
                         && players.size() < PLIMIT
                         && !inGame){
@@ -312,9 +325,9 @@ public class Server {
                         e.printStackTrace();
                     }
                 }else if(temp !=null) {
-                    if(Server.DEBUG)
+                    if(DEBUG)
                         System.out.println("Rejecting connection players max");
-                    cmd.setStateTransition(MAINMENUSTATE);
+                    cmd.setStateTransition(REJECTSTATE);
                     try{
                         temp.sendCommand(cmd);
                     }catch (IOException e){
@@ -324,9 +337,9 @@ public class Server {
                     temp = null;
                 }
 
-                if(Server.DEBUG)
+                if(DEBUG)
                     System.out.println("Adding thread to players list");
-                if(Server.DEBUG) System.out.println("Number of connected players: "+ players.size());
+                if(DEBUG) System.out.println("Number of connected players: "+ players.size());
                 if(temp != null)
                     players.add(temp);
 
