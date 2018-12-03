@@ -11,18 +11,18 @@ import org.titlepending.client.Updates;
 
 public class RejectedState extends BasicGameState{
 
-    private Client client;
     private int timer;
-
+    private  Client client;
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException{
-        this.client = (Client)game;
-
+        this.client= (Client) game;
     }
 
     public void enter(GameContainer container, StateBasedGame game)
         throws SlickException{
         timer = 30000;
+        if(Updates.getInstance().getThread()!=null)
+            Updates.getInstance().getThread().stopThread();
 
     }
 
@@ -36,8 +36,8 @@ public class RejectedState extends BasicGameState{
 
         g.setFont(client.fontMenu);
         g.setColor(Color.black);
-        g.drawString(string1, client.ScreenWidth/2 - g.getFont().getWidth(string1)/2, client.ScreenHeight/2 - g.getFont().getHeight(string1)/2);
-        g.drawString(string2, client.ScreenWidth/2 - g.getFont().getWidth(string2)/2, client.ScreenHeight/2 + g.getFont().getHeight(string2)/2);
+        g.drawString(string1, client.ScreenWidth/2f - g.getFont().getWidth(string1)/2f, client.ScreenHeight/2f - g.getFont().getHeight(string1)/2f);
+        g.drawString(string2, client.ScreenWidth/2f - g.getFont().getWidth(string2)/2f, client.ScreenHeight/2f + g.getFont().getHeight(string2)/2f);
 
     }
 

@@ -1,12 +1,14 @@
 package org.titlepending.server;
 
 
+import org.titlepending.entities.Ship;
 import org.titlepending.shared.ClientThread;
 import org.titlepending.shared.CmdProcessor;
 import org.titlepending.shared.Directive;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -24,17 +26,16 @@ public class Server {
     private static boolean inGame;
     public static ConcurrentLinkedQueue<Directive> commands = new ConcurrentLinkedQueue<>();
 
+    public static final int LOADSTATE = 0;
     public static final int CONNECTSTATE = 1;
     public static final int PLAYINGSTATE = 2;
-    public static final int LOADSTATE = 0;
+    public static final int WAITINGSTATE = 3;
     public static final int GAMEOVERSTATE = 4;
     public static final int MAINMENUSTATE = 5;
     public static final int STATSSTATE = 6;
     public static final int OPTIONSMENUSTATE = 7;
     public static final int LOBBYSTATE = 8;
     public static final int REJECTSTATE= 9;
-
-    private static int[][] playingShips;
 
     public static void main(String[] args) throws IOException{
         if(Server.DEBUG){
@@ -122,9 +123,7 @@ public class Server {
 
             if(commands.size()>0) {
                 cmd = commands.poll();
-                /**
-                    do stuff with cmd here
-                 **/
+                /** do stuff with cmd here **/
                 processor.processCommand(cmd);
                 if(cmd.getready())
                     curReady++;
@@ -158,7 +157,7 @@ public class Server {
 
         /**final timer sent to client with transition state**/
         cmd = new Directive();
-        cmd.setStateTransition(PLAYINGSTATE);
+        cmd.setStateTransition(WAITINGSTATE);
         cmd.setTime(lobbyTimer);
         for(ClientThread player : players)
             player.sendCommand(cmd);
@@ -191,8 +190,38 @@ public class Server {
 
         // Setup the client id's to their ship arrays here
 
+        ArrayList<Ship> ships = new ArrayList<>();
 
+        /** Give 30 seconds for each client to send its ship data **/
+        int timer = 30000;
+        while(commands.size()!=players.size()){
+            /** send all connected clients to reject state **/
+            if(timer <= 0){
+                cmd = new Directive();
+                cmd.setStateTransition(REJECTSTATE);
+                for (ClientThread player : players){
+                    player.sendCommand(cmd);
+                    player.stopThread();
+                }
+            }
+            try{
+                Thread.sleep(1000);
+            }catch (InterruptedException e){
+                e.printStackTrace();
+            }
+            timer -= 1000;
+        }
 
+        for(Directive command : commands){
+            /** construct player ships here **/
+            if(DEBUG){
+                System.out.println("Received from Client: "+command.getId());
+                System.out.println("Hull: "+command.getShip()[0]);
+                System.out.println("Sails: "+command.getShip()[1]);
+                System.out.println("Cannon: "+command.getShip()[2]);
+                System.out.println("Captain: "+command.getShip()[3]);
+            }
+        }
 
 
         // I obviously don't know what the fuck I'm doing...
