@@ -5,6 +5,7 @@ import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
 import org.titlepending.server.Server;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -16,7 +17,7 @@ public class ClientThread extends Thread{
     private ObjectOutputStream out;
     private boolean isServer;
     private int clientId;
-    boolean done;
+    private boolean done;
 
     public ClientThread (Socket socket, boolean isServer) throws IOException {
         this.socket = socket;
@@ -51,6 +52,7 @@ public class ClientThread extends Thread{
                     }
                 }catch (ClassNotFoundException e){
                     e.printStackTrace();
+                }catch (EOFException e){
                 }
             }
         }catch (IOException e){
@@ -58,8 +60,6 @@ public class ClientThread extends Thread{
         }finally {
             System.out.println("Disconnecting Players");
             try {
-                in.close();
-                out.close();
                 socket.close();
                 if(isServer)
                     Server.players.remove(this);
