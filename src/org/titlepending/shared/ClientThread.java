@@ -60,8 +60,6 @@ public class ClientThread extends Thread{
         }finally {
             System.out.println("Disconnecting Players");
             try {
-                in.close();
-                out.close();
                 socket.close();
                 if(isServer)
                     Server.players.remove(this);
