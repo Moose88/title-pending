@@ -19,7 +19,6 @@ public class Ship extends Entity {
     public Ship(final float x, final float y){
         super(x,y);
 
-
     }
     public void setVelocity(final Vector m) {
         velocity = m;
@@ -74,10 +73,6 @@ public class Ship extends Entity {
     public void addSprites(){
         SpriteSheet Shipsprites = ResourceManager.getSpriteSheet(Client.SHIP_RSC,64,96);
         SpriteSheet Sailsprites = ResourceManager.getSpriteSheet(Client.SHIP_RSC,64,32);
-        stats[0] = 0;
-        stats[1] = 0;
-        stats[2] = 0;
-        stats[3] = 4;
         //these will change depending on what is selected most likely handled elsewhere
         if(stats[0]==0) {
             ship = new Animation(Shipsprites, 0, 0, 0, 0, true, 1000, true);
