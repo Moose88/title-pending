@@ -16,8 +16,8 @@ public class Ship extends Entity {
     private Animation cannon;
     private int stats[]; //hull,sail,cannon,captain... Get these numbers from another state
     private boolean isDead = false;
-    public Ship(final float x, final float y){
-        super(x,y);
+    public Ship(double x, double y){
+        super((float) x,(float) y);
 
     }
     public void setVelocity(final Vector m) {

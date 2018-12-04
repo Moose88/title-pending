@@ -2,6 +2,7 @@ package org.titlepending.server;
 
 
 import org.titlepending.entities.Ship;
+import org.titlepending.entities.ShipFactory;
 import org.titlepending.shared.ClientThread;
 import org.titlepending.shared.CmdProcessor;
 import org.titlepending.shared.Directive;
@@ -35,7 +36,9 @@ public class Server {
     public static final int OPTIONSMENUSTATE = 7;
     public static final int LOBBYSTATE = 8;
     public static final int REJECTSTATE= 9;
-
+    public static final int r1 = 896;
+    public static final int r2 = 1824;
+    public static final int r3 = 3200;
     public static void main(String[] args) throws IOException{
         if(Server.DEBUG){
             InetAddress Ip= InetAddress.getLocalHost();
@@ -69,22 +72,6 @@ public class Server {
         // Check that if current players say ready OR timer == 0, move into playing state.
         // Once we transition, the server will need to assign a finalShip array to each
         // player ID.
-
-        // TODO: Bug where server starts counting down before players connect or enter lobby
-
-        /** moved handling of this issue into lobby while loop to get rid of busy loop **/
-//        if(DEBUG)
-//            lobbyTimer = 10000;
-//
-//        if(DEBUG) {
-//            System.out.println("Waiting for players");
-//        }
-//        while(curPlayers == 0){curPlayers = players.size();}
-//
-//        if(DEBUG) {
-//            System.out.println("We got a player, starting timer");
-//        }
-        /** moved handling of this issue into lobby while loop to get rid of busy loop **/
 
         int lobbyTimer;
         if(DEBUG) {
@@ -151,11 +138,8 @@ public class Server {
 
         }
 
-        // Send the players into the game and have the server take their
-        // finalShip arrays and assign them to each id for applicable
-        // game logic.
 
-        /**final timer sent to client with transition state**/
+        /** final timer sent to client with transition state **/
         cmd = new Directive();
         cmd.setStateTransition(WAITINGSTATE);
         cmd.setTime(lobbyTimer);
@@ -167,27 +151,6 @@ public class Server {
                     System.out.println("Attempted to write to player that doesn't exist.");
                 player.stopThread();
             }
-
-
-        /** this should all be handled in the lobby while loop now **/
-
-//        if(players.size() < 2){
-//            // Return the client to the lobby state and say not enough players
-//            if(DEBUG) System.out.println("Not enough players, returning them to lobby state.");
-//            state.setStateTransition(LOBBYSTATE);
-//            for(ClientThread thread : players){
-//                thread.sendCommand(state);
-//            }
-             // TODO: Here, we should restart the server somehow if needed
-//
-//        } else {
-//            if(DEBUG) System.out.println("Lets play!");
-//            state.setStateTransition(PLAYINGSTATE);
-//            for(ClientThread thread : players){
-//                thread.sendCommand(state);
-//            }
-//        }
-        /** this should all be handled in the lobby while loop now **/
 
 
         // get a command to receive the id of the client and finalShip array to assign to the server
@@ -217,11 +180,17 @@ public class Server {
             timer -= 1000;
         }
 
-
         ArrayList<Ship> ships = new ArrayList<>();
+        double degree = Math.toRadians((float)360/players.size());
+        double radAlpha;
+        if(players.size()<=4){
+            radAlpha = r2;
+        }else{
+            radAlpha = r3;
+        }
+        int playerNo = 1;
         while(!commands.isEmpty()){
             /** construct player ships here **/
-            // TODO: Need to actually construct the player ships
             cmd = commands.poll();
             if(DEBUG){
                 System.out.println("Received from Client: "+cmd.getId());
@@ -230,7 +199,13 @@ public class Server {
                 System.out.println("Cannon: "+cmd.getShip()[2]);
                 System.out.println("Captain: "+cmd.getShip()[3]);
             }
+            double shipX=3200+(radAlpha*Math.cos(degree*playerNo));
+            double shipY=3200+(radAlpha*Math.sin(degree*playerNo));
+            if(DEBUG) System.out.println("Ship x: "+shipX+"\nShip y: "+shipY);
+            ships.add(ShipFactory.getInstance().createNewPlayerShip(shipX,shipY,cmd.getShip()));
         }
+
+        if(DEBUG) System.out.println("Generated "+ships.size()+" ships.");
 
         for(ClientThread player : players){
             cmd = new Directive();

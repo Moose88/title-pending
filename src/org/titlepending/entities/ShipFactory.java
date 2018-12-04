@@ -13,7 +13,7 @@ public class ShipFactory {
         return instance;
     }
 
-    public Ship createNewPlayerShip(float x, float y, int[] stats){
+    public Ship createNewPlayerShip(double x, double y, int[] stats){
         Ship temp = new Ship(x,y);
         temp.setStats(stats);
         temp.addSprites();
