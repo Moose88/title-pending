@@ -1,6 +1,7 @@
 package org.titlepending.server;
 
 
+import jig.Entity;
 import org.titlepending.entities.Ship;
 import org.titlepending.entities.ShipFactory;
 import org.titlepending.shared.ClientThread;
@@ -189,6 +190,8 @@ public class Server {
             radAlpha = r3;
         }
         int playerNo = 1;
+        Entity.setCoarseGrainedCollisionBoundary(Entity.CIRCLE);
+
         while(!commands.isEmpty()){
             /** construct player ships here **/
             cmd = commands.poll();
@@ -203,6 +206,7 @@ public class Server {
             double shipY=3200+(radAlpha*Math.sin(degree*playerNo));
             if(DEBUG) System.out.println("Ship x: "+shipX+"\nShip y: "+shipY);
             ships.add(ShipFactory.getInstance().createNewPlayerShip(shipX,shipY,cmd.getShip()));
+            playerNo +=1;
         }
 
         if(DEBUG) System.out.println("Generated "+ships.size()+" ships.");

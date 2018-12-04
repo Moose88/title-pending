@@ -16,7 +16,6 @@ public class ShipFactory {
     public Ship createNewPlayerShip(double x, double y, int[] stats){
         Ship temp = new Ship(x,y);
         temp.setStats(stats);
-        temp.addSprites();
         return temp;
     }
 
