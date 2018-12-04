@@ -18,6 +18,7 @@ public class PlayingState extends BasicGameState {
             throws SlickException {
             player = new Ship(250,250);
             player.setStats(new int[] {2,2,2,2});
+            player.addSprites();
     }
 
     public void enter(GameContainer container, StateBasedGame game)
