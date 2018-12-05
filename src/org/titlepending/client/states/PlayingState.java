@@ -96,23 +96,27 @@ public class PlayingState extends BasicGameState {
             if(Client.DEBUG)
                 System.out.println("Sending command to raise anchor");
             cmd.setRaiseAnchor();
+            sendCommand(cmd);
         }
         if(input.isKeyDown(Input.KEY_S)){
             // Send lower anchor command to server
             cmd.setLowerAnchor();
+            sendCommand(cmd);
         }
         if(input.isKeyDown(Input.KEY_A)){
             // Send command to turn left
             cmd.setTurnLeft();
+            sendCommand(cmd);
         }
         if(input.isKeyDown(Input.KEY_D)){
             cmd.setTurnRight();
+            sendCommand(cmd);
         }
         if(input.isKeyDown(Input.KEY_SPACE)){
-            cmd.isFireCannons();
+            cmd.setFireCannons();
+            sendCommand(cmd);
         }
 
-        sendCommand(cmd);
 
     }
 
