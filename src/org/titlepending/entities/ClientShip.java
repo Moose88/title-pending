@@ -28,6 +28,9 @@ public class ClientShip extends Entity {
     private Image oneSail = ship_RSC_96.getSubImage(5, 0).getScaledCopy(1.5f);
     private Image twoSails = ship_RSC_96.getSubImage(4, 0).getScaledCopy(1.5f);
     private Image threeSails = ship_RSC_96.getSubImage(3, 0).getScaledCopy(1.5f);
+    private Image SoneCannon = ship_RSC_96.getSubImage(6, 2).getScaledCopy(1.5f);
+    private Image StwoCannons = ship_RSC_96.getSubImage(5, 2).getScaledCopy(1.5f);
+    private Image SthreeCannons = ship_RSC_96.getSubImage(4, 2).getScaledCopy(1.5f);
     private Image oneCannon = ship_RSC_96.getSubImage(6, 1).getScaledCopy(1.5f);
     private Image twoCannons = ship_RSC_96.getSubImage(5, 1).getScaledCopy(1.5f);
     private Image threeCannons = ship_RSC_96.getSubImage(4, 1).getScaledCopy(1.5f);
@@ -102,13 +105,22 @@ public class ClientShip extends Entity {
         //Setting Cannons
         switch (stats[2]) {
             case 2:
-                addImage(oneCannon);
+                if(stats[0] == 2)
+                    addImage(SoneCannon);
+                else
+                    addImage(oneCannon);
                 break;
             case 1:
-                addImage(twoCannons);
+                if(stats[0] == 2)
+                    addImage(StwoCannons);
+                else
+                    addImage(twoCannons);
                 break;
             case 0:
-                addImage(threeCannons);
+                if(stats[0] == 2)
+                    addImage(SthreeCannons);
+                else
+                    addImage(threeCannons);
                 break;
             default:
                 System.out.println("I BROKE MY shooters!!!");
@@ -176,6 +188,10 @@ public class ClientShip extends Entity {
         oneCannon.setRotation(heading+90);
         twoCannons.setRotation(heading+90);
         threeCannons.setRotation(heading+90);
+
+        SoneCannon.setRotation(heading+90);
+        StwoCannons.setRotation(heading+90);
+        SthreeCannons.setRotation(heading+90);
 
         smallHaul.setRotation(heading+90);
         medHaul.setRotation(heading+90);
