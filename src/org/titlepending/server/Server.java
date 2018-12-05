@@ -191,7 +191,7 @@ public class Server {
             radAlpha = r3;
         }
         int playerNo = 1;
-        Entity.setCoarseGrainedCollisionBoundary(Entity.CIRCLE);
+        //Entity.setCoarseGrainedCollisionBoundary(Entity.CIRCLE);
 
         while(!commands.isEmpty()){
             /** construct player ships here **/

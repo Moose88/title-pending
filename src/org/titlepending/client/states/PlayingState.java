@@ -1,5 +1,6 @@
 package org.titlepending.client.states;
 
+import org.lwjgl.Sys;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -42,6 +43,10 @@ public class PlayingState extends BasicGameState {
         ArrayList<Ship> Ships = Updates.getInstance().getShips();
         this.CShips = new ArrayList<>();
 
+        if(Client.DEBUG)
+            System.out.println("Before myBoat thread ID: " + Updates.getInstance().getThread().getClientId());
+
+
         for(Ship ship : Ships){
             if(Client.DEBUG) System.out.println("Ship x "+ship.getX()+ "Ship y "+ship.getY());
             ClientShip temp =new ClientShip(ship.getX(), ship.getY(), ship.getPlayerID());
@@ -58,6 +63,8 @@ public class PlayingState extends BasicGameState {
         }
 
         if(Client.DEBUG)
+            System.out.println("After myBoat thread ID: " + Updates.getInstance().getThread().getClientId());
+        if(Client.DEBUG)
             System.out.println("Boat x: " + myBoat.getX() + " Boat y: " + myBoat.getY() + " Boat id: " + myBoat.getPlayerID());
 
         // 96 is the boats image height, and 64 is its image width
@@ -72,8 +79,7 @@ public class PlayingState extends BasicGameState {
         int screenX = (int) myBoat.getX() - client.ScreenWidth/2;
         int screenY = (int) myBoat.getY() - client.ScreenHeight/2;
 
-        if(Client.DEBUG)
-            System.out.println("Screen x: " + screenX + " Screen y: " + screenY);
+
         g.translate(-screenX, -screenY);
 
 //        camera.drawMap();
