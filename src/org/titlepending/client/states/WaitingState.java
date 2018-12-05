@@ -9,7 +9,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
 import org.titlepending.client.boatGuy;
-import org.titlepending.shared.Directive;
+import org.titlepending.shared.Initializer;
 
 public class WaitingState extends BasicGameState {
 
@@ -51,7 +51,7 @@ public class WaitingState extends BasicGameState {
         boatDude.update(delta);
 
         if(!Updates.getInstance().getQueue().isEmpty()){
-            Directive cmd = Updates.getInstance().getQueue().poll();
+            Initializer cmd =(Initializer) Updates.getInstance().getQueue().poll();
             Client client = (Client) game;
             Updates.getInstance().setShips(cmd.getShips());
             ResourceManager.getSound(Client.SCREAM_SOUND).stop();

@@ -11,7 +11,7 @@ import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
 import org.titlepending.client.menus.BaseMenuState;
 import org.titlepending.shared.ClientThread;
-import org.titlepending.shared.Directive;
+import org.titlepending.shared.Initializer;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -81,7 +81,7 @@ public class ConnectState extends BasicGameState {
         else
             while (Updates.getInstance().getQueue().isEmpty()); //wait for input from server
 
-        Directive input = Updates.getInstance().getQueue().poll();
+        Initializer input = (Initializer) Updates.getInstance().getQueue().poll();
 
         if(input!=null) {
             if(Client.DEBUG)

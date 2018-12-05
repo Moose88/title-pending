@@ -10,7 +10,8 @@ import org.newdawn.slick.tiled.TiledMap;
 import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
 import org.titlepending.entities.ClientShip;
-import org.titlepending.shared.Directive;
+import org.titlepending.shared.Action;
+import org.titlepending.shared.Initializer;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -89,33 +90,33 @@ public class PlayingState extends BasicGameState {
         Input input = container.getInput();
 
 
-        Directive cmd = new Directive();
+        Action cmd = new Action(Updates.getInstance().getThread().getClientId());
         if(input.isKeyDown(Input.KEY_W)){
             // Send raise anchor command to server
             if(Client.DEBUG)
                 System.out.println("Sending command to raise anchor");
             cmd.setRaiseAnchor();
-            sendCommand(cmd);
         }
         if(input.isKeyDown(Input.KEY_S)){
             // Send lower anchor command to server
             cmd.setLowerAnchor();
-            sendCommand(cmd);
         }
         if(input.isKeyDown(Input.KEY_A)){
             // Send command to turn left
             cmd.setTurnLeft();
-            sendCommand(cmd);
         }
         if(input.isKeyDown(Input.KEY_D)){
             cmd.setTurnRight();
-            sendCommand(cmd);
         }
+        if(input.isKeyDown(Input.KEY_SPACE)){
+            cmd.isFireCannons();
+        }
+
+        sendCommand(cmd);
 
     }
 
-    private void sendCommand(Directive cmd){
-        cmd.setId(Updates.getInstance().getThread().getClientId());
+    private void sendCommand(Action cmd){
         try{
             Updates.getInstance().getThread().sendCommand(cmd);
         }catch (IOException e){
