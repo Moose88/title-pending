@@ -1,11 +1,17 @@
 package org.titlepending.entities;
 
+import jig.Entity;
 import jig.ResourceManager;
+import jig.Vector;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
 import org.titlepending.client.Client;
 
-public class ClientShip extends Ship {
+public class ClientShip extends Entity {
+
+    protected int stats[]; //hull, sail, cannon, captain... Get these numbers from another state
+    private boolean isDead = false;
+    private int playerID;
 
     private static SpriteSheet ship_RSC_96 = new SpriteSheet(ResourceManager.getImage(Client.SHIP_RSC), 64, 96);
 
@@ -21,7 +27,42 @@ public class ClientShip extends Ship {
 
 
     public ClientShip(double x, double y, int playerID) {
-        super(x, y, playerID);
+        super((float) x, (float) y);
+        this.playerID = playerID;
+    }
+
+    public void fire(Ship myship){
+        //give birth to cannon balls
+        //fire them perpendicular to ships velocity
+    }
+    public void isHit(Entity object,Ship target){
+        //if object is cannon ball take x damage
+        //takeDamage(target, x)
+        //else if object is ship check velocity of ship object
+        //takedamage(target,dmg based off of object speed)
+        //takedamage(object, based off of targets speed)
+    }
+
+    public void rotateship(Ship target,int direction){
+        //direction 0 = left, 1 = right
+        if(direction==0){
+            target.rotate(-1.0);
+            //velocity direction calculation
+        }
+        else if(direction==1){
+            target.rotate(1.0);
+            //velocity direction calculation
+        }
+    }
+
+    public void setStats(int[] stats) {
+        this.stats = stats;
+    }
+
+    public int[] getStats(){return stats;}
+
+    public int getPlayerID() {
+        return playerID;
     }
 
     public void addSprites(){
@@ -80,6 +121,16 @@ public class ClientShip extends Ship {
                 System.exit(-100);
                 break;
         }
+
+    }
+
+    public void update(final int delta) {
+        if(isDead==false) {//they are still alive
+            //translate(velocity.scale(delta));
+        }
+        else {//they died
+        }
+        //
 
     }
 }

@@ -32,6 +32,9 @@ public class Client extends StateBasedGame {
      * Images, sounds, and music
      */
 
+    // Map
+    public static final String MAP_RSC = "org/titlepending/resources/images/Map.tmx";
+
     // Backgrounds and images
     public static final String STARTUP_BANNER_RSC = "org/titlepending/resources/startstatebackground.png";
     public static final String LOADING_SKY_RSC = "org/titlepending/resources/LoadSky.png";
