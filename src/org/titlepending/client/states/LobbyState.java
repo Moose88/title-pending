@@ -367,6 +367,8 @@ public class LobbyState extends BasicGameState {
 
                 // TODO: send client current ship configuration
                 enteringGame = true;
+                ResourceManager.getSound(Client.SCREAM_SOUND).stop();
+                ResourceManager.getMusic(Client.LOBBY_MUSIC).stop();
                 client.enterState(stateTransition);
             }
         }
