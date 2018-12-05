@@ -23,11 +23,13 @@ public class PlayingState extends BasicGameState {
     private ClientShip myBoat;
     private TiledMap map;
     private int cmdDelay;
+    private boolean anchor;
 
 
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException {
         map = new TiledMap(Client.MAP_RSC);
+        anchor = true;
 
 
 
@@ -103,11 +105,13 @@ public class PlayingState extends BasicGameState {
                 System.out.println("Sending command to raise anchor");
             }
 
+            anchor = false;
             myBoat.updateVelocity();
 
 
         } else if(input.isKeyDown(Input.KEY_S)){
             // Send lower anchor command to server
+            anchor = true;
             myBoat.updateVelocity(new Vector(0f,0f));
 
 
@@ -115,14 +119,18 @@ public class PlayingState extends BasicGameState {
 
         if(input.isKeyDown(Input.KEY_A)){
             // Send command to turn left
-            myBoat.updateHeading(delta);
-            myBoat.updateVelocity();
+            if(!anchor) {
+                myBoat.updateHeading(-delta);
+                myBoat.updateVelocity();
+            }
 
 
         } else if(input.isKeyDown(Input.KEY_D)){
             // Senc dommand to turn right
-            myBoat.updateHeading(-delta);
-            myBoat.updateVelocity();
+            if(!anchor) {
+                myBoat.updateHeading(delta);
+                myBoat.updateVelocity();
+            }
 
         }
 
