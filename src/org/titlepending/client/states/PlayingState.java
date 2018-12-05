@@ -108,11 +108,11 @@ public class PlayingState extends BasicGameState {
 
         if(input.isKeyDown(Input.KEY_A)){
             // Send command to turn left
-            myBoat.getVelocity().rotate((double) delta);
+            myBoat.setVelocity(myBoat.getVelocity().setRotation((double) delta));
 
         } else if(input.isKeyDown(Input.KEY_D)){
             // Senc dommand to turn right
-            myBoat.getVelocity().rotate(-(double) delta);
+            myBoat.setVelocity(myBoat.getVelocity().setRotation(-(double) delta));
 
         }
 
