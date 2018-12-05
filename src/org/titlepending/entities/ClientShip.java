@@ -2,10 +2,10 @@ package org.titlepending.entities;
 
 import jig.Entity;
 import jig.ResourceManager;
-import jig.Vector;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
 import org.titlepending.client.Client;
+import org.titlepending.server.ServerObjects.Ship;
 
 public class ClientShip extends Entity {
 
@@ -43,17 +43,6 @@ public class ClientShip extends Entity {
         //takedamage(object, based off of targets speed)
     }
 
-    public void rotateship(Ship target,int direction){
-        //direction 0 = left, 1 = right
-        if(direction==0){
-            target.rotate(-1.0);
-            //velocity direction calculation
-        }
-        else if(direction==1){
-            target.rotate(1.0);
-            //velocity direction calculation
-        }
-    }
 
     public void setStats(int[] stats) {
         this.stats = stats;

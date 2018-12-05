@@ -1,6 +1,6 @@
 package org.titlepending.client;
 
-import org.titlepending.entities.Ship;
+import org.titlepending.server.ServerObjects.Ship;
 import org.titlepending.shared.ClientThread;
 import org.titlepending.shared.Directive;
 

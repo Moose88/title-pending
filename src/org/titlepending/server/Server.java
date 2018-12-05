@@ -2,7 +2,7 @@ package org.titlepending.server;
 
 
 import jig.Entity;
-import org.titlepending.entities.Ship;
+import org.titlepending.server.ServerObjects.Ship;
 import org.titlepending.entities.ShipFactory;
 import org.titlepending.shared.ClientThread;
 import org.titlepending.shared.CmdProcessor;

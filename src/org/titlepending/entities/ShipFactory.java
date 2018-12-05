@@ -1,5 +1,7 @@
 package org.titlepending.entities;
 
+import org.titlepending.server.ServerObjects.Ship;
+
 import java.util.concurrent.ThreadLocalRandom;
 
 //TODO come back to this later
@@ -17,7 +19,7 @@ public class ShipFactory {
     }
 
     public Ship createNewPlayerShip(double x, double y, int[] stats, int playerID){
-        Ship temp = new Ship(x, y, playerID);
+        Ship temp = new Ship((float) x, (float) y, playerID);
         temp.setStats(stats);
         return temp;
     }

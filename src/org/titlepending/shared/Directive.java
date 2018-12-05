@@ -1,6 +1,6 @@
 package org.titlepending.shared;
 
-import org.titlepending.entities.Ship;
+import org.titlepending.server.ServerObjects.Ship;
 
 import java.io.Serializable;
 import java.util.ArrayList;

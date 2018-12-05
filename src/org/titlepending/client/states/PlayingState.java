@@ -1,6 +1,5 @@
 package org.titlepending.client.states;
 
-import jig.ResourceManager;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -16,10 +15,9 @@ import org.titlepending.shared.Directive;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.titlepending.entities.Ship;
+import org.titlepending.server.ServerObjects.Ship;
 
 public class PlayingState extends BasicGameState {
-    private ArrayList<Ship> Ships;
     private ArrayList<ClientShip> CShips;
     private ClientShip myBoat;
     private TiledMap map;
@@ -41,7 +39,7 @@ public class PlayingState extends BasicGameState {
 //        map = new TiledMap(Client.MAP_RSC);
 //        if(Client.DEBUG) System.out.println("Successfully imported map");
 //        camera = new Camera(container, map);
-        this.Ships = Updates.getInstance().getShips();
+        ArrayList<Ship> Ships = Updates.getInstance().getShips();
         this.CShips = new ArrayList<>();
 
         for(Ship ship : Ships){
