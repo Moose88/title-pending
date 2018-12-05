@@ -170,6 +170,8 @@ public class OptionsState extends BaseMenuState {
                 case FULLSCREEN:
                     try {
                         container.setFullscreen(!container.isFullscreen());
+                        if(Client.DEBUG)
+                            System.out.println("Is fullscreen: " + container.isFullscreen());
                         if(container.isFullscreen())
                             isFullScreen = 1;
                         else
@@ -183,7 +185,7 @@ public class OptionsState extends BaseMenuState {
                 case DIMENSION:
                     if(isResolution == 0){
                         try {
-                            Client.app.setDisplayMode(3840,2160,Client.app.isFullscreen());
+                            Client.app.setDisplayMode(3840, 2160, container.isFullscreen());
                             savedState.setNumber("resolution", isResolution);
                             save();
                         } catch (SlickException e) {
@@ -191,7 +193,7 @@ public class OptionsState extends BaseMenuState {
                         }
                     } else if(isResolution == 1) {
                         try {
-                            Client.app.setDisplayMode(1920, 1080, Client.app.isFullscreen());
+                            Client.app.setDisplayMode(1920, 1080, container.isFullscreen());
                             savedState.setNumber("resolution", isResolution);
                             save();
                         } catch (SlickException e) {
@@ -199,7 +201,7 @@ public class OptionsState extends BaseMenuState {
                         }
                     } else if(isResolution == 2) {
                         try {
-                            Client.app.setDisplayMode(1280, 720, Client.app.isFullscreen());
+                            Client.app.setDisplayMode(1280, 720, container.isFullscreen());
                             savedState.setNumber("resolution", isResolution);
                             save();
                         } catch (SlickException e) {
@@ -207,7 +209,7 @@ public class OptionsState extends BaseMenuState {
                         }
                     } else if(isResolution == 3) {
                         try {
-                            Client.app.setDisplayMode(800, 600, Client.app.isFullscreen());
+                            Client.app.setDisplayMode(800, 600, container.isFullscreen());
                             savedState.setNumber("resolution", isResolution);
                             save();
                         } catch (SlickException e) {
@@ -215,7 +217,7 @@ public class OptionsState extends BaseMenuState {
                         }
                     } else if(isResolution == 4) {
                         try {
-                            Client.app.setDisplayMode(640, 480, Client.app.isFullscreen());
+                            Client.app.setDisplayMode(640, 480, container.isFullscreen());
                             savedState.setNumber("resolution", isResolution);
                             save();
                         } catch (SlickException e) {

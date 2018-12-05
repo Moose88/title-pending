@@ -11,4 +11,14 @@
 * An area to render what the server sends back to it.
 >>>>>>> develop
 * A menu system.
+
+## Future Additions ##
+* Turn music on or off from front menu or from possible pause menu
+* Do the same as above, but with sound
+
+* John had a feature that auto found available servers on an ip address.
+    * See how implemented and add?
+
+* Mouse Listener on front menu, and change "<", ">" into actual arrows
+
 ## Resolved ##

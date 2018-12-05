@@ -9,7 +9,7 @@ import org.newdawn.slick.state.transition.FadeInTransition;
 import org.newdawn.slick.state.transition.FadeOutTransition;
 import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
-import org.titlepending.shared.Directive;
+import org.titlepending.shared.Initializer;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -183,15 +183,15 @@ public class LobbyState extends BasicGameState {
 
     public void enter(GameContainer container, StateBasedGame game) {
         ResourceManager.getMusic(Client.LOBBY_MUSIC).loop(1, 3f);
-        if(setCrew == 2){
-            ResourceManager.getSound(Client.SCREAM_SOUND).loop(1.2f, 0.5f);
+        if(setCrew == 2 && !ResourceManager.getSound(Client.SCREAM_SOUND).playing()){
+            ResourceManager.getSound(Client.SCREAM_SOUND).loop(1.6f, 0.5f);
         }
 
     }
 
     public void leave(GameContainer container, StateBasedGame game){
         if(enteringGame){
-            Directive cmd = new Directive();
+            Initializer cmd = new Initializer(Updates.getInstance().getThread().getClientId());
             cmd.setShip(finalShip);
             cmd.setId(Updates.getInstance().getThread().getClientId());
             try {
@@ -347,9 +347,15 @@ public class LobbyState extends BasicGameState {
 
     public void update(GameContainer container, StateBasedGame game,
                        int delta) {
+        if(setCrew ==  2){
+            if(!ResourceManager.getSound(Client.SCREAM_SOUND).playing())
+                ResourceManager.getSound(Client.SCREAM_SOUND).loop(1.6f, 0.5f);
+        } else {
+            ResourceManager.getSound(Client.SCREAM_SOUND).stop();
+        }
 
         if(!Updates.getInstance().getQueue().isEmpty()){
-            Directive statusUpdate = Updates.getInstance().getQueue().poll();
+            Initializer statusUpdate = (Initializer) Updates.getInstance().getQueue().poll();
             assert statusUpdate != null;
             timer = statusUpdate.getTime();
 
@@ -361,6 +367,8 @@ public class LobbyState extends BasicGameState {
 
                 // TODO: send client current ship configuration
                 enteringGame = true;
+                ResourceManager.getSound(Client.SCREAM_SOUND).stop();
+                ResourceManager.getMusic(Client.LOBBY_MUSIC).stop();
                 client.enterState(stateTransition);
             }
         }
@@ -381,7 +389,7 @@ public class LobbyState extends BasicGameState {
 
     @Override
     public void keyPressed(int key, char c){
-        Directive ready = new Directive();
+        Initializer ready = new Initializer(Updates.getInstance().getThread().getClientId());
 
         if(readyset && key != Input.KEY_ESCAPE)
             return;
@@ -551,11 +559,7 @@ public class LobbyState extends BasicGameState {
             save();
         }
 
-        if(setCrew ==  2){
-            ResourceManager.getSound(Client.SCREAM_SOUND).loop(1.6f, 0.5f);
-        } else {
-            ResourceManager.getSound(Client.SCREAM_SOUND).stop();
-        }
+
 
         if(key == Input.KEY_ENTER){
             switch(selection){
@@ -588,7 +592,7 @@ public class LobbyState extends BasicGameState {
         client.enterState(Client.MAINMENUSTATE, new FadeOutTransition(), new FadeInTransition());
     }
 
-    private void sendCommand(Directive cmd){
+    private void sendCommand(Initializer cmd){
         cmd.setId(Updates.getInstance().getThread().getClientId());
         try{
             Updates.getInstance().getThread().sendCommand(cmd);
