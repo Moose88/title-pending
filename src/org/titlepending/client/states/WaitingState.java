@@ -29,6 +29,7 @@ public class WaitingState extends BasicGameState {
         if(!Updates.getInstance().getQueue().isEmpty()){
             Directive cmd = Updates.getInstance().getQueue().poll();
             Client client = (Client) game;
+            Updates.getInstance().setShips(cmd.getShips());
             client.enterState(cmd.getStateTransition());
         }
 

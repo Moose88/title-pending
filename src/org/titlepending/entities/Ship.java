@@ -7,7 +7,9 @@ import org.newdawn.slick.Animation;
 import org.newdawn.slick.SpriteSheet;
 import org.titlepending.client.Client;
 
-public class Ship extends Entity {
+import java.io.Serializable;
+
+public class Ship extends Entity implements Serializable {
     private int healthcount = 100;
     private Vector velocity;
     private float direction;
@@ -16,9 +18,12 @@ public class Ship extends Entity {
     private Animation cannon;
     private int stats[]; //hull,sail,cannon,captain... Get these numbers from another state
     private boolean isDead = false;
-    public Ship(double x, double y){
-        super((float) x,(float) y);
+    private int playerID;
 
+
+    public Ship(double x, double y, int playerID){
+        super((float) x,(float) y);
+        this.playerID = playerID;
     }
     public void setVelocity(final Vector m) {
         velocity = m;
@@ -69,6 +74,9 @@ public class Ship extends Entity {
 
     }
 
+    public int getPlayerID() {
+        return playerID;
+    }
 
     public void addSprites(){
         SpriteSheet Shipsprites = ResourceManager.getSpriteSheet(Client.SHIP_RSC,64,96);

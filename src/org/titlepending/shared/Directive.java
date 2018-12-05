@@ -1,6 +1,9 @@
 package org.titlepending.shared;
 
+import org.titlepending.entities.Ship;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * object that is sent across TCP/IP socket for communication in client server pair.
@@ -15,6 +18,7 @@ public class Directive implements Serializable {
     private int id;
     private int time;
     private int[] ship;
+    private ArrayList<Ship> Ships;
 
     public Directive(){
         ready = turnLeft = turnRight = raiseAnchor = lowerAnchor = false;
@@ -32,6 +36,7 @@ public class Directive implements Serializable {
     public void setId(int id){this.id = id;}
     public void setTime(int time) {this.time = time;}
     public void setShip(int[] ship){this.ship=ship;}
+    public void setShips(ArrayList<Ship> Ships){this.Ships = Ships;}
 
     public boolean isTurnRight(){return turnRight;}
     public boolean isTurnLeft(){return turnLeft;}
@@ -41,5 +46,6 @@ public class Directive implements Serializable {
     public int getId(){return id;}
     public int getTime(){return time;}
     public int[] getShip(){return ship;}
+    public ArrayList<Ship> getShips(){return Ships;}
 
 }

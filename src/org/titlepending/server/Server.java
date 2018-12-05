@@ -202,10 +202,10 @@ public class Server {
                 System.out.println("Cannon: "+cmd.getShip()[2]);
                 System.out.println("Captain: "+cmd.getShip()[3]);
             }
-            double shipX=3200+(radAlpha*Math.cos(degree*playerNo));
-            double shipY=3200+(radAlpha*Math.sin(degree*playerNo));
+            double shipX = 3200 + (radAlpha*Math.cos(degree*playerNo));
+            double shipY = 3200 + (radAlpha*Math.sin(degree*playerNo));
             if(DEBUG) System.out.println("Ship x: "+shipX+"\nShip y: "+shipY);
-            ships.add(ShipFactory.getInstance().createNewPlayerShip(shipX,shipY,cmd.getShip()));
+            ships.add(ShipFactory.getInstance().createNewPlayerShip(shipX, shipY, cmd.getShip(), cmd.getId()));
             playerNo +=1;
         }
 
@@ -213,6 +213,7 @@ public class Server {
 
         for(ClientThread player : players){
             cmd = new Directive();
+            cmd.setShips(ships);
             cmd.setStateTransition(PLAYINGSTATE);
             try{
                 player.sendCommand(cmd);

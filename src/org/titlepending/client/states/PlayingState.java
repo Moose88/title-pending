@@ -10,32 +10,60 @@ import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
 import org.titlepending.shared.Directive;
 import java.io.IOException;
+import java.util.ArrayList;
+
 import org.titlepending.entities.Ship;
 
 public class PlayingState extends BasicGameState {
-    Ship player;
+    private ArrayList<Ship> Ships;
+    private Ship myBoat;
+
+
+
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException {
-            player = new Ship(250,250);
-            player.setStats(new int[] {2,2,2,2});
-            player.addSprites();
+        Client client = (Client)game;
+
+
+
+
     }
 
     public void enter(GameContainer container, StateBasedGame game)
             throws SlickException{
+        this.Ships = Updates.getInstance().getShips();
+
+
+        for(Ship ship : Ships) {
+            if (ship.getPlayerID() == Updates.getInstance().getThread().getClientId())
+                myBoat = ship;
+        }
+
+        for(Ship ship : Ships){
+            ship.addSprites();
+        }
+
         System.out.println("Made it to the playing state");
     }
 
     public void render(GameContainer container, StateBasedGame game,
                        Graphics g) throws SlickException{
-        player.render(g);
+        Client client = (Client)game;
+        int screenX = (int) myBoat.getX() - client.ScreenWidth/2;
+        int screenY = (int) myBoat.getY() - client.ScreenHeight/2;
+
+        for(Ship ship : Ships){
+            ship.render(g);
+        }
+
+
     }
 
     public void update(GameContainer container, StateBasedGame game,
                        int delta) throws SlickException{
 
         Input input = container.getInput();
-        player.update(delta);
+
 
         Directive cmd = new Directive();
         if(input.isKeyDown(Input.KEY_W)){
