@@ -60,7 +60,7 @@ public class Server {
         inLobby=true;
         inGame=false;
         new Handler().start();
-        CmdProcessor processor = new CmdProcessor(true);
+
 
         if(Server.DEBUG){
             System.out.println("Starting lobby state");
@@ -110,7 +110,6 @@ public class Server {
             if(commands.size()>0) {
                 cmd = (Initializer) commands.poll();
                 /** do stuff with cmd here **/
-                processor.processCommand(cmd);
                 if(cmd.getready())
                     curReady++;
                 else if(!cmd.getready())
@@ -233,18 +232,25 @@ public class Server {
             System.out.println("Starting game loop");
 
         Action actions;
+        long serverDelta = System.currentTimeMillis();
         while(inGame){
             // Game logic goes here
-
-            for(ClientThread thread : players) {
-                //do updates
-
-            }
+            //TODO empty queue
 
             while (!commands.isEmpty()){
                 actions = (Action) commands.poll();
-                processor.processCommand(actions);
+                for (Ship ship :ships){
+                    //TODO do updates
+                    if(ship.getPlayerID()==actions.getId()){
 
+
+                    }
+                }
+            }
+
+            //TODO update all clients
+            for(ClientThread player : players){
+                //do something here
             }
         }
 
