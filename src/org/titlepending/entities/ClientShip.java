@@ -36,10 +36,9 @@ public class ClientShip extends Entity {
         super((float) x, (float) y);
         this.playerID = playerID;
         velocity = new Vector(0f, 0f);
-        heading = 90f;
+        float center = (float) new Vector((float) x, (float) y).angleTo(new Vector(3200, 3200));
+        heading = center;
         rotationRate = 0.05f;
-
-        
 
 
 
