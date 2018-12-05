@@ -16,7 +16,7 @@ public class boatGuy extends Entity {
     public Vector movingTo;
     public float speed = 0.15f;
     private Animation boat_a;
-    SpriteSheet master = new SpriteSheet(ResourceManager.getImage(Client.SHIP_RSC), 96, 97);
+    SpriteSheet master = new SpriteSheet(ResourceManager.getImage(Client.SHIP_RSC), 96, 96);
 
     public Animation getBoat_a() {
         return boat_a;
@@ -74,12 +74,12 @@ public class boatGuy extends Entity {
 
     }
 
-    @Override
-    public void render(Graphics g){
+
+    public void render(Graphics g, int y){
         super.render(g);
         if(done)
             return;
-        g.drawAnimation(getBoat_a(), getPosition().getX(), 500);
+        g.drawAnimation(getBoat_a(), getPosition().getX(), y);
         //g.fillRect(getPosition().getX(), 500, 100, 100);
     }
 }
