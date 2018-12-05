@@ -15,15 +15,15 @@ public class ClientShip extends Entity {
 
     private static SpriteSheet ship_RSC_96 = new SpriteSheet(ResourceManager.getImage(Client.SHIP_RSC), 64, 96);
 
-    Image lgHaul = ship_RSC_96.getSubImage(1, 0).getScaledCopy(3f);
-    Image medHaul = ship_RSC_96.getSubImage(0, 0).getScaledCopy(3f);
-    Image smallHaul = ship_RSC_96.getSubImage(2, 0).getScaledCopy(3f);
-    Image oneSail = ship_RSC_96.getSubImage(5, 0).getScaledCopy(3f);
-    Image twoSails = ship_RSC_96.getSubImage(4, 0).getScaledCopy(3f);
-    Image threeSails = ship_RSC_96.getSubImage(3, 0).getScaledCopy(3f);
-    Image oneCannon = ship_RSC_96.getSubImage(6, 1).getScaledCopy(3f);
-    Image twoCannons = ship_RSC_96.getSubImage(5, 1).getScaledCopy(3f);
-    Image threeCannons = ship_RSC_96.getSubImage(4, 1).getScaledCopy(3f);
+    private Image lgHaul = ship_RSC_96.getSubImage(1, 0).getScaledCopy(1.5f);
+    private Image medHaul = ship_RSC_96.getSubImage(0, 0).getScaledCopy(1.5f);
+    private Image smallHaul = ship_RSC_96.getSubImage(2, 0).getScaledCopy(1.5f);
+    private Image oneSail = ship_RSC_96.getSubImage(5, 0).getScaledCopy(1.5f);
+    private Image twoSails = ship_RSC_96.getSubImage(4, 0).getScaledCopy(1.5f);
+    private Image threeSails = ship_RSC_96.getSubImage(3, 0).getScaledCopy(1.5f);
+    private Image oneCannon = ship_RSC_96.getSubImage(6, 1).getScaledCopy(1.5f);
+    private Image twoCannons = ship_RSC_96.getSubImage(5, 1).getScaledCopy(1.5f);
+    private Image threeCannons = ship_RSC_96.getSubImage(4, 1).getScaledCopy(1.5f);
 
 
     public ClientShip(double x, double y, int playerID) {
@@ -61,13 +61,13 @@ public class ClientShip extends Entity {
 
         //Setting Cannons
         switch (stats[2]) {
-            case 0:
+            case 2:
                 addImage(oneCannon);
                 break;
             case 1:
                 addImage(twoCannons);
                 break;
-            case 2:
+            case 0:
                 addImage(threeCannons);
                 break;
             default:
@@ -78,13 +78,13 @@ public class ClientShip extends Entity {
 
         // Setting Hull
         switch (stats[0]) {
-            case 0:
+            case 2:
                 addImage(smallHaul);
                 break;
             case 1:
                 addImage(medHaul);
                 break;
-            case 2:
+            case 0:
                 addImage(lgHaul);
                 break;
             default:
@@ -96,13 +96,13 @@ public class ClientShip extends Entity {
 
         // Setting Sails
         switch (stats[1]) {
-            case 0:
+            case 2:
                 addImage(oneSail);
                 break;
             case 1:
                 addImage(twoSails);
                 break;
-            case 2:
+            case 0:
                 addImage(threeSails);
                 break;
             default:
