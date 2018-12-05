@@ -14,14 +14,15 @@ public class ClientShip extends Entity {
     private boolean isDead = false;
     private int playerID;
     private Vector velocity;
-    private float angle;
+    private float rotationRate;
+
+    private float heading;
 
     private Vector sailVector;
 
     private static SpriteSheet ship_RSC_96 = new SpriteSheet(ResourceManager.getImage(Client.SHIP_RSC), 64, 96);
 
     private Image lgHaul = ship_RSC_96.getSubImage(1, 0).getScaledCopy(1.5f);
-
     private Image medHaul = ship_RSC_96.getSubImage(0, 0).getScaledCopy(1.5f);
     private Image smallHaul = ship_RSC_96.getSubImage(2, 0).getScaledCopy(1.5f);
     private Image oneSail = ship_RSC_96.getSubImage(5, 0).getScaledCopy(1.5f);
@@ -35,7 +36,11 @@ public class ClientShip extends Entity {
         super((float) x, (float) y);
         this.playerID = playerID;
         velocity = new Vector(0f, 0f);
-        angle = (float) velocity.getRotation();
+        heading = 90f;
+        rotationRate = 0.05f;
+
+        
+
 
 
     }
@@ -52,10 +57,10 @@ public class ClientShip extends Entity {
         //takedamage(target,dmg based off of object speed)
         //takedamage(object, based off of targets speed)
     }
+
     public Vector getVelocity() {
         return velocity;
     }
-
     public void setVelocity(final Vector v){
         velocity =v;
     }
@@ -74,6 +79,23 @@ public class ClientShip extends Entity {
         return playerID;
     }
 
+    public float getHeading() {
+        return heading;
+    }
+
+    public void updateHeading(int delta){
+        heading += delta * rotationRate;
+        imageRotate();
+    }
+
+    public void updateVelocity(){
+        setVelocity(sailVector.setRotation(heading));
+        imageRotate();
+    }
+
+    public void updateVelocity(Vector stop){
+        setVelocity(stop.setRotation(heading));
+    }
     public void addSprites(){
         //these will change depending on what is selected most likely handled elsewhere
 //
@@ -117,15 +139,15 @@ public class ClientShip extends Entity {
         switch (stats[1]) {
             case 2:
                 addImage(oneSail);
-                sailVector = new Vector(1f, 0f);
+                sailVector = new Vector(0f, -1f);
                 break;
             case 1:
                 addImage(twoSails);
-                sailVector = new Vector(2f, 0f);
+                sailVector = new Vector(0f, -1.25f);
                 break;
             case 0:
                 addImage(threeSails);
-                sailVector = new Vector(3f, 0f);
+                sailVector = new Vector(0f, -1.5f);
                 break;
             default:
                 System.out.println("I BROKE MY SAILS!!!");
@@ -146,17 +168,23 @@ public class ClientShip extends Entity {
 
         translate(velocity.scale(delta));
 
-        oneCannon.setRotation(angle);
-        twoCannons.setRotation(angle);
-        threeCannons.setRotation(angle);
+        imageRotate();
 
-        smallHaul.setRotation(angle);
-        medHaul.setRotation(angle);
-        lgHaul.setRotation(angle);
+    }
 
-        oneSail.setRotation(angle);
-        twoSails.setRotation(angle);
-        threeSails.setRotation(angle);
+    public void imageRotate(){
+
+        oneCannon.setRotation(heading+90);
+        twoCannons.setRotation(heading+90);
+        threeCannons.setRotation(heading+90);
+
+        smallHaul.setRotation(heading+90);
+        medHaul.setRotation(heading+90);
+        lgHaul.setRotation(heading+90);
+
+        oneSail.setRotation(heading+90);
+        twoSails.setRotation(heading+90);
+        threeSails.setRotation(heading+90);
 
     }
 }

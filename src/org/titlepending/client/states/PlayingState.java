@@ -27,6 +27,7 @@ public class PlayingState extends BasicGameState {
 
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException {
+        map = new TiledMap(Client.MAP_RSC);
 
 
 
@@ -39,7 +40,9 @@ public class PlayingState extends BasicGameState {
         cmdDelay =0;
         ArrayList<Ship> Ships = Updates.getInstance().getShips();
         this.CShips = new ArrayList<>();
-        //map = new TiledMap(Client.MAP_RSC);
+        if(Client.DEBUG){
+            System.out.println("Attepting to create tiled map from: "+Client.MAP_RSC);
+        }
         if(Client.DEBUG)
             System.out.println("Before myBoat thread ID: " + Updates.getInstance().getThread().getClientId());
 
@@ -75,8 +78,11 @@ public class PlayingState extends BasicGameState {
         int screenX = (int) myBoat.getX() - client.ScreenWidth/2;
         int screenY = (int) myBoat.getY() - client.ScreenHeight/2;
 
-        //map.render(0,0);
         g.translate(-screenX, -screenY);
+        g.pushTransform();
+        g.scale(5, 5);
+        map.render(0,0);
+        g.popTransform();
 
         for(ClientShip ship : CShips){
             ship.render(g);
@@ -96,23 +102,27 @@ public class PlayingState extends BasicGameState {
             if(Client.DEBUG) {
                 System.out.println("Sending command to raise anchor");
             }
-            myBoat.setVelocity(myBoat.getSailVector());
+
+            myBoat.updateVelocity();
 
 
         } else if(input.isKeyDown(Input.KEY_S)){
             // Send lower anchor command to server
-            myBoat.setVelocity(new Vector(0f,0f));
+            myBoat.updateVelocity(new Vector(0f,0f));
 
 
         }
 
         if(input.isKeyDown(Input.KEY_A)){
             // Send command to turn left
-            myBoat.setVelocity(myBoat.getVelocity().setRotation((double) delta));
+            myBoat.updateHeading(delta);
+            myBoat.updateVelocity();
+
 
         } else if(input.isKeyDown(Input.KEY_D)){
             // Senc dommand to turn right
-            myBoat.setVelocity(myBoat.getVelocity().setRotation(-(double) delta));
+            myBoat.updateHeading(-delta);
+            myBoat.updateVelocity();
 
         }
 
@@ -130,8 +140,7 @@ public class PlayingState extends BasicGameState {
             cmdDelay =100;
         }
 
-        if(Client.DEBUG)
-            System.out.println("Position x: " + myBoat.getX() + " Position y: " + myBoat.getY());
+
     }
 
     private void sendCommand(Action cmd){
