@@ -72,6 +72,10 @@ public class PlayingState extends BasicGameState {
         int screenX = (int) myBoat.getX() - client.ScreenWidth/2;
         int screenY = (int) myBoat.getY() - client.ScreenHeight/2;
 
+        if(Client.DEBUG)
+            System.out.println("Screen x: " + screenX + " Screen y: " + screenY);
+        g.translate(-screenX, -screenY);
+
 //        camera.drawMap();
 //        camera.translateGraphics();
         for(ClientShip ship : CShips){

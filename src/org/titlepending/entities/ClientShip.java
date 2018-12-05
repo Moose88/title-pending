@@ -59,6 +59,23 @@ public class ClientShip extends Entity {
         //SpriteSheet Sailsprites = ResourceManager.getSpriteSheet(Client.SHIP_RSC,64,32);
         //these will change depending on what is selected most likely handled elsewhere
 
+        //Setting Cannons
+        switch (stats[2]) {
+            case 0:
+                addImage(oneCannon);
+                break;
+            case 1:
+                addImage(twoCannons);
+                break;
+            case 2:
+                addImage(threeCannons);
+                break;
+            default:
+                System.out.println("I BROKE MY shooters!!!");
+                System.exit(-100);
+                break;
+        }
+
         // Setting Hull
         switch (stats[0]) {
             case 0:
@@ -94,22 +111,7 @@ public class ClientShip extends Entity {
                 break;
         }
 
-        //Setting Cannons
-        switch (stats[2]) {
-            case 0:
-                addImage(oneCannon);
-                break;
-            case 1:
-                addImage(twoCannons);
-                break;
-            case 2:
-                addImage(threeCannons);
-                break;
-            default:
-                System.out.println("I BROKE MY shooters!!!");
-                System.exit(-100);
-                break;
-        }
+
 
     }
 
