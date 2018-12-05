@@ -48,6 +48,7 @@ public class LobbyState extends BasicGameState {
     private Image[] hull = new Image[3];
     private Image[] sails = new Image[3];
     private Image[] cannons = new Image[3];
+    private Image[] scannons = new Image[3];
     private Image[] crew = new Image[3];
 
     private String[] hullString = new String[3];
@@ -139,9 +140,17 @@ public class LobbyState extends BasicGameState {
         Image twoCannons = ship_RSC_96.getSubImage(5, 1).getScaledCopy(3f);
         Image threeCannons = ship_RSC_96.getSubImage(4, 1).getScaledCopy(3f);
 
+        Image soneCannon = ship_RSC_96.getSubImage(6, 2).getScaledCopy(3f);
+        Image stwoCannons = ship_RSC_96.getSubImage(5, 2).getScaledCopy(3f);
+        Image sthreeCannons = ship_RSC_96.getSubImage(4, 2).getScaledCopy(3f);
+
         cannons[2] = oneCannon;
         cannons[1] = twoCannons;
         cannons[0] = threeCannons;
+
+        scannons[2] = soneCannon;
+        scannons[1] = stwoCannons;
+        scannons[0] = sthreeCannons;
 
         cannonString[2] = "One Cannon";
         cannonString[1] = "Two Cannons";
@@ -237,7 +246,12 @@ public class LobbyState extends BasicGameState {
 
         //Draw the model ship here for the center of the screen
 
-        g.drawImage(cannons[setCannons], client.ScreenWidth/2 - cannons[setCannons].getWidth()/2, client.ScreenHeight*.25f);
+        if(setHull == 2){
+            g.drawImage(scannons[setCannons], client.ScreenWidth / 2 - scannons[setCannons].getWidth() / 2, client.ScreenHeight * .25f);
+        } else {
+            g.drawImage(cannons[setCannons], client.ScreenWidth / 2 - cannons[setCannons].getWidth() / 2, client.ScreenHeight * .25f);
+        }
+
         g.drawImage(hull[setHull], client.ScreenWidth/2 - hull[setHull].getWidth()/2, client.ScreenHeight*.25f);
         g.drawImage(sails[setSails], client.ScreenWidth/2 - sails[setSails].getWidth()/2, client.ScreenHeight*.25f);
 
