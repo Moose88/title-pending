@@ -8,6 +8,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
+import org.titlepending.entities.ClientShip;
 import org.titlepending.shared.Directive;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,7 +17,8 @@ import org.titlepending.entities.Ship;
 
 public class PlayingState extends BasicGameState {
     private ArrayList<Ship> Ships;
-    private Ship myBoat;
+    private ArrayList<ClientShip> CShips;
+    private ClientShip myBoat;
 
 
 
@@ -33,15 +35,21 @@ public class PlayingState extends BasicGameState {
             throws SlickException{
         this.Ships = Updates.getInstance().getShips();
 
-
-        for(Ship ship : Ships) {
-            if (ship.getPlayerID() == Updates.getInstance().getThread().getClientId())
-                myBoat = ship;
-        }
-
         for(Ship ship : Ships){
-            ship.addSprites();
+            ClientShip temp =new ClientShip(ship.getX(), ship.getY(), ship.getPlayerID());
+            temp.setStats(ship.getStats());
+            temp.addSprites();
+            CShips.add(temp);
+
         }
+
+        for(ClientShip ship : CShips) {
+            if (ship.getPlayerID() == Updates.getInstance().getThread().getClientId()) {
+                myBoat = ship;
+            }
+        }
+
+
 
         System.out.println("Made it to the playing state");
     }
@@ -52,7 +60,7 @@ public class PlayingState extends BasicGameState {
         int screenX = (int) myBoat.getX() - client.ScreenWidth/2;
         int screenY = (int) myBoat.getY() - client.ScreenHeight/2;
 
-        for(Ship ship : Ships){
+        for(ClientShip ship : CShips){
             ship.render(g);
         }
 
