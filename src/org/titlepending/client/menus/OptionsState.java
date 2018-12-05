@@ -170,7 +170,8 @@ public class OptionsState extends BaseMenuState {
                 case FULLSCREEN:
                     try {
                         container.setFullscreen(!container.isFullscreen());
-                        System.out.println(container.isFullscreen());
+                        if(Client.DEBUG)
+                            System.out.println("Is fullscreen: " + container.isFullscreen());
                         if(container.isFullscreen())
                             isFullScreen = 1;
                         else

@@ -1,6 +1,5 @@
 package org.titlepending.client.states;
 
-import org.lwjgl.Sys;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -10,7 +9,6 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
 import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
-import org.titlepending.entities.Camera;
 import org.titlepending.entities.ClientShip;
 import org.titlepending.shared.Directive;
 import java.io.IOException;
@@ -22,13 +20,12 @@ public class PlayingState extends BasicGameState {
     private ArrayList<ClientShip> CShips;
     private ClientShip myBoat;
     private TiledMap map;
-    private Camera camera;
 
 
 
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException {
-        Client client = (Client)game;
+
 
 
 
@@ -37,9 +34,7 @@ public class PlayingState extends BasicGameState {
 
     public void enter(GameContainer container, StateBasedGame game)
             throws SlickException{
-//        map = new TiledMap(Client.MAP_RSC);
-//        if(Client.DEBUG) System.out.println("Successfully imported map");
-//        camera = new Camera(container, map);
+
         ArrayList<Ship> Ships = Updates.getInstance().getShips();
         this.CShips = new ArrayList<>();
 
@@ -67,8 +62,7 @@ public class PlayingState extends BasicGameState {
         if(Client.DEBUG)
             System.out.println("Boat x: " + myBoat.getX() + " Boat y: " + myBoat.getY() + " Boat id: " + myBoat.getPlayerID());
 
-        // 96 is the boats image height, and 64 is its image width
-        //camera.centerOn(myBoat.getX(), myBoat.getY(), 96, 64);
+
 
         System.out.println("Made it to the playing state");
     }
@@ -82,8 +76,6 @@ public class PlayingState extends BasicGameState {
 
         g.translate(-screenX, -screenY);
 
-//        camera.drawMap();
-//        camera.translateGraphics();
         for(ClientShip ship : CShips){
             ship.render(g);
         }
