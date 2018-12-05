@@ -1,5 +1,6 @@
 package org.titlepending.client.states;
 
+import jig.Vector;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -11,7 +12,7 @@ import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
 import org.titlepending.entities.ClientShip;
 import org.titlepending.shared.Action;
-import org.titlepending.shared.Initializer;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -21,7 +22,7 @@ public class PlayingState extends BasicGameState {
     private ArrayList<ClientShip> CShips;
     private ClientShip myBoat;
     private TiledMap map;
-
+    private int cmdDelay;
 
 
     public void init(GameContainer container, StateBasedGame game)
@@ -35,10 +36,10 @@ public class PlayingState extends BasicGameState {
 
     public void enter(GameContainer container, StateBasedGame game)
             throws SlickException{
-
+        cmdDelay =0;
         ArrayList<Ship> Ships = Updates.getInstance().getShips();
         this.CShips = new ArrayList<>();
-
+        //map = new TiledMap(Client.MAP_RSC);
         if(Client.DEBUG)
             System.out.println("Before myBoat thread ID: " + Updates.getInstance().getThread().getClientId());
 
@@ -74,7 +75,7 @@ public class PlayingState extends BasicGameState {
         int screenX = (int) myBoat.getX() - client.ScreenWidth/2;
         int screenY = (int) myBoat.getY() - client.ScreenHeight/2;
 
-
+        //map.render(0,0);
         g.translate(-screenX, -screenY);
 
         for(ClientShip ship : CShips){
@@ -86,38 +87,51 @@ public class PlayingState extends BasicGameState {
 
     public void update(GameContainer container, StateBasedGame game,
                        int delta) throws SlickException{
-
+        myBoat.update(delta);
+        cmdDelay -= delta;
         Input input = container.getInput();
 
-
-        Action cmd = new Action(Updates.getInstance().getThread().getClientId());
         if(input.isKeyDown(Input.KEY_W)){
             // Send raise anchor command to server
-            if(Client.DEBUG)
+            if(Client.DEBUG) {
                 System.out.println("Sending command to raise anchor");
-            cmd.setRaiseAnchor();
-            sendCommand(cmd);
-        }
-        if(input.isKeyDown(Input.KEY_S)){
+            }
+            myBoat.setVelocity(myBoat.getSailVector());
+
+
+        } else if(input.isKeyDown(Input.KEY_S)){
             // Send lower anchor command to server
-            cmd.setLowerAnchor();
-            sendCommand(cmd);
+            myBoat.setVelocity(new Vector(0f,0f));
+
+
         }
+
         if(input.isKeyDown(Input.KEY_A)){
             // Send command to turn left
-            cmd.setTurnLeft();
-            sendCommand(cmd);
+            myBoat.getVelocity().rotate((double) delta);
+
+        } else if(input.isKeyDown(Input.KEY_D)){
+            // Senc dommand to turn right
+            myBoat.getVelocity().rotate(-(double) delta);
+
         }
-        if(input.isKeyDown(Input.KEY_D)){
-            cmd.setTurnRight();
-            sendCommand(cmd);
-        }
+
         if(input.isKeyDown(Input.KEY_SPACE)){
-            cmd.setFireCannons();
+
+
+        }
+        if(cmdDelay <= 0){
+            Action cmd = new Action(Updates.getInstance().getThread().getClientId());
+            cmd.setX(myBoat.getX());
+            cmd.setY(myBoat.getY());
+            cmd.setVX(myBoat.getVelocity().getX());
+            cmd.setVY(myBoat.getVelocity().getY());
             sendCommand(cmd);
+            cmdDelay =100;
         }
 
-
+        if(Client.DEBUG)
+            System.out.println("Position x: " + myBoat.getX() + " Position y: " + myBoat.getY());
     }
 
     private void sendCommand(Action cmd){
