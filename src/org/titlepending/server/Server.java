@@ -52,7 +52,7 @@ public class Server {
                     System.out.println(i);
                 }
             }
-            System.out.println("My IP: "+Ip.getLocalHost().getHostAddress() + "\nHost Name "+Ip.getHostName());
+            //System.out.println("My IP: "+Ip.getLocalHost().getHostAddress() + "\nHost Name "+Ip.getHostName());
         }
 
 
