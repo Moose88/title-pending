@@ -4,6 +4,7 @@ import jig.Entity;
 import jig.Vector;
 import jig.ResourceManager;
 import org.newdawn.slick.Animation;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
 import org.titlepending.client.Client;
 
@@ -20,6 +21,17 @@ public class Ship extends Entity implements Serializable {
     private boolean isDead = false;
     private int playerID;
 
+    private static SpriteSheet ship_RSC_96 = new SpriteSheet(ResourceManager.getImage(Client.SHIP_RSC), 64, 96);
+
+    Image lgHaul = ship_RSC_96.getSubImage(1, 0).getScaledCopy(3f);
+    Image medHaul = ship_RSC_96.getSubImage(0, 0).getScaledCopy(3f);
+    Image smallHaul = ship_RSC_96.getSubImage(2, 0).getScaledCopy(3f);
+    Image oneSail = ship_RSC_96.getSubImage(5, 0).getScaledCopy(3f);
+    Image twoSails = ship_RSC_96.getSubImage(4, 0).getScaledCopy(3f);
+    Image threeSails = ship_RSC_96.getSubImage(3, 0).getScaledCopy(3f);
+    Image oneCannon = ship_RSC_96.getSubImage(6, 1).getScaledCopy(3f);
+    Image twoCannons = ship_RSC_96.getSubImage(5, 1).getScaledCopy(3f);
+    Image threeCannons = ship_RSC_96.getSubImage(4, 1).getScaledCopy(3f);
 
     public Ship(double x, double y, int playerID){
         super((float) x,(float) y);
@@ -79,45 +91,60 @@ public class Ship extends Entity implements Serializable {
     }
 
     public void addSprites(){
-        SpriteSheet Shipsprites = ResourceManager.getSpriteSheet(Client.SHIP_RSC,64,96);
-        SpriteSheet Sailsprites = ResourceManager.getSpriteSheet(Client.SHIP_RSC,64,32);
+        //SpriteSheet Shipsprites = ResourceManager.getSpriteSheet(Client.SHIP_RSC,64,96);
+        //SpriteSheet Sailsprites = ResourceManager.getSpriteSheet(Client.SHIP_RSC,64,32);
         //these will change depending on what is selected most likely handled elsewhere
-        if(stats[0]==0) {
-            ship = new Animation(Shipsprites, 0, 0, 0, 0, true, 1000, true);
-        }
-        else if(stats[0]==1){
-            ship = new Animation(Shipsprites, 1, 0, 1, 0, true, 1000, true);
-        }
-        else{
-            ship = new Animation(Shipsprites, 2, 0, 2, 0, true, 1000, true);
-        }
-        sail = new Animation(Sailsprites,3,0,3,0,true,1000,true);
-        cannon = new Animation(Sailsprites,4,0,4,0,true,1000,true);
 
-        if(stats[2]==0){
-            addAnimation(cannon,new Vector(0,0));
+        // Setting Hull
+        switch (stats[0]) {
+            case 0:
+                addImage(smallHaul);
+                break;
+            case 1:
+                addImage(medHaul);
+                break;
+            case 2:
+                addImage(lgHaul);
+                break;
+            default:
+                System.out.println("I BROKE MY haul!!!");
+                System.exit(-100);
+                break;
+
         }
-        else if(stats[2]==1){
-            addAnimation(cannon,new Vector(0,16));
-            addAnimation(cannon,new Vector(0,-16));
+
+        // Setting Sails
+        switch (stats[1]) {
+            case 0:
+                addImage(oneSail);
+                break;
+            case 1:
+                addImage(twoSails);
+                break;
+            case 2:
+                addImage(threeSails);
+                break;
+            default:
+                System.out.println("I BROKE MY SAILS!!!");
+                System.exit(-100);
+                break;
         }
-        else {
-            addAnimation(cannon, new Vector(0, 16));
-            addAnimation(cannon, new Vector(0, -16));
-            addAnimation(cannon, new Vector(0, 0));
-        }
-        addAnimation(ship);
-        if(stats[1] == 0){
-            addAnimation(sail, new Vector(0, -8));
-        }
-        else if(stats[2] == 1){
-            addAnimation(sail, new Vector(0, 10));
-            addAnimation(sail, new Vector(0, -8));
-        }
-        else {
-            addAnimation(sail, new Vector(0, 10));
-            addAnimation(sail, new Vector(0, -8));
-            addAnimation(sail, new Vector(0, -26));
+
+        //Setting Cannons
+        switch (stats[2]) {
+            case 0:
+                addImage(oneCannon);
+                break;
+            case 1:
+                addImage(twoCannons);
+                break;
+            case 2:
+                addImage(threeCannons);
+                break;
+            default:
+                System.out.println("I BROKE MY shooters!!!");
+                System.exit(-100);
+                break;
         }
 
     }
