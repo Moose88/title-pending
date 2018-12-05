@@ -50,6 +50,7 @@ public class Server {
                 while (b.hasMoreElements()){
                     InetAddress i = (InetAddress) b.nextElement();
                     System.out.println(i);
+
                 }
             }
             //System.out.println("My IP: "+Ip.getLocalHost().getHostAddress() + "\nHost Name "+Ip.getHostName());

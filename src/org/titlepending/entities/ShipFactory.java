@@ -26,7 +26,6 @@ public class ShipFactory {
         Ship temp = new Ship(x, y, ThreadLocalRandom.current().nextInt());
         int[] npcStats = new int[] {2,2,2,2};
         temp.setStats(npcStats);
-        temp.addSprites();
         return temp;
     }
 
