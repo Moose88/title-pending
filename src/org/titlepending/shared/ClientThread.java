@@ -37,7 +37,7 @@ public class ClientThread extends Thread{
         try{
             while (!done){
                 try{
-                    Directive input = (Directive) in.readObject();
+                    CommandObject input = (CommandObject) in.readObject();
                     if(isServer){
                         //code to add to server queue
                         if(Server.DEBUG) {
@@ -79,7 +79,7 @@ public class ClientThread extends Thread{
         return clientId;
     }
 
-    public void sendCommand(Directive cmd) throws IOException{
+    public void sendCommand(CommandObject cmd) throws IOException{
         out.writeObject(cmd);
         out.flush();
     }

@@ -1,12 +1,9 @@
 package org.titlepending.server;
 
 
-import jig.Entity;
 import org.titlepending.server.ServerObjects.Ship;
 import org.titlepending.entities.ShipFactory;
-import org.titlepending.shared.ClientThread;
-import org.titlepending.shared.CmdProcessor;
-import org.titlepending.shared.Directive;
+import org.titlepending.shared.*;
 
 import java.io.IOException;
 import java.net.*;
@@ -25,7 +22,7 @@ public class Server {
     private static final int PLIMIT = 8;
     private static boolean inLobby;
     private static boolean inGame;
-    public static ConcurrentLinkedQueue<Directive> commands = new ConcurrentLinkedQueue<>();
+    public static ConcurrentLinkedQueue<CommandObject> commands = new ConcurrentLinkedQueue<>();
 
     public static final int LOADSTATE = 0;
     public static final int CONNECTSTATE = 1;
@@ -83,11 +80,12 @@ public class Server {
         }
 
         int curReady = 0;
-        Directive cmd;
+
+        Initializer cmd;
         while(lobbyTimer > 0){
             if(DEBUG) System.out.println("Timer is: " + lobbyTimer+"\nCurrent players: "+players.size());
             for (ClientThread player : players){
-                Directive timeUpdate = new Directive();
+                Initializer timeUpdate = new Initializer(0);
                 timeUpdate.setTime(lobbyTimer);
 
                 try{
@@ -110,7 +108,7 @@ public class Server {
                 lobbyTimer -= 1000;
 
             if(commands.size()>0) {
-                cmd = commands.poll();
+                cmd = (Initializer) commands.poll();
                 /** do stuff with cmd here **/
                 processor.processCommand(cmd);
                 if(cmd.getready())
@@ -142,7 +140,7 @@ public class Server {
 
 
         /** final timer sent to client with transition state **/
-        cmd = new Directive();
+         cmd = new Initializer(0);
         cmd.setStateTransition(WAITINGSTATE);
         cmd.setTime(lobbyTimer);
         for(ClientThread player : players)
@@ -167,7 +165,7 @@ public class Server {
         while(commands.size()!=players.size()){
             /** send all connected clients to reject state **/
             if(timer <= 0){
-                cmd = new Directive();
+                cmd = new Initializer(0);
                 cmd.setStateTransition(REJECTSTATE);
                 for (ClientThread player : players){
                     player.sendCommand(cmd);
@@ -195,7 +193,7 @@ public class Server {
 
         while(!commands.isEmpty()){
             /** construct player ships here **/
-            cmd = commands.poll();
+            cmd = (Initializer) commands.poll();
             if(DEBUG){
                 System.out.println("Received from Client: "+cmd.getId());
                 System.out.println("Hull: "+cmd.getShip()[0]);
@@ -216,7 +214,7 @@ public class Server {
         if(DEBUG) System.out.println("Generated "+ships.size()+" ships.");
 
         for(ClientThread player : players){
-            cmd = new Directive();
+            cmd = new Initializer(0);
             cmd.setShips(ships);
             cmd.setStateTransition(PLAYINGSTATE);
             try{
@@ -234,6 +232,7 @@ public class Server {
         if(DEBUG)
             System.out.println("Starting game loop");
 
+        Action actions;
         while(inGame){
             // Game logic goes here
 
@@ -243,8 +242,8 @@ public class Server {
             }
 
             while (!commands.isEmpty()){
-                cmd = commands.poll();
-                processor.processCommand(cmd);
+                actions = (Action) commands.poll();
+                processor.processCommand(actions);
 
             }
         }
@@ -294,7 +293,7 @@ public class Server {
 
                 if(DEBUG) System.out.println("Building initial command");
 
-                Directive cmd = new Directive();
+                Initializer cmd = new Initializer(0);
                 cmd.setId(id);
                 cmd.setStateTransition(LOBBYSTATE);
 

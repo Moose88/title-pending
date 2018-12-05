@@ -9,7 +9,7 @@ import org.newdawn.slick.state.transition.FadeInTransition;
 import org.newdawn.slick.state.transition.FadeOutTransition;
 import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
-import org.titlepending.shared.Directive;
+import org.titlepending.shared.Initializer;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -191,7 +191,7 @@ public class LobbyState extends BasicGameState {
 
     public void leave(GameContainer container, StateBasedGame game){
         if(enteringGame){
-            Directive cmd = new Directive();
+            Initializer cmd = new Initializer(Updates.getInstance().getThread().getClientId());
             cmd.setShip(finalShip);
             cmd.setId(Updates.getInstance().getThread().getClientId());
             try {
@@ -355,7 +355,7 @@ public class LobbyState extends BasicGameState {
         }
 
         if(!Updates.getInstance().getQueue().isEmpty()){
-            Directive statusUpdate = Updates.getInstance().getQueue().poll();
+            Initializer statusUpdate = (Initializer) Updates.getInstance().getQueue().poll();
             assert statusUpdate != null;
             timer = statusUpdate.getTime();
 
@@ -389,7 +389,7 @@ public class LobbyState extends BasicGameState {
 
     @Override
     public void keyPressed(int key, char c){
-        Directive ready = new Directive();
+        Initializer ready = new Initializer(Updates.getInstance().getThread().getClientId());
 
         if(readyset && key != Input.KEY_ESCAPE)
             return;
@@ -592,7 +592,7 @@ public class LobbyState extends BasicGameState {
         client.enterState(Client.MAINMENUSTATE, new FadeOutTransition(), new FadeInTransition());
     }
 
-    private void sendCommand(Directive cmd){
+    private void sendCommand(Initializer cmd){
         cmd.setId(Updates.getInstance().getThread().getClientId());
         try{
             Updates.getInstance().getThread().sendCommand(cmd);
