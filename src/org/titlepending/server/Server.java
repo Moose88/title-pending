@@ -205,9 +205,12 @@ public class Server {
             }
             double shipX = 3200 + (radAlpha*Math.cos(degree*playerNo));
             double shipY = 3200 + (radAlpha*Math.sin(degree*playerNo));
-            if(DEBUG) System.out.println("Ship x: "+shipX+"\nShip y: "+shipY);
-            ships.add(ShipFactory.getInstance().createNewPlayerShip(shipX, shipY, cmd.getShip(), cmd.getId()));
+            if(DEBUG) System.out.println("Ship x: "+shipX+" Ship y: "+shipY);
+            Ship temp =ShipFactory.getInstance().createNewPlayerShip(shipX, shipY, cmd.getShip(), cmd.getId());
+            if(DEBUG) System.out.println("Temp x: "+temp.getX()+" Temp y: "+temp.getY());
+            ships.add(temp);
             playerNo +=1;
+
         }
 
         if(DEBUG) System.out.println("Generated "+ships.size()+" ships.");
