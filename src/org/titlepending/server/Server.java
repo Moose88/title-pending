@@ -252,6 +252,14 @@ public class Server {
 
             // Calc Delta Preserve Prev Time
             long curTime = System.currentTimeMillis();
+            if(curTime - prevTime < 50 ){
+                try {
+                    Thread.sleep(50-(curTime-prevTime));
+                } catch(InterruptedException e) {
+                    e.printStackTrace();
+                }
+                curTime = System.currentTimeMillis();
+            }
             long delta = curTime - prevTime;
 
             if(Server.DEBUG) System.out.println("Delta: "+delta+" Timer: "+timer);
@@ -274,8 +282,6 @@ public class Server {
             }
 
             i = ships.entrySet().iterator();
-            if(DEBUG)
-                System.out.println(delta);
             while (i.hasNext()){
                 Map.Entry pair = (Map.Entry) i.next();
                 if(updateAll || ships.get(pair.getKey()).getUpdated()){
@@ -288,14 +294,6 @@ public class Server {
                     actions.setY(updatedShip.getY());
                     actions.setHeading(updatedShip.getHeading());
                     updateAll(actions);
-                }
-            }
-            long afterTime = System.currentTimeMillis();
-            if(afterTime - prevTime < 50 ){
-                try {
-                    Thread.sleep(50-(afterTime-prevTime));
-                } catch(InterruptedException e) {
-                    e.printStackTrace();
                 }
             }
             prevTime = curTime;
