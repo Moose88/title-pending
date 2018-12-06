@@ -161,19 +161,19 @@ public class PlayingState extends BasicGameState {
         }
         cmdDelay -= delta;
         Input input = container.getInput();
-
+        boolean changed = false;
         if(input.isKeyDown(Input.KEY_W)){
             // Send raise anchor command to server
 
             anchor = false;
             myBoat.updateVelocity();
-
+            changed =true;
 
         } else if(input.isKeyDown(Input.KEY_S)){
             // Send lower anchor command to server
             anchor = true;
             myBoat.updateVelocity(new Vector(0f,0f));
-
+            changed = true;
 
         }
 
@@ -181,19 +181,19 @@ public class PlayingState extends BasicGameState {
             // Send command to turn left
                 myBoat.updateHeading(-delta);
                 myBoat.updateVelocity();
-
+                changed =true;
 
         } else if(input.isKeyDown(Input.KEY_D) && !anchor){
-            // Senc command to turn right
+            // Send command to turn right
                 myBoat.updateHeading(delta);
                 myBoat.updateVelocity();
-
+                changed = true;
         }
 
         if(input.isKeyDown(Input.KEY_SPACE)){
 
         }
-        if(cmdDelay <= 0){
+        if(changed){
             if(Client.DEBUG)
                 System.out.println("Sending vx: "+myBoat.getVelocity().getX()+" vy: "+myBoat.getVelocity().getY()+" heading: "+myBoat.getHeading());
             Action cmd = new Action(Updates.getInstance().getThread().getClientId());
@@ -201,9 +201,7 @@ public class PlayingState extends BasicGameState {
             cmd.setVx(myBoat.getVelocity().getX());
             cmd.setVy(myBoat.getVelocity().getY());
             sendCommand(cmd);
-            cmdDelay =50;
         }
-
 
     }
 

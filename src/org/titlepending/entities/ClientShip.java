@@ -42,7 +42,7 @@ public class ClientShip extends Entity {
         velocity = new Vector(0f, 0f);
         float center = (float) new Vector((float) x, (float) y).angleTo(new Vector(3200, 3200));
         heading = center;
-        rotationRate = 0.1f;
+        rotationRate = 0.08f;
 
 
 
@@ -156,15 +156,15 @@ public class ClientShip extends Entity {
         switch (stats[1]) {
             case 2:
                 addImage(oneSail);
-                sailVector = new Vector(0f, -.5f);
+                sailVector = new Vector(0f, -.25f);
                 break;
             case 1:
                 addImage(twoSails);
-                sailVector = new Vector(0f, -.75f);
+                sailVector = new Vector(0f, -.35f);
                 break;
             case 0:
                 addImage(threeSails);
-                sailVector = new Vector(0f, -1f);
+                sailVector = new Vector(0f, -.5f);
                 break;
             default:
                 System.out.println("I BROKE MY SAILS!!!");
