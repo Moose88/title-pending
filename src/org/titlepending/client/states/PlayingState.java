@@ -178,20 +178,17 @@ public class PlayingState extends BasicGameState {
 
         }
 
-        if(input.isKeyDown(Input.KEY_A)){
+        if(input.isKeyDown(Input.KEY_A) && !anchor){
             // Send command to turn left
-            if(!anchor) {
                 myBoat.updateHeading(-delta);
                 myBoat.updateVelocity();
-            }
 
 
-        } else if(input.isKeyDown(Input.KEY_D)){
-            // Senc dommand to turn right
-            if(!anchor) {
+        } else if(input.isKeyDown(Input.KEY_D) && !anchor){
+            // Senc command to turn right
+
                 myBoat.updateHeading(delta);
                 myBoat.updateVelocity();
-            }
 
         }
 
