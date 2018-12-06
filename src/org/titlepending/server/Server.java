@@ -274,7 +274,8 @@ public class Server {
             }
 
             i = ships.entrySet().iterator();
-
+            if(DEBUG)
+                System.out.println(delta);
             while (i.hasNext()){
                 Map.Entry pair = (Map.Entry) i.next();
                 if(updateAll || ships.get(pair.getKey()).getUpdated()){

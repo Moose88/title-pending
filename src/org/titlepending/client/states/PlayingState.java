@@ -150,7 +150,13 @@ public class PlayingState extends BasicGameState {
             update.setPosition(cmd.getX(),cmd.getY());
             update.setVelocity(new Vector(cmd.getVx(),cmd.getVy()));
         }
-        myBoat.update(delta);
+
+        Iterator i = CShips.entrySet().iterator();
+        while (i.hasNext()){
+            Map.Entry pair = (Map.Entry) i.next();
+            ClientShip update = CShips.get(pair.getKey());
+            update.update(delta);
+        }
         cmdDelay -= delta;
         Input input = container.getInput();
 
@@ -202,6 +208,9 @@ public class PlayingState extends BasicGameState {
             sendCommand(cmd);
             cmdDelay =150;
         }
+
+        if(Client.DEBUG)
+            System.out.println(delta);
 
 
     }
