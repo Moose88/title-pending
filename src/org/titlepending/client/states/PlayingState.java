@@ -218,12 +218,9 @@ public class PlayingState extends BasicGameState {
         return false;
     }
 
-    public boolean notAWall(int x, int y){
+    public boolean notanIsland(int x, int y){
         islandLayer = map.getLayerIndex("Tile Layer 2");
-        //System.out.println("islandLayer: " + islandLayer);
         map.getTileId(0, 0, islandLayer);
-        //System.out.println("TileID: " + map.getTileId(x, y, islandLayer));
-
         if(map.getTileId(x, y, islandLayer) == 0){
             return true;
         }
