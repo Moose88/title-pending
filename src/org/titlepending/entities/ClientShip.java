@@ -6,6 +6,7 @@ import jig.Vector;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
 import org.titlepending.client.Client;
+import org.titlepending.server.Server;
 import org.titlepending.server.ServerObjects.Ship;
 
 public class ClientShip extends Entity {
@@ -88,6 +89,7 @@ public class ClientShip extends Entity {
     public void updateHeading(int delta){
         heading += delta * rotationRate;
         imageRotate();
+
     }
 
     public void updateVelocity(){
@@ -170,15 +172,15 @@ public class ClientShip extends Entity {
 
     }
 
+    public void update(float x,float y, float heading){
+        translate(new Vector(x,y));
+        this.heading=heading;
+    }
+
     public void update(final int delta) {
-        if(isDead==false) {//they are still alive
-            //translate(velocity.scale(delta));
-        }
-        else {//they died
-        }
-
-        translate(velocity.scale(delta));
-
+        Vector pos = getPosition();
+        pos.setX(velocity.getX()*delta);
+        pos.setY(velocity.getY()*delta);
         imageRotate();
 
     }

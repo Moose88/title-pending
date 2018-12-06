@@ -26,7 +26,7 @@ public class ShipFactory {
 
     public Ship createNewNpcShip(float x, float y){
         Ship temp = new Ship(x, y, ThreadLocalRandom.current().nextInt());
-        int[] npcStats = new int[] {2,2,2,2};
+        int[] npcStats = new int[] {0,0,0,0};
         temp.setStats(npcStats);
         return temp;
     }

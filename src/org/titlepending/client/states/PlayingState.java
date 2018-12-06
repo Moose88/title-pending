@@ -14,12 +14,14 @@ import org.titlepending.entities.ClientShip;
 import org.titlepending.shared.Action;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.titlepending.server.ServerObjects.Ship;
 
 public class PlayingState extends BasicGameState {
-    private ArrayList<ClientShip> CShips;
+    private HashMap<Integer, ClientShip> CShips;
     private ClientShip myBoat;
     private TiledMap map;
     private int cmdDelay;
@@ -40,30 +42,29 @@ public class PlayingState extends BasicGameState {
     public void enter(GameContainer container, StateBasedGame game)
             throws SlickException{
         cmdDelay =0;
-        ArrayList<Ship> Ships = Updates.getInstance().getShips();
-        this.CShips = new ArrayList<>();
+        HashMap<Integer,Ship> ships = Updates.getInstance().getShips();
+        this.CShips = new HashMap<>();
         if(Client.DEBUG){
             System.out.println("Attepting to create tiled map from: "+Client.MAP_RSC);
         }
         if(Client.DEBUG)
             System.out.println("Before myBoat thread ID: " + Updates.getInstance().getThread().getClientId());
 
+        Iterator i = ships.entrySet().iterator();
 
-        for(Ship ship : Ships){
-            if(Client.DEBUG) System.out.println("Ship x "+ship.getX()+ "Ship y "+ship.getY());
+        while (i.hasNext()){
+            Map.Entry pair = (Map.Entry) i.next();
+            Ship ship = ships.get(pair.getKey());
+            if(Client.DEBUG){
+                System.out.println("Got ID: "+ship.getPlayerID()+" x: "+ship.getX()+" y: "+ship.getY());
+            }
             ClientShip temp =new ClientShip(ship.getX(), ship.getY(), ship.getPlayerID());
             temp.setStats(ship.getStats());
             temp.addSprites();
-            CShips.add(temp);
-
+            CShips.put(ship.getPlayerID(),temp);
         }
 
-        for(ClientShip ship : CShips) {
-            if (ship.getPlayerID() == Updates.getInstance().getThread().getClientId()) {
-                myBoat = ship;
-            }
-        }
-
+        myBoat = CShips.get(Updates.getInstance().getThread().getClientId());
         if(Client.DEBUG)
             System.out.println("After myBoat thread ID: " + Updates.getInstance().getThread().getClientId());
         if(Client.DEBUG)
@@ -86,7 +87,10 @@ public class PlayingState extends BasicGameState {
         map.render(0,0);
         g.popTransform();
 
-        for(ClientShip ship : CShips){
+        Iterator i = CShips.entrySet().iterator();
+        while (i.hasNext()){
+            Map.Entry pair = (Map.Entry) i.next();
+            ClientShip ship = CShips.get(pair.getKey());
             ship.render(g);
         }
 
@@ -95,6 +99,15 @@ public class PlayingState extends BasicGameState {
 
     public void update(GameContainer container, StateBasedGame game,
                        int delta) throws SlickException{
+        /** update all ships from server command before we do local updates **/
+        while(!Updates.getInstance().getQueue().isEmpty()){
+            Action cmd = (Action) Updates.getInstance().getQueue().poll();
+            assert cmd !=null;
+
+            ClientShip update = CShips.get(cmd.getUpdatedShip());
+            update.setPosition(cmd.getX(),cmd.getY());
+            update.setVelocity(new Vector(cmd.getVx(),cmd.getVy()));
+        }
         myBoat.update(delta);
         cmdDelay -= delta;
         Input input = container.getInput();
@@ -136,16 +149,16 @@ public class PlayingState extends BasicGameState {
 
         if(input.isKeyDown(Input.KEY_SPACE)){
 
-
         }
         if(cmdDelay <= 0){
+            if(Client.DEBUG)
+                System.out.println("Sending vx: "+myBoat.getVelocity().getX()+" vy: "+myBoat.getVelocity().getY()+" heading: "+myBoat.getHeading());
             Action cmd = new Action(Updates.getInstance().getThread().getClientId());
-            cmd.setX(myBoat.getX());
-            cmd.setY(myBoat.getY());
-            cmd.setVX(myBoat.getVelocity().getX());
-            cmd.setVY(myBoat.getVelocity().getY());
+            cmd.setHeading(myBoat.getHeading());
+            cmd.setVx(myBoat.getVelocity().getX());
+            cmd.setVy(myBoat.getVelocity().getY());
             sendCommand(cmd);
-            cmdDelay =100;
+            cmdDelay =150;
         }
 
 

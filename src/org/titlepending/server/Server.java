@@ -1,15 +1,14 @@
 package org.titlepending.server;
 
 
+import org.titlepending.server.ServerObjects.GameObject;
 import org.titlepending.server.ServerObjects.Ship;
 import org.titlepending.entities.ShipFactory;
 import org.titlepending.shared.*;
 
 import java.io.IOException;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
@@ -179,7 +178,7 @@ public class Server {
             timer -= 1000;
         }
 
-        ArrayList<Ship> ships = new ArrayList<>();
+        HashMap<Integer, Ship> ships = new HashMap();
         double degree = Math.toRadians((float)360/players.size());
         double radAlpha;
         if(players.size()<=4){
@@ -200,17 +199,18 @@ public class Server {
                 System.out.println("Cannon: "+cmd.getShip()[2]);
                 System.out.println("Captain: "+cmd.getShip()[3]);
             }
-            double shipX = 3200 + (radAlpha*Math.cos(degree*playerNo));
-            double shipY = 3200 + (radAlpha*Math.sin(degree*playerNo));
+            double shipX = (3200 + (radAlpha*Math.cos(degree*playerNo)));
+            double shipY = (3200 + (radAlpha*Math.sin(degree*playerNo)));
             if(DEBUG) System.out.println("Ship x: "+shipX+" Ship y: "+shipY);
             Ship temp =ShipFactory.getInstance().createNewPlayerShip(shipX, shipY, cmd.getShip(), cmd.getId());
             if(DEBUG) System.out.println("Temp x: "+temp.getX()+" Temp y: "+temp.getY());
-            ships.add(temp);
+            ships.put(cmd.getId(),temp);
             playerNo +=1;
 
         }
 
         if(DEBUG) System.out.println("Generated "+ships.size()+" ships.");
+
 
         for(ClientThread player : players){
             cmd = new Initializer(0);
@@ -232,28 +232,80 @@ public class Server {
             System.out.println("Starting game loop");
 
         Action actions;
-        long serverDelta = System.currentTimeMillis();
+        long prevTime= System.currentTimeMillis();
+        timer = 0;
+        boolean updateAll = false;
         while(inGame){
             // Game logic goes here
             //TODO empty queue
 
             while (!commands.isEmpty()){
                 actions = (Action) commands.poll();
-                for (Ship ship :ships){
-                    //TODO do updates
-                    if(ship.getPlayerID()==actions.getId()){
+                Ship updater = ships.get(actions.getId());
+                assert updater != null;
+                updater.setVelocity(actions.getVx(),actions.getVy());
+                updater.setHeading(actions.getHeading());
+                updater.setUpdated(true);
+                if(DEBUG)
+                    System.out.println("Updated Ship "+updater.getPlayerID());
+            }
+
+            // Calc Delta Preserve Prev Time
+            long curTime = System.currentTimeMillis();
+            long delta = curTime - prevTime;
+
+            if(Server.DEBUG) System.out.println("Delta: "+delta+" Timer: "+timer);
+
+            Iterator i = ships.entrySet().iterator();
+
+            while (i.hasNext()){
+                Map.Entry pair = (Map.Entry)i.next();
+                ships.get(pair.getKey()).update((int)delta);
+
+            }
+            // Sleep if we havn't done enough work
 
 
-                    }
+            timer -= (int) delta;
+            if(timer<=0){
+                updateAll = true; timer =150;
+            }else {
+                updateAll=false;
+            }
+
+            i = ships.entrySet().iterator();
+
+            while (i.hasNext()){
+                Map.Entry pair = (Map.Entry) i.next();
+                if(updateAll || ships.get(pair.getKey()).getUpdated()){
+                    actions = new Action(0);
+                    Ship updatedShip = ships.get(pair.getKey());
+                    actions.setUpdatedShip(updatedShip.getPlayerID());
+                    actions.setVy(updatedShip.getVy());
+                    actions.setVx(updatedShip.getVx());
+                    actions.setX(updatedShip.getX());
+                    actions.setY(updatedShip.getY());
+                    actions.setHeading(updatedShip.getHeading());
+                    updateAll(actions);
                 }
             }
-
-            //TODO update all clients
-            for(ClientThread player : players){
-                //do something here
+            long afterTime = System.currentTimeMillis();
+            if(afterTime - prevTime < 50 ){
+                try {
+                    Thread.sleep(50-(afterTime-prevTime));
+                } catch(InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
+            prevTime = curTime;
         }
 
+    }
+
+    private static void updateAll(CommandObject action)throws IOException{
+        for(ClientThread player : players){
+            player.sendCommand(action);
+        }
     }
 
     private static class  Handler extends Thread{
