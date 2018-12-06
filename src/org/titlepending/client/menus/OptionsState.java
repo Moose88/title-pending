@@ -227,6 +227,7 @@ public class OptionsState extends BaseMenuState {
                     break;
                 case IPADDRESS:
                     typing = true;
+                    input.setText("");
                     input.setBackgroundColor(Color.lightGray);
                     input.setCursorPos(input.getText().length());
                     input.setCursorVisible(true);
