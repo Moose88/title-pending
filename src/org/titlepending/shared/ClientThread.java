@@ -40,14 +40,8 @@ public class ClientThread extends Thread{
                     CommandObject input = (CommandObject) in.readObject();
                     if(isServer){
                         //code to add to server queue
-                        if(Server.DEBUG) {
-                            System.out.println("Receiving command on Server");
-                        }
                         Server.commands.add(input);
                     }else {
-                        if(Client.DEBUG) {
-                            System.out.println("Receiving command on  Client");
-                        }
                         Updates.getInstance().addToQueue(input);
                     }
                 }catch (ClassNotFoundException e){

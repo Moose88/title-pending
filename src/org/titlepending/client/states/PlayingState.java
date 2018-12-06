@@ -162,9 +162,6 @@ public class PlayingState extends BasicGameState {
 
         if(input.isKeyDown(Input.KEY_W)){
             // Send raise anchor command to server
-            if(Client.DEBUG) {
-                System.out.println("Sending command to raise anchor");
-            }
 
             anchor = false;
             myBoat.updateVelocity();
@@ -186,7 +183,6 @@ public class PlayingState extends BasicGameState {
 
         } else if(input.isKeyDown(Input.KEY_D) && !anchor){
             // Senc command to turn right
-
                 myBoat.updateHeading(delta);
                 myBoat.updateVelocity();
 
@@ -205,9 +201,6 @@ public class PlayingState extends BasicGameState {
             sendCommand(cmd);
             cmdDelay =150;
         }
-
-        if(Client.DEBUG)
-            System.out.println(delta);
 
 
     }

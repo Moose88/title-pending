@@ -31,7 +31,8 @@ public class GameObject implements Serializable {
 
     public void setVelocity(float vx, float vy){
         this.vx = vx;
-        this.vx = vy;
+        // Matt can go fuck himself
+        this.vy = vy;
     }
     public void setPosition(Vector pos){
         this.setPosition(pos.getX(),pos.getY());

@@ -121,7 +121,7 @@ public class Server {
 
             }
             /** maintain active lobby if only one player is in **/
-            if(players.size()==1 && lobbyTimer <= 30000)
+            if(players.size()<1 && lobbyTimer <= 30000)
                 if(DEBUG)
                     lobbyTimer = 10000;
                 else
@@ -243,11 +243,12 @@ public class Server {
                 actions = (Action) commands.poll();
                 Ship updater = ships.get(actions.getId());
                 assert updater != null;
+                if(DEBUG)
+                    System.out.println("Updating ship "+actions.getId()+" vx: "+actions.getVx()+" vy: "+actions.getVy());
                 updater.setVelocity(actions.getVx(),actions.getVy());
                 updater.setHeading(actions.getHeading());
                 updater.setUpdated(true);
-                if(DEBUG)
-                    System.out.println("Updated Ship "+updater.getPlayerID());
+
             }
 
             // Calc Delta Preserve Prev Time
@@ -262,7 +263,7 @@ public class Server {
             }
             long delta = curTime - prevTime;
 
-            if(Server.DEBUG) System.out.println("Delta: "+delta+" Timer: "+timer);
+           // if(Server.DEBUG) System.out.println("Delta: "+delta+" Timer: "+timer);
 
             Iterator i = ships.entrySet().iterator();
 
