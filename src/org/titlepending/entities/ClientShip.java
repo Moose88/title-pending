@@ -42,7 +42,7 @@ public class ClientShip extends Entity {
         velocity = new Vector(0f, 0f);
         float center = (float) new Vector((float) x, (float) y).angleTo(new Vector(3200, 3200));
         heading = center;
-        rotationRate = 0.05f;
+        rotationRate = 0.1f;
 
 
 
@@ -90,6 +90,10 @@ public class ClientShip extends Entity {
         heading += delta * rotationRate;
         imageRotate();
 
+    }
+
+    public void setHeading(float heading){
+        this.heading = heading;
     }
 
     public void updateVelocity(){

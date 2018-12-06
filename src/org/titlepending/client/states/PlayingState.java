@@ -148,6 +148,8 @@ public class PlayingState extends BasicGameState {
 
             ClientShip update = CShips.get(cmd.getUpdatedShip());
             update.setPosition(cmd.getX(),cmd.getY());
+            if(cmd.getUpdatedShip() != myBoat.getPlayerID())
+                update.setHeading(cmd.getHeading());
             update.setVelocity(new Vector(cmd.getVx(),cmd.getVy()));
         }
 
@@ -199,7 +201,7 @@ public class PlayingState extends BasicGameState {
             cmd.setVx(myBoat.getVelocity().getX());
             cmd.setVy(myBoat.getVelocity().getY());
             sendCommand(cmd);
-            cmdDelay =150;
+            cmdDelay =50;
         }
 
 
