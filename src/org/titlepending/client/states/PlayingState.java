@@ -114,22 +114,23 @@ public class PlayingState extends BasicGameState {
 
         g.translate(screenX, screenY);
 
-        g.drawImage(topleft, 0, 0);
-
-        int Xsofar = topleft.getWidth();
+        int Xsofar;
         int Ysofar = 0;
 
-        while(Xsofar != client.ScreenWidth - top.getWidth()){
+        for(Xsofar = top.getWidth(); Xsofar < client.ScreenWidth - top.getWidth(); Xsofar += top.getWidth()){
             g.drawImage(top, Xsofar, Ysofar);
-            Xsofar += top.getWidth();
+            g.drawImage(bottom, Xsofar, client.ScreenHeight - bottom.getWidth());
         }
 
-        g.drawImage(topright, Xsofar, Ysofar);
-
-        while(Ysofar != client.ScreenHeight - right.getHeight()){
+        for(Ysofar = left.getHeight(); Ysofar < client.ScreenHeight - left.getHeight(); Ysofar += left.getHeight()){
+            g.drawImage(left, 0, Ysofar);
             g.drawImage(right, Xsofar, Ysofar);
-            Ysofar += right.getHeight();
         }
+
+        g.drawImage(topleft, 0, 0);
+        g.drawImage(bottomleft, 0, client.ScreenHeight - bottomleft.getHeight());
+        g.drawImage(topright, client.ScreenWidth - topright.getWidth(), 0);
+        g.drawImage(bottomright, client.ScreenWidth - topright.getWidth(), client.ScreenHeight - bottomright.getHeight());
 
 
     }
