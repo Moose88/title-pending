@@ -4,6 +4,7 @@ import org.titlepending.server.ServerObjects.Ship;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * object that is sent across TCP/IP socket for communication in client server pair.
@@ -14,7 +15,7 @@ public class Initializer extends CommandObject implements Serializable {
     private int id;
     private int time;
     private int[] ship;
-    private ArrayList<Ship> Ships;
+    private HashMap<Integer, Ship> Ships;
 
     public Initializer(int id){
         super(id);
@@ -28,12 +29,12 @@ public class Initializer extends CommandObject implements Serializable {
     public void setId(int id){this.id = id;}
     public void setTime(int time) {this.time = time;}
     public void setShip(int[] ship){this.ship=ship;}
-    public void setShips(ArrayList<Ship> Ships){this.Ships = Ships;}
+    public void setShips(HashMap<Integer, Ship> Ships){this.Ships = Ships;}
 
     public boolean getready(){return ready;}
     public int getId(){return id;}
     public int getTime(){return time;}
     public int[] getShip(){return ship;}
-    public ArrayList<Ship> getShips(){return Ships;}
+    public HashMap<Integer, Ship> getShips(){return Ships;}
 
 }

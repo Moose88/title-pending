@@ -58,6 +58,8 @@ public class LoadState extends BasicGameState {
 
     }
 
+    // TODO: Boatdude is moving too fast? He's stopping and then going...
+
     public void render(GameContainer container, StateBasedGame game,
                        Graphics g) {
 

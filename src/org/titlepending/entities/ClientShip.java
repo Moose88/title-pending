@@ -6,6 +6,7 @@ import jig.Vector;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
 import org.titlepending.client.Client;
+import org.titlepending.server.Server;
 import org.titlepending.server.ServerObjects.Ship;
 
 public class ClientShip extends Entity {
@@ -41,7 +42,7 @@ public class ClientShip extends Entity {
         velocity = new Vector(0f, 0f);
         float center = (float) new Vector((float) x, (float) y).angleTo(new Vector(3200, 3200));
         heading = center;
-        rotationRate = 0.05f;
+        rotationRate = 0.08f;
 
 
 
@@ -88,6 +89,11 @@ public class ClientShip extends Entity {
     public void updateHeading(int delta){
         heading += delta * rotationRate;
         imageRotate();
+
+    }
+
+    public void setHeading(float heading){
+        this.heading = heading;
     }
 
     public void updateVelocity(){
@@ -150,15 +156,15 @@ public class ClientShip extends Entity {
         switch (stats[1]) {
             case 2:
                 addImage(oneSail);
-                sailVector = new Vector(0f, -1f);
+                sailVector = new Vector(0f, -.25f);
                 break;
             case 1:
                 addImage(twoSails);
-                sailVector = new Vector(0f, -1.25f);
+                sailVector = new Vector(0f, -.35f);
                 break;
             case 0:
                 addImage(threeSails);
-                sailVector = new Vector(0f, -1.5f);
+                sailVector = new Vector(0f, -.5f);
                 break;
             default:
                 System.out.println("I BROKE MY SAILS!!!");
@@ -170,15 +176,15 @@ public class ClientShip extends Entity {
 
     }
 
+    public void update(float x,float y, float heading){
+        translate(new Vector(x,y));
+        this.heading=heading;
+    }
+
     public void update(final int delta) {
-        if(isDead==false) {//they are still alive
-            //translate(velocity.scale(delta));
-        }
-        else {//they died
-        }
-
-        translate(velocity.scale(delta));
-
+        Vector pos = getPosition();
+        pos.setX(velocity.getX()*delta);
+        pos.setY(velocity.getY()*delta);
         imageRotate();
 
     }

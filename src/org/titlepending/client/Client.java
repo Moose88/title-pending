@@ -40,6 +40,7 @@ public class Client extends StateBasedGame {
     public static final String LOADING_SKY_RSC = "org/titlepending/resources/LoadSky.png";
     public static final String LOADING_SEA_RSC = "org/titlepending/resources/LoadOcean.png";
     public static final String SHIP_RSC = "org/titlepending/resources/images/ShipSS.png";
+    public static final String SS2_RSC = "org/titlepending/resources/images/SS2.png";
     public static final String FRONT_MENU_RSC = "org/titlepending/resources/bgnd.png";
     private static final String TEST_RSC = "org/titlepending/resources/PVCwAb3.png";
     public static final String CHARACTER_RSC = "org/titlepending/resources/images/Characters.png";
@@ -94,6 +95,7 @@ public class Client extends StateBasedGame {
         // Resources being used/during loading
         ResourceManager.loadImage(TEST_RSC);
         ResourceManager.loadImage(SHIP_RSC);
+        ResourceManager.loadImage(SS2_RSC);
         ResourceManager.loadImage(LOADING_SEA_RSC);
         ResourceManager.loadImage(LOADING_SKY_RSC);
         ResourceManager.loadSound(LOADING_SOUND);

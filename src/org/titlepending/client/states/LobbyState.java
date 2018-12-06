@@ -152,9 +152,9 @@ public class LobbyState extends BasicGameState {
         scannons[1] = stwoCannons;
         scannons[0] = sthreeCannons;
 
-        cannonString[2] = "One Cannon";
-        cannonString[1] = "Two Cannons";
-        cannonString[0] = "Three Cannons";
+        cannonString[2] = "Two Cannons";
+        cannonString[1] = "Four Cannons";
+        cannonString[0] = "Six Cannons";
 
         cannonMod[2] = 3;
         cannonMod[1] = 5;

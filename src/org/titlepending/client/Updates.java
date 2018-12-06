@@ -6,12 +6,13 @@ import org.titlepending.shared.CommandObject;
 import org.titlepending.shared.Initializer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Updates {
     private ConcurrentLinkedQueue<CommandObject> queue;
     private static Updates updates;
-    private ArrayList<Ship> Ships;
+    private HashMap<Integer, Ship> Ships;
     private Updates(){
         queue = new ConcurrentLinkedQueue<>();
     }
@@ -29,11 +30,11 @@ public class Updates {
         return queue;
     }
 
-    public void setShips(ArrayList<Ship> Ships){this.Ships = Ships;}
+    public void setShips(HashMap<Integer, Ship> Ships){this.Ships = Ships;}
 
     public void setThread(ClientThread thread) {this.thread = thread;}
 
-    public ArrayList<Ship> getShips(){return Ships;}
+    public HashMap<Integer, Ship> getShips(){return Ships;}
 
     public ClientThread getThread(){return thread;}
 }
