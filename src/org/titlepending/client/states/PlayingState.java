@@ -1,10 +1,8 @@
 package org.titlepending.client.states;
 
+import jig.ResourceManager;
 import jig.Vector;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
+import org.newdawn.slick.*;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
@@ -26,7 +24,16 @@ public class PlayingState extends BasicGameState {
     private TiledMap map;
     private int cmdDelay;
     private boolean anchor;
-
+    private static SpriteSheet RSC_32_32;
+    private static Image topleft;
+    private static Image top;
+    private static Image topright;
+    private static Image right;
+    private static Image bottomright;
+    private static Image bottom;
+    private static Image bottomleft;
+    private static Image left;
+    private static Image arrow;
 
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException {
@@ -34,6 +41,17 @@ public class PlayingState extends BasicGameState {
         anchor = true;
 
 
+        RSC_32_32 = new SpriteSheet(ResourceManager.getImage(Client.SS2_RSC), 32, 32);
+
+        // Breadown of the RSC_32_32
+        topleft = RSC_32_32.getSubImage(0, 0).getScaledCopy(3f);
+        top = RSC_32_32.getSubImage(1, 0).getScaledCopy(3f);
+        topright = RSC_32_32.getSubImage(2, 0).getScaledCopy(3f);
+        right = RSC_32_32.getSubImage(2, 1).getScaledCopy(3f);
+        bottomright = RSC_32_32.getSubImage(2, 2).getScaledCopy(3f);
+        bottom = RSC_32_32.getSubImage(1, 2).getScaledCopy(3f);
+        bottomleft = RSC_32_32.getSubImage(0, 2).getScaledCopy(3f);
+        left = RSC_32_32.getSubImage(0, 1).getScaledCopy(3f);
 
 
 
@@ -41,6 +59,8 @@ public class PlayingState extends BasicGameState {
 
     public void enter(GameContainer container, StateBasedGame game)
             throws SlickException{
+
+
         cmdDelay =0;
         HashMap<Integer,Ship> ships = Updates.getInstance().getShips();
         this.CShips = new HashMap<>();
@@ -81,7 +101,9 @@ public class PlayingState extends BasicGameState {
         int screenX = (int) myBoat.getX() - client.ScreenWidth/2;
         int screenY = (int) myBoat.getY() - client.ScreenHeight/2;
 
+
         g.translate(-screenX, -screenY);
+
         g.pushTransform();
         g.scale(5, 5);
         map.render(0,0);
@@ -93,6 +115,26 @@ public class PlayingState extends BasicGameState {
             ClientShip ship = CShips.get(pair.getKey());
             ship.render(g);
         }
+
+        g.translate(screenX, screenY);
+
+        int Xsofar;
+        int Ysofar = 0;
+
+        for(Xsofar = top.getWidth(); Xsofar < client.ScreenWidth - top.getWidth(); Xsofar += top.getWidth()){
+            g.drawImage(top, Xsofar, Ysofar);
+            g.drawImage(bottom, Xsofar, client.ScreenHeight - bottom.getWidth());
+        }
+
+        for(Ysofar = left.getHeight(); Ysofar < client.ScreenHeight - left.getHeight(); Ysofar += left.getHeight()){
+            g.drawImage(left, 0, Ysofar);
+            g.drawImage(right, Xsofar, Ysofar);
+        }
+
+        g.drawImage(topleft, 0, 0);
+        g.drawImage(bottomleft, 0, client.ScreenHeight - bottomleft.getHeight());
+        g.drawImage(topright, client.ScreenWidth - topright.getWidth(), 0);
+        g.drawImage(bottomright, client.ScreenWidth - topright.getWidth(), client.ScreenHeight - bottomright.getHeight());
 
 
     }
