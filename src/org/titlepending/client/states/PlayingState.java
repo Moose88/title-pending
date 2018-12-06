@@ -22,6 +22,7 @@ public class PlayingState extends BasicGameState {
     private HashMap<Integer, ClientShip> CShips;
     private ClientShip myBoat;
     private TiledMap map;
+    private int islandLayer;
     private int cmdDelay;
     private boolean anchor;
     private static SpriteSheet RSC_32_32;
@@ -216,6 +217,22 @@ public class PlayingState extends BasicGameState {
     public boolean isGameInProgress(){
         return false;
     }
+
+    public boolean notAWall(int x, int y){
+        islandLayer = map.getLayerIndex("Tile Layer 2");
+        //System.out.println("islandLayer: " + islandLayer);
+        map.getTileId(0, 0, islandLayer);
+        //System.out.println("TileID: " + map.getTileId(x, y, islandLayer));
+
+        if(map.getTileId(x, y, islandLayer) == 0){
+            return true;
+        }
+
+        return false;
+
+    }
+
+
 
     public int getID(){return Client.PLAYINGSTATE; }
 }
