@@ -1,12 +1,14 @@
 package org.titlepending.entities;
 
-import jig.Entity;
-import jig.ResourceManager;
-import jig.Vector;
+import jig.*;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
+import org.newdawn.slick.geom.Circle;
+import org.newdawn.slick.geom.Polygon;
+import org.newdawn.slick.tiled.TiledMap;
 import org.titlepending.client.Client;
-import org.titlepending.server.Server;
 import org.titlepending.server.ServerObjects.Ship;
 
 public class ClientShip extends Entity {
@@ -16,6 +18,12 @@ public class ClientShip extends Entity {
     private int playerID;
     private Vector velocity;
     private float rotationRate;
+    private TiledMap map;
+
+
+
+
+    private Circle detectionCircle;
 
     private float heading;
 
@@ -43,7 +51,7 @@ public class ClientShip extends Entity {
         float center = (float) new Vector((float) x, (float) y).angleTo(new Vector(3200, 3200));
         heading = center;
         rotationRate = 0.05f;
-
+        detectionCircle = new Circle(getX(), getY(), 96*2);
 
 
     }
@@ -172,6 +180,22 @@ public class ClientShip extends Entity {
 
     }
 
+    public void boundingBox(){
+//        Vector topofBoat = new Vector((float) (getX() + 48 * Math.cos(Math.toRadians(heading))), (float) (getY() - 48 * Math.sin(Math.toRadians(heading))));
+//        Vector backofBoat = new Vector((float) (getX() - 48 * Math.cos(Math.toRadians(heading))), (float) (getY() + 48 * Math.sin(Math.toRadians(heading))));
+//        Vector portBoat = new Vector((float) (getX() - 32 * Math.sin(Math.toRadians(heading))), (float) (getY() - 32 * Math.cos(Math.toRadians(heading))));
+//        Vector starboardBoat = new Vector((float) (getX() + 32 * Math.sin(Math.toRadians(heading))), (float) (getY() + 32 * Math.cos(Math.toRadians(heading))));
+
+
+    }
+
+    @Override
+    public void render(Graphics g){
+        super.render(g);
+        if(Client.DEBUG)
+            g.draw(detectionCircle);
+    }
+
     public void update(float x,float y, float heading){
         translate(new Vector(x,y));
         this.heading=heading;
@@ -179,10 +203,20 @@ public class ClientShip extends Entity {
 
     public void update(final int delta) {
         Vector pos = getPosition();
+        detectionCircle.setCenterX(this.getX());
+        detectionCircle.setCenterY(this.getY());
         pos.setX(velocity.getX()*delta);
         pos.setY(velocity.getY()*delta);
         imageRotate();
 
+    }
+
+    public Circle getDetectionCircle() {
+        return detectionCircle;
+    }
+
+    public void setDetectionCircle(Circle detectionCircle) {
+        this.detectionCircle = detectionCircle;
     }
 
     public void imageRotate(){

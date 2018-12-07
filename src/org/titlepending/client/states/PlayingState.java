@@ -23,6 +23,8 @@ public class PlayingState extends BasicGameState {
     private ClientShip myBoat;
     private TiledMap map;
     private int islandLayer;
+    private int oceanLayer;
+    private int whirlpoolLayer;
     private int cmdDelay;
     private boolean anchor;
     private static SpriteSheet RSC_32_32;
@@ -54,7 +56,9 @@ public class PlayingState extends BasicGameState {
         bottomleft = RSC_32_32.getSubImage(0, 2).getScaledCopy(3f);
         left = RSC_32_32.getSubImage(0, 1).getScaledCopy(3f);
 
-
+        islandLayer = map.getLayerIndex("Tile Layer 2"); // = 2
+        whirlpoolLayer = map.getLayerIndex("Tile Layer 3"); // = 1
+        oceanLayer = map.getLayerIndex("Tile Layer 5"); // = 0
 
     }
 
@@ -138,6 +142,7 @@ public class PlayingState extends BasicGameState {
         g.drawImage(bottomright, client.ScreenWidth - topright.getWidth(), client.ScreenHeight - bottomright.getHeight());
 
 
+
     }
 
     public void update(GameContainer container, StateBasedGame game,
@@ -158,6 +163,7 @@ public class PlayingState extends BasicGameState {
             ClientShip update = CShips.get(pair.getKey());
             update.update(delta);
         }
+
         cmdDelay -= delta;
         Input input = container.getInput();
 
@@ -192,6 +198,11 @@ public class PlayingState extends BasicGameState {
         if(input.isKeyDown(Input.KEY_SPACE)){
 
         }
+
+        if(!notanIsland(myBoat.getVelocity().getX(), myBoat.getVelocity().getY())){
+            // Here we need to
+        }
+
         if(cmdDelay <= 0){
             if(Client.DEBUG)
                 System.out.println("Sending vx: "+myBoat.getVelocity().getX()+" vy: "+myBoat.getVelocity().getY()+" heading: "+myBoat.getHeading());
@@ -214,19 +225,19 @@ public class PlayingState extends BasicGameState {
         }
     }
 
-    public boolean isGameInProgress(){
-        return false;
-    }
+    public boolean notanIsland(float x, float y){
 
-    public boolean notanIsland(int x, int y){
-        islandLayer = map.getLayerIndex("Tile Layer 2");
-        map.getTileId(0, 0, islandLayer);
-        if(map.getTileId(x, y, islandLayer) == 0){
+        //map.getTileId(0, 0, islandLayer);
+        if(map.getTileId((int) x, (int) y, islandLayer) != 2){
             return true;
         }
 
         return false;
 
+    }
+
+    public boolean isGameInProgress(){
+        return false;
     }
 
 
