@@ -211,13 +211,7 @@ public class PlayingState extends BasicGameState {
 
         }
 
-        if(Client.DEBUG){
-//            System.out.println("My boat x: " + myBoat.getX() + " myboat y: " + myBoat.getY());
-//            System.out.println("My boat x: " + myBoat.getX()/160 + " myboat y: " + myBoat.getY()/160);
-//            System.out.println("I'm on ocean tile: " + map.getTileId((int) myBoat.getX()/160, (int) myBoat.getY()/160, oceanLayer) );
-//            System.out.println("I'm on whirlpool tile: " + map.getTileId((int) myBoat.getX()/160, (int) myBoat.getY()/160, whirlpoolLayer) );
-//            System.out.println("I'm on island tile: " + map.getTileId((int) myBoat.getX()/160, (int) myBoat.getY()/160, islandLayer) );
-        }
+
         if(!notanIsland((float)(myBoat.getX()+288 *Math.cos((double)myBoat.getHeading())),(float) (myBoat.getY()+288*Math.sin((double)myBoat.getHeading())))){
             // Here we need to
             System.out.println("LAND HO!!");

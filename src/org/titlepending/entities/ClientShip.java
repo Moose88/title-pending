@@ -53,12 +53,12 @@ public class ClientShip extends Entity {
 
         heading = center;
 
-
         detectionCircle = new Circle(getX(), getY(), 288);
 
         headingCircle = new ConvexPolygon(20);
-        addShape(headingCircle, new Vector(288, 0), Color.pink, Color.black);
+        addShape(headingCircle, new Vector(0, -288), Color.pink, Color.black);
 
+        setHeading(0);
         rotationRate = 0.08f;
 
     }
@@ -103,7 +103,8 @@ public class ClientShip extends Entity {
 
     public void updateHeading(int delta){
         heading += delta * rotationRate;
-        imageRotate();
+        //imageRotate();
+        this.setRotation(heading);
 
     }
 
@@ -112,8 +113,8 @@ public class ClientShip extends Entity {
     }
 
     public void updateVelocity(){
-        setVelocity(sailVector.setRotation(heading));
-        imageRotate();
+        setVelocity(sailVector.setRotation(heading-90));
+       // imageRotate();
     }
 
     public void updateVelocity(Vector stop){
@@ -205,15 +206,9 @@ public class ClientShip extends Entity {
         super.render(g);
         if(Client.DEBUG) {
             g.draw(detectionCircle);
-            //g.draw(headingCircle);
         }
 
 
-    }
-
-    public void update(float x,float y, float heading){
-        translate(new Vector(x,y));
-        this.heading = heading;
     }
 
     public void update(final int delta) {
@@ -227,7 +222,7 @@ public class ClientShip extends Entity {
         detectionCircle.setCenterY(this.getY());
         pos.setX(velocity.getX()*delta);
         pos.setY(velocity.getY()*delta);
-        imageRotate();
+        this.setRotation(heading);
 
     }
 
@@ -238,24 +233,24 @@ public class ClientShip extends Entity {
     public void setDetectionCircle(Circle detectionCircle) {
         this.detectionCircle = detectionCircle;
     }
-
-    public void imageRotate(){
-
-        oneCannon.setRotation(heading+90);
-        twoCannons.setRotation(heading+90);
-        threeCannons.setRotation(heading+90);
-
-        SoneCannon.setRotation(heading+90);
-        StwoCannons.setRotation(heading+90);
-        SthreeCannons.setRotation(heading+90);
-
-        smallHaul.setRotation(heading+90);
-        medHaul.setRotation(heading+90);
-        lgHaul.setRotation(heading+90);
-
-        oneSail.setRotation(heading+90);
-        twoSails.setRotation(heading+90);
-        threeSails.setRotation(heading+90);
-
-    }
+//
+//    public void imageRotate(){
+//
+//        oneCannon.setRotation(heading+90);
+//        twoCannons.setRotation(heading+90);
+//        threeCannons.setRotation(heading+90);
+//
+//        SoneCannon.setRotation(heading+90);
+//        StwoCannons.setRotation(heading+90);
+//        SthreeCannons.setRotation(heading+90);
+//
+//        smallHaul.setRotation(heading+90);
+//        medHaul.setRotation(heading+90);
+//        lgHaul.setRotation(heading+90);
+//
+//        oneSail.setRotation(heading+90);
+//        twoSails.setRotation(heading+90);
+//        threeSails.setRotation(heading+90);
+//
+//    }
 }

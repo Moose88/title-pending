@@ -83,7 +83,7 @@ public class Client extends StateBasedGame {
 
         ScreenHeight = height;
         ScreenWidth = width;
-        Entity.setCoarseGrainedCollisionBoundary(Entity.AABB);
+        Entity.setCoarseGrainedCollisionBoundary(Entity.CIRCLE);
 
     }
 
@@ -147,6 +147,7 @@ public class Client extends StateBasedGame {
         try{
             app = new AppGameContainer(new ScalableGame(new Client("Title Pending!!", 1920, 1080),1920,1080, true));
             app.setDisplayMode(1920 ,1080,false);
+            app.setAlwaysRender(true);
             app.start();
 
         }catch (SlickException ignored){
