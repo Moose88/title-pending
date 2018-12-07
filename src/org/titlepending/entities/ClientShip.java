@@ -22,7 +22,8 @@ public class ClientShip extends Entity {
 
 
 
-
+    private Shape circle;
+    private ConvexPolygon headingCircle;
     private Circle detectionCircle;
 
     private float heading;
@@ -48,10 +49,16 @@ public class ClientShip extends Entity {
         super((float) x, (float) y);
         this.playerID = playerID;
         velocity = new Vector(0f, 0f);
-        float center = (float) new Vector((float) x, (float) y).angleTo(new Vector(3200, 3200));
+        float center = (float) new Vector((float) x, (float) y).angleTo(new Vector(3200*5, 3200*5));
+
         heading = center;
 
+
         detectionCircle = new Circle(getX(), getY(), 288);
+
+        headingCircle = new ConvexPolygon(20);
+        addShape(headingCircle, new Vector(288, 0), Color.pink, Color.black);
+
         rotationRate = 0.08f;
 
     }
@@ -196,16 +203,25 @@ public class ClientShip extends Entity {
     @Override
     public void render(Graphics g){
         super.render(g);
-        if(Client.DEBUG)
+        if(Client.DEBUG) {
             g.draw(detectionCircle);
+            //g.draw(headingCircle);
+        }
+
+
     }
 
     public void update(float x,float y, float heading){
         translate(new Vector(x,y));
-        this.heading=heading;
+        this.heading = heading;
     }
 
     public void update(final int delta) {
+        if(Client.DEBUG) {
+            System.out.println("heading = " + getHeading());
+            System.out.println("Test x: " + (getX()+288*Math.cos((double) getHeading())));
+            System.out.println("Test x: " + (getX() + 288 *Math.cos((double) this.heading)));
+        }
         Vector pos = getPosition();
         detectionCircle.setCenterX(this.getX());
         detectionCircle.setCenterY(this.getY());
