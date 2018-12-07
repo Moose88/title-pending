@@ -84,6 +84,7 @@ public class Client extends StateBasedGame {
         ScreenHeight = height;
         ScreenWidth = width;
         Entity.setCoarseGrainedCollisionBoundary(Entity.CIRCLE);
+        Entity.setDebug(true);
 
     }
 

@@ -1,5 +1,6 @@
 package org.titlepending.client.states;
 
+import jig.Collision;
 import jig.ResourceManager;
 import jig.Vector;
 import org.newdawn.slick.*;
@@ -9,6 +10,8 @@ import org.newdawn.slick.tiled.TiledMap;
 import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
 import org.titlepending.entities.ClientShip;
+import org.titlepending.entities.TargetNet;
+import org.titlepending.entities.TargetReticle;
 import org.titlepending.entities.TargetingComputer;
 import org.titlepending.shared.Action;
 
@@ -28,6 +31,7 @@ public class PlayingState extends BasicGameState {
     private int whirlpoolLayer;
     private int cmdDelay;
     private TargetingComputer cannonsTargeting;
+    private TargetReticle reticle;
     private boolean anchor;
     private static SpriteSheet RSC_32_32;
     private static Image topleft;
@@ -100,6 +104,7 @@ public class PlayingState extends BasicGameState {
 
 
         cannonsTargeting = new TargetingComputer(myBoat);
+        reticle = new TargetReticle(0,0);
         System.out.println("Made it to the playing state");
     }
 
@@ -124,6 +129,7 @@ public class PlayingState extends BasicGameState {
             ship.render(g);
         }
         cannonsTargeting.render(g);
+        reticle.render(g);
 
         g.popTransform();
         int Xsofar;
@@ -219,6 +225,22 @@ public class PlayingState extends BasicGameState {
                 cannonsTargeting.setVisible(false);
         }else{
             cannonsTargeting.setVisible(false);
+        }
+
+        if(cannonsTargeting.isVisible()){
+            i = CShips.entrySet().iterator();
+            while (i.hasNext()){
+                Map.Entry pair = (Map.Entry) i.next();
+                ClientShip ship = CShips.get(pair.getKey());
+                if(ship.getPlayerID() != myBoat.getPlayerID()){
+                    Collision collision = cannonsTargeting.getTargetNet().collides(ship);
+                    if(collision!=null){
+                        reticle.setVisible(true);
+                        reticle.setPosition(ship.getX(),ship.getY());
+                    }
+                }
+        }}else{
+            reticle.setVisible(false);
         }
 
 
