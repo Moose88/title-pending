@@ -7,13 +7,14 @@ public class TargetingComputer {
     private ClientShip ship;
 
     private TargetNet targetNet;
-
+    private boolean fireRight;
     private boolean isVisible;
 
     public TargetingComputer(ClientShip ship){
         this.ship=ship;
         isVisible = false;
         targetNet = new TargetNet(this.ship.getX(),this.ship.getY());
+        fireRight = true;
     }
 
     public boolean isVisible() {
@@ -27,15 +28,19 @@ public class TargetingComputer {
     public void aimLeft(){
         targetNet.setPosition(ship.getX(),ship.getY());
         targetNet.setRotation(ship.getHeading()-90);
+        fireRight = false;
     }
     public void aimRight(){
         targetNet.setPosition(ship.getX(),ship.getY());
         targetNet.setRotation(ship.getHeading()+90);
+        fireRight = true;
     }
 
     public TargetNet getTargetNet() {
         return targetNet;
     }
+
+    public boolean getFireRight(){return  fireRight;}
 
     public void setTargetNet(TargetNet targetNet) {
         this.targetNet = targetNet;

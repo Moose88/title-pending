@@ -236,11 +236,6 @@ public class ClientShip extends Entity {
     }
 
     public void update(final int delta) {
-        if(Client.DEBUG) {
-            System.out.println("heading = " + getHeading());
-            System.out.println("Test x: " + (getX()+288*Math.cos((double) getHeading())));
-            System.out.println("Test x: " + (getX() + 288 *Math.cos((double) this.heading)));
-        }
         Vector pos = getPosition();
         detectionCircle.setCenterX(this.getX());
         detectionCircle.setCenterY(this.getY());
