@@ -31,6 +31,8 @@ public class PlayingState extends BasicGameState {
     private int oceanLayer;
     private int whirlpoolLayer;
     private int cmdDelay;
+    private int rightDelay;
+    private int leftDelay;
     private TargetingComputer cannonsTargeting;
     private TargetReticle reticle;
     private boolean anchor;
@@ -108,7 +110,7 @@ public class PlayingState extends BasicGameState {
         cannonsTargeting = new TargetingComputer(myBoat);
         reticle = new TargetReticle(0,0);
         System.out.println("Made it to the playing state");
-
+        rightDelay=leftDelay=0;
     }
 
     public void render(GameContainer container, StateBasedGame game,
@@ -199,6 +201,8 @@ public class PlayingState extends BasicGameState {
         }
 
         cmdDelay -= delta;
+        leftDelay-=delta;
+        rightDelay-=delta;
         Input input = container.getInput();
         boolean changed = false;
         if(input.isKeyDown(Input.KEY_W)){
@@ -243,14 +247,22 @@ public class PlayingState extends BasicGameState {
         }else{
             cannonsTargeting.setVisible(false);
             if(reticle.isVisible()){
+                boolean justFired = false;
                 if(Client.DEBUG)
                     System.out.println("Firing cannon at ("+reticle.getX()+","+reticle.getY()+") Number of cannonballs: "+myBoat.getStats()[2]);
                 for(int j=0; j<myBoat.getStats()[2]+1;j++){
-                    if(cannonsTargeting.getFireRight())
+                    if(cannonsTargeting.getFireRight()&&rightDelay<=0) {
+                        cannonBalls.add(new CannonBall(myBoat.getX() + j * 20, myBoat.getY() + j, reticle.getX(), reticle.getY(), +90));
+                        justFired = true;
+                    }else if(!cannonsTargeting.getFireRight()&& leftDelay<=0){
                         cannonBalls.add(new CannonBall(myBoat.getX()+j*20,myBoat.getY()+j,reticle.getX(),reticle.getY(), +90));
-                    else
-                        cannonBalls.add(new CannonBall(myBoat.getX()+j*20,myBoat.getY()+j,reticle.getX(),reticle.getY(), +90));
+                        justFired = true;
+                    }
                 }
+                if(!cannonsTargeting.getFireRight() && justFired)
+                    leftDelay=3000;
+                else if(justFired)
+                    rightDelay=3000;
             }
         }
 
