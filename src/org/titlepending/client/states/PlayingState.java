@@ -9,6 +9,7 @@ import org.newdawn.slick.tiled.TiledMap;
 import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
 import org.titlepending.entities.ClientShip;
+import org.titlepending.entities.TargetingComputer;
 import org.titlepending.shared.Action;
 
 import java.io.IOException;
@@ -26,6 +27,7 @@ public class PlayingState extends BasicGameState {
     private int oceanLayer;
     private int whirlpoolLayer;
     private int cmdDelay;
+    private TargetingComputer cannonsTargeting;
     private boolean anchor;
     private static SpriteSheet RSC_32_32;
     private static Image topleft;
@@ -97,7 +99,7 @@ public class PlayingState extends BasicGameState {
             System.out.println("Boat x: " + myBoat.getX() + " Boat y: " + myBoat.getY() + " Boat id: " + myBoat.getPlayerID());
 
 
-
+        cannonsTargeting = new TargetingComputer(myBoat);
         System.out.println("Made it to the playing state");
     }
 
@@ -107,7 +109,7 @@ public class PlayingState extends BasicGameState {
         int screenX = (int) myBoat.getX() - client.ScreenWidth/2;
         int screenY = (int) myBoat.getY() - client.ScreenHeight/2;
 
-
+        g.pushTransform();
         g.translate(-screenX, -screenY);
 
         g.pushTransform();
@@ -121,9 +123,9 @@ public class PlayingState extends BasicGameState {
             ClientShip ship = CShips.get(pair.getKey());
             ship.render(g);
         }
+        cannonsTargeting.render(g);
 
-        g.translate(screenX, screenY);
-
+        g.popTransform();
         int Xsofar;
         int Ysofar = 0;
 
@@ -141,7 +143,6 @@ public class PlayingState extends BasicGameState {
         g.drawImage(bottomleft, 0, client.ScreenHeight - bottomleft.getHeight());
         g.drawImage(topright, client.ScreenWidth - topright.getWidth(), 0);
         g.drawImage(bottomright, client.ScreenWidth - topright.getWidth(), client.ScreenHeight - bottomright.getHeight());
-
 
 
     }
@@ -208,7 +209,16 @@ public class PlayingState extends BasicGameState {
         }
 
         if(input.isKeyDown(Input.KEY_SPACE)){
-
+            if(input.isKeyDown(Input.KEY_A)){
+                cannonsTargeting.setVisible(true);
+                cannonsTargeting.aimLeft();
+            }else if(input.isKeyDown(Input.KEY_D)){
+                cannonsTargeting.setVisible(true);
+                cannonsTargeting.aimRight();
+            }else
+                cannonsTargeting.setVisible(false);
+        }else{
+            cannonsTargeting.setVisible(false);
         }
 
 
