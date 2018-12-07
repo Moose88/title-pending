@@ -6,7 +6,6 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.geom.Circle;
-import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.tiled.TiledMap;
 import org.titlepending.client.Client;
 import org.titlepending.server.ServerObjects.Ship;
@@ -32,9 +31,9 @@ public class ClientShip extends Entity {
 
     private static SpriteSheet ship_RSC_96 = new SpriteSheet(ResourceManager.getImage(Client.SHIP_RSC), 64, 96);
 
-    private Image lgHaul = ship_RSC_96.getSubImage(1, 0).getScaledCopy(1.5f);
-    private Image medHaul = ship_RSC_96.getSubImage(0, 0).getScaledCopy(1.5f);
-    private Image smallHaul = ship_RSC_96.getSubImage(2, 0).getScaledCopy(1.5f);
+    private Image lgHull = ship_RSC_96.getSubImage(1, 0).getScaledCopy(1.5f);
+    private Image medHull = ship_RSC_96.getSubImage(0, 0).getScaledCopy(1.5f);
+    private Image smallHull = ship_RSC_96.getSubImage(2, 0).getScaledCopy(1.5f);
     private Image oneSail = ship_RSC_96.getSubImage(5, 0).getScaledCopy(1.5f);
     private Image twoSails = ship_RSC_96.getSubImage(4, 0).getScaledCopy(1.5f);
     private Image threeSails = ship_RSC_96.getSubImage(3, 0).getScaledCopy(1.5f);
@@ -103,7 +102,6 @@ public class ClientShip extends Entity {
 
     public void updateHeading(int delta){
         heading += delta * rotationRate;
-        //imageRotate();
         this.setRotation(heading);
 
     }
@@ -114,16 +112,12 @@ public class ClientShip extends Entity {
 
     public void updateVelocity(){
         setVelocity(sailVector.setRotation(heading-90));
-       // imageRotate();
     }
 
     public void updateVelocity(Vector stop){
         setVelocity(stop.setRotation(heading));
     }
     public void addSprites(){
-        //these will change depending on what is selected most likely handled elsewhere
-//
-
         //Setting Cannons
         switch (stats[2]) {
             case 2:
@@ -150,10 +144,10 @@ public class ClientShip extends Entity {
                 break;
         }
 
-        // Setting Hull
+        // Setting Hull Image and bounding box
         switch (stats[0]) {
             case 2:
-                addImage(smallHaul);
+                addImage(smallHull);
                 addShape(new ConvexPolygon(new Vector[]{
                         new Vector(0,-72 ),
                         new Vector(15,-40),
@@ -163,10 +157,10 @@ public class ClientShip extends Entity {
                         new Vector(-15,40),
                         new Vector(-20,0),
                         new Vector(-15,-40)
-                }),Color.blue,Color.red);
+                }),Color.transparent,Color.transparent);
                 break;
             case 1:
-                addImage(medHaul);
+                addImage(medHull);
                 addShape(new ConvexPolygon(new Vector[]{
                         new Vector(0,-72 ),
                         new Vector(20,-40),
@@ -176,10 +170,10 @@ public class ClientShip extends Entity {
                         new Vector(-20,40),
                         new Vector(-30,0),
                         new Vector(-20,-40)
-                }),Color.blue,Color.red);
+                }),Color.transparent,Color.transparent);
                 break;
             case 0:
-                addImage(lgHaul);
+                addImage(lgHull);
                 addShape(new ConvexPolygon(new Vector[]{
                         new Vector(0,-72 ),
                         new Vector(20,-50),
@@ -189,7 +183,7 @@ public class ClientShip extends Entity {
                         new Vector(-20,50),
                         new Vector(-37,0),
                         new Vector(-20,-50)
-                }),Color.blue,Color.red);
+                }),Color.transparent,Color.transparent);
                 break;
             default:
                 System.out.println("I BROKE MY haul!!!");
@@ -274,9 +268,9 @@ public class ClientShip extends Entity {
 //        StwoCannons.setRotation(heading+90);
 //        SthreeCannons.setRotation(heading+90);
 //
-//        smallHaul.setRotation(heading+90);
-//        medHaul.setRotation(heading+90);
-//        lgHaul.setRotation(heading+90);
+//        smallHull.setRotation(heading+90);
+//        medHull.setRotation(heading+90);
+//        lgHull.setRotation(heading+90);
 //
 //        oneSail.setRotation(heading+90);
 //        twoSails.setRotation(heading+90);

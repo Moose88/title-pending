@@ -225,6 +225,10 @@ public class PlayingState extends BasicGameState {
                 cannonsTargeting.setVisible(false);
         }else{
             cannonsTargeting.setVisible(false);
+            if(reticle.isVisible()){
+                if(Client.DEBUG)
+                    System.out.println("Firing cannon at ("+reticle.getX()+","+reticle.getY()+")");
+            }
         }
 
         if(cannonsTargeting.isVisible()){
