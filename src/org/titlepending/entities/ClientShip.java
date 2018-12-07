@@ -51,7 +51,7 @@ public class ClientShip extends Entity {
         float center = (float) new Vector((float) x, (float) y).angleTo(new Vector(3200, 3200));
         heading = center;
 
-        detectionCircle = new Circle(getX(), getY(), 96*2);
+        detectionCircle = new Circle(getX(), getY(), 288);
         rotationRate = 0.08f;
 
     }

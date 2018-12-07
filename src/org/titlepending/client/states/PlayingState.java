@@ -60,6 +60,7 @@ public class PlayingState extends BasicGameState {
         whirlpoolLayer = map.getLayerIndex("Tile Layer 3"); // = 1
         oceanLayer = map.getLayerIndex("Tile Layer 5"); // = 0
 
+
     }
 
     public void enter(GameContainer container, StateBasedGame game)
@@ -165,6 +166,15 @@ public class PlayingState extends BasicGameState {
             ClientShip update = CShips.get(pair.getKey());
             update.update(delta);
         }
+        i = CShips.entrySet().iterator();
+        while(i.hasNext()){
+            Map.Entry pair = (Map.Entry) i.next();
+            if(myBoat.getDetectionCircle().contains(CShips.get(pair.getKey()).getX(), CShips.get(pair.getKey()).getY())
+                    && CShips.get(pair.getKey()).getPlayerID() != myBoat.getPlayerID()){
+                if(Client.DEBUG)
+                    System.out.println("O LAWD HE COMIN!");
+            }
+        }
 
         cmdDelay -= delta;
         Input input = container.getInput();
@@ -201,8 +211,16 @@ public class PlayingState extends BasicGameState {
 
         }
 
-        if(!notanIsland(myBoat.getVelocity().getX(), myBoat.getVelocity().getY())){
+        if(Client.DEBUG){
+//            System.out.println("My boat x: " + myBoat.getX() + " myboat y: " + myBoat.getY());
+//            System.out.println("My boat x: " + myBoat.getX()/160 + " myboat y: " + myBoat.getY()/160);
+//            System.out.println("I'm on ocean tile: " + map.getTileId((int) myBoat.getX()/160, (int) myBoat.getY()/160, oceanLayer) );
+//            System.out.println("I'm on whirlpool tile: " + map.getTileId((int) myBoat.getX()/160, (int) myBoat.getY()/160, whirlpoolLayer) );
+//            System.out.println("I'm on island tile: " + map.getTileId((int) myBoat.getX()/160, (int) myBoat.getY()/160, islandLayer) );
+        }
+        if(!notanIsland((float)(myBoat.getX()+288 *Math.cos((double)myBoat.getHeading())),(float) (myBoat.getY()+288*Math.sin((double)myBoat.getHeading())))){
             // Here we need to
+            System.out.println("LAND HO!!");
         }
 
 
@@ -229,11 +247,12 @@ public class PlayingState extends BasicGameState {
     public boolean notanIsland(float x, float y){
 
         //map.getTileId(0, 0, islandLayer);
-        if(map.getTileId((int) x, (int) y, islandLayer) != 2){
-            return true;
+
+        if(map.getTileId((int) x/160, (int) y/160, islandLayer) != 0){
+            return false;
         }
 
-        return false;
+        return true;
 
     }
 
