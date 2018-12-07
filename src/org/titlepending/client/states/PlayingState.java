@@ -176,8 +176,17 @@ public class PlayingState extends BasicGameState {
             ClientShip update = CShips.get(pair.getKey());
             update.update(delta);
         }
-        for (CannonBall ball : cannonBalls)
-            ball.update(delta);
+
+        i = cannonBalls.iterator();
+        while (i.hasNext()){
+            CannonBall ball = (CannonBall) i.next();
+            if(ball.isDead()){
+                i.remove();
+            }else{
+                ball.update(delta);
+            }
+
+        }
 
         i = CShips.entrySet().iterator();
         while(i.hasNext()){
@@ -238,9 +247,9 @@ public class PlayingState extends BasicGameState {
                     System.out.println("Firing cannon at ("+reticle.getX()+","+reticle.getY()+") Number of cannonballs: "+myBoat.getStats()[2]);
                 for(int j=0; j<myBoat.getStats()[2]+1;j++){
                     if(cannonsTargeting.getFireRight())
-                        cannonBalls.add(new CannonBall(myBoat.getX()+j*20,myBoat.getY()+j,reticle.getX(),reticle.getY(), myBoat.getHeading()+90));
+                        cannonBalls.add(new CannonBall(myBoat.getX()+j*20,myBoat.getY()+j,reticle.getX(),reticle.getY(), +90));
                     else
-                        cannonBalls.add(new CannonBall(myBoat.getX()+j*20,myBoat.getY()+j,reticle.getX(),reticle.getY(), myBoat.getHeading()-90));
+                        cannonBalls.add(new CannonBall(myBoat.getX()+j*20,myBoat.getY()+j,reticle.getX(),reticle.getY(), +90));
                 }
             }
         }
