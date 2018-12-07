@@ -58,7 +58,7 @@ public class ClientShip extends Entity {
         headingCircle = new ConvexPolygon(20);
         addShape(headingCircle, new Vector(0, -288), Color.pink, Color.black);
 
-        setHeading(0);
+        setHeading(center);
         rotationRate = 0.08f;
 
     }
@@ -154,12 +154,42 @@ public class ClientShip extends Entity {
         switch (stats[0]) {
             case 2:
                 addImage(smallHaul);
+                addShape(new ConvexPolygon(new Vector[]{
+                        new Vector(0,-72 ),
+                        new Vector(15,-40),
+                        new Vector(20,0),
+                        new Vector(15,40),
+                        new Vector(0,72),
+                        new Vector(-15,40),
+                        new Vector(-20,0),
+                        new Vector(-15,-40)
+                }),Color.blue,Color.red);
                 break;
             case 1:
                 addImage(medHaul);
+                addShape(new ConvexPolygon(new Vector[]{
+                        new Vector(0,-72 ),
+                        new Vector(20,-40),
+                        new Vector(30,0),
+                        new Vector(20,40),
+                        new Vector(0,72),
+                        new Vector(-20,40),
+                        new Vector(-30,0),
+                        new Vector(-20,-40)
+                }),Color.blue,Color.red);
                 break;
             case 0:
                 addImage(lgHaul);
+                addShape(new ConvexPolygon(new Vector[]{
+                        new Vector(0,-72 ),
+                        new Vector(20,-50),
+                        new Vector(37,0),
+                        new Vector(20,50),
+                        new Vector(0,72),
+                        new Vector(-20,50),
+                        new Vector(-37,0),
+                        new Vector(-20,-50)
+                }),Color.blue,Color.red);
                 break;
             default:
                 System.out.println("I BROKE MY haul!!!");
