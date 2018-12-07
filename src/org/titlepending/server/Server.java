@@ -121,7 +121,7 @@ public class Server {
 
             }
             /** maintain active lobby if only one player is in **/
-            if(players.size()<1 && lobbyTimer <= 30000)
+            if(players.size()==1 && lobbyTimer <= 30000)
                 if(DEBUG)
                     lobbyTimer = 10000;
                 else
