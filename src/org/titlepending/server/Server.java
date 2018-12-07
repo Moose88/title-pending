@@ -1,18 +1,14 @@
 package org.titlepending.server;
 
 
-import jig.Entity;
-import org.titlepending.entities.Ship;
+import org.titlepending.server.ServerObjects.GameObject;
+import org.titlepending.server.ServerObjects.Ship;
 import org.titlepending.entities.ShipFactory;
-import org.titlepending.shared.ClientThread;
-import org.titlepending.shared.CmdProcessor;
-import org.titlepending.shared.Directive;
+import org.titlepending.shared.*;
 
 import java.io.IOException;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
@@ -25,7 +21,7 @@ public class Server {
     private static final int PLIMIT = 8;
     private static boolean inLobby;
     private static boolean inGame;
-    public static ConcurrentLinkedQueue<Directive> commands = new ConcurrentLinkedQueue<>();
+    public static ConcurrentLinkedQueue<CommandObject> commands = new ConcurrentLinkedQueue<>();
 
     public static final int LOADSTATE = 0;
     public static final int CONNECTSTATE = 1;
@@ -50,9 +46,10 @@ public class Server {
                 while (b.hasMoreElements()){
                     InetAddress i = (InetAddress) b.nextElement();
                     System.out.println(i);
+
                 }
             }
-            System.out.println("My IP: "+Ip.getLocalHost().getHostAddress() + "\nHost Name "+Ip.getHostName());
+            //System.out.println("My IP: "+Ip.getLocalHost().getHostAddress() + "\nHost Name "+Ip.getHostName());
         }
 
 
@@ -62,7 +59,7 @@ public class Server {
         inLobby=true;
         inGame=false;
         new Handler().start();
-        CmdProcessor processor = new CmdProcessor(true);
+
 
         if(Server.DEBUG){
             System.out.println("Starting lobby state");
@@ -82,11 +79,12 @@ public class Server {
         }
 
         int curReady = 0;
-        Directive cmd;
+
+        Initializer cmd;
         while(lobbyTimer > 0){
             if(DEBUG) System.out.println("Timer is: " + lobbyTimer+"\nCurrent players: "+players.size());
             for (ClientThread player : players){
-                Directive timeUpdate = new Directive();
+                Initializer timeUpdate = new Initializer(0);
                 timeUpdate.setTime(lobbyTimer);
 
                 try{
@@ -109,9 +107,8 @@ public class Server {
                 lobbyTimer -= 1000;
 
             if(commands.size()>0) {
-                cmd = commands.poll();
+                cmd = (Initializer) commands.poll();
                 /** do stuff with cmd here **/
-                processor.processCommand(cmd);
                 if(cmd.getready())
                     curReady++;
                 else if(!cmd.getready())
@@ -141,7 +138,7 @@ public class Server {
 
 
         /** final timer sent to client with transition state **/
-        cmd = new Directive();
+         cmd = new Initializer(0);
         cmd.setStateTransition(WAITINGSTATE);
         cmd.setTime(lobbyTimer);
         for(ClientThread player : players)
@@ -166,7 +163,7 @@ public class Server {
         while(commands.size()!=players.size()){
             /** send all connected clients to reject state **/
             if(timer <= 0){
-                cmd = new Directive();
+                cmd = new Initializer(0);
                 cmd.setStateTransition(REJECTSTATE);
                 for (ClientThread player : players){
                     player.sendCommand(cmd);
@@ -181,7 +178,7 @@ public class Server {
             timer -= 1000;
         }
 
-        ArrayList<Ship> ships = new ArrayList<>();
+        HashMap<Integer, Ship> ships = new HashMap();
         double degree = Math.toRadians((float)360/players.size());
         double radAlpha;
         if(players.size()<=4){
@@ -190,11 +187,11 @@ public class Server {
             radAlpha = r3;
         }
         int playerNo = 1;
-        Entity.setCoarseGrainedCollisionBoundary(Entity.CIRCLE);
+        //Entity.setCoarseGrainedCollisionBoundary(Entity.CIRCLE);
 
         while(!commands.isEmpty()){
             /** construct player ships here **/
-            cmd = commands.poll();
+            cmd = (Initializer) commands.poll();
             if(DEBUG){
                 System.out.println("Received from Client: "+cmd.getId());
                 System.out.println("Hull: "+cmd.getShip()[0]);
@@ -202,17 +199,22 @@ public class Server {
                 System.out.println("Cannon: "+cmd.getShip()[2]);
                 System.out.println("Captain: "+cmd.getShip()[3]);
             }
-            double shipX=3200+(radAlpha*Math.cos(degree*playerNo));
-            double shipY=3200+(radAlpha*Math.sin(degree*playerNo));
-            if(DEBUG) System.out.println("Ship x: "+shipX+"\nShip y: "+shipY);
-            ships.add(ShipFactory.getInstance().createNewPlayerShip(shipX,shipY,cmd.getShip()));
+            double shipX = (3200 + (radAlpha*Math.cos(degree*playerNo)));
+            double shipY = (3200 + (radAlpha*Math.sin(degree*playerNo)));
+            if(DEBUG) System.out.println("Ship x: "+shipX+" Ship y: "+shipY);
+            Ship temp =ShipFactory.getInstance().createNewPlayerShip(shipX, shipY, cmd.getShip(), cmd.getId());
+            if(DEBUG) System.out.println("Temp x: "+temp.getX()+" Temp y: "+temp.getY());
+            ships.put(cmd.getId(),temp);
             playerNo +=1;
+
         }
 
         if(DEBUG) System.out.println("Generated "+ships.size()+" ships.");
 
+
         for(ClientThread player : players){
-            cmd = new Directive();
+            cmd = new Initializer(0);
+            cmd.setShips(ships);
             cmd.setStateTransition(PLAYINGSTATE);
             try{
                 player.sendCommand(cmd);
@@ -229,21 +231,81 @@ public class Server {
         if(DEBUG)
             System.out.println("Starting game loop");
 
+        Action actions;
+        long prevTime= System.currentTimeMillis();
+        timer = 0;
+        boolean updateAll = false;
         while(inGame){
             // Game logic goes here
-
-            for(ClientThread thread : players) {
-                //do updates
-
-            }
+            //TODO empty queue
 
             while (!commands.isEmpty()){
-                cmd = commands.poll();
-                processor.processCommand(cmd);
+                actions = (Action) commands.poll();
+                Ship updater = ships.get(actions.getId());
+                assert updater != null;
+                if(DEBUG)
+                    System.out.println("Updating ship "+actions.getId()+" vx: "+actions.getVx()+" vy: "+actions.getVy());
+                updater.setVelocity(actions.getVx(),actions.getVy());
+                updater.setHeading(actions.getHeading());
+                updater.setUpdated(true);
 
             }
+
+            // Calc Delta Preserve Prev Time
+            long curTime = System.currentTimeMillis();
+            if(curTime - prevTime < 50 ){
+                try {
+                    Thread.sleep(50-(curTime-prevTime));
+                } catch(InterruptedException e) {
+                    e.printStackTrace();
+                }
+                curTime = System.currentTimeMillis();
+            }
+            long delta = curTime - prevTime;
+
+           // if(Server.DEBUG) System.out.println("Delta: "+delta+" Timer: "+timer);
+
+            Iterator i = ships.entrySet().iterator();
+
+            while (i.hasNext()){
+                Map.Entry pair = (Map.Entry)i.next();
+                ships.get(pair.getKey()).update((int)delta);
+
+            }
+            // Sleep if we havn't done enough work
+
+
+            timer -= (int) delta;
+            if(timer<=0){
+                updateAll = true; timer =150;
+            }else {
+                updateAll=false;
+            }
+
+            i = ships.entrySet().iterator();
+            while (i.hasNext()){
+                Map.Entry pair = (Map.Entry) i.next();
+                if(updateAll || ships.get(pair.getKey()).getUpdated()){
+                    actions = new Action(0);
+                    Ship updatedShip = ships.get(pair.getKey());
+                    actions.setUpdatedShip(updatedShip.getPlayerID());
+                    actions.setVy(updatedShip.getVy());
+                    actions.setVx(updatedShip.getVx());
+                    actions.setX(updatedShip.getX());
+                    actions.setY(updatedShip.getY());
+                    actions.setHeading(updatedShip.getHeading());
+                    updateAll(actions);
+                }
+            }
+            prevTime = curTime;
         }
 
+    }
+
+    private static void updateAll(CommandObject action)throws IOException{
+        for(ClientThread player : players){
+            player.sendCommand(action);
+        }
     }
 
     private static class  Handler extends Thread{
@@ -289,7 +351,7 @@ public class Server {
 
                 if(DEBUG) System.out.println("Building initial command");
 
-                Directive cmd = new Directive();
+                Initializer cmd = new Initializer(0);
                 cmd.setId(id);
                 cmd.setStateTransition(LOBBYSTATE);
 

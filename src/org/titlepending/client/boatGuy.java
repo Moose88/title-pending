@@ -16,7 +16,7 @@ public class boatGuy extends Entity {
     public Vector movingTo;
     public float speed = 0.15f;
     private Animation boat_a;
-    SpriteSheet master = new SpriteSheet(ResourceManager.getImage(Client.SHIP_RSC), 96, 97);
+    SpriteSheet master = new SpriteSheet(ResourceManager.getImage(Client.SHIP_RSC), 96, 96);
 
     public Animation getBoat_a() {
         return boat_a;
@@ -43,43 +43,39 @@ public class boatGuy extends Entity {
     }
 
     public void movement(float newX){
-        //System.out.println("I'm in Movement!");
 
         if(isMoving) {
             return;
         }
 
-        //addImage();
-        //System.out.println("Position =  " + newX);
+
         movingTo = getPosition().setX(newX);
         isMoving = true;
 
     }
 
     public void update(int delta){
-        //System.out.println("Updating!");
 
         if (isMoving) {
             double angle = getPosition().angleTo(movingTo);
             setPosition(getPosition().add(Vector.getUnit(angle).scale(speed * delta)));
-            //System.out.println(getPosition());
             if (getPosition().epsilonEquals(movingTo, speed * delta)) {
                 isMoving = false;
 
                 setPosition(movingTo);
-                //System.out.println("movingTo x: " + movingTo.getX() + " movingTo y: " + movingTo.getY());
+
             }
 
         }
 
     }
 
-    @Override
-    public void render(Graphics g){
+
+    public void render(Graphics g, int y){
         super.render(g);
         if(done)
             return;
-        g.drawAnimation(getBoat_a(), getPosition().getX(), 500);
-        //g.fillRect(getPosition().getX(), 500, 100, 100);
+        g.drawAnimation(getBoat_a(), getPosition().getX(), y);
+
     }
 }

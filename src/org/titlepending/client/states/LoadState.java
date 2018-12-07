@@ -58,6 +58,8 @@ public class LoadState extends BasicGameState {
 
     }
 
+    // TODO: Boatdude is moving too fast? He's stopping and then going...
+
     public void render(GameContainer container, StateBasedGame game,
                        Graphics g) {
 
@@ -78,7 +80,7 @@ public class LoadState extends BasicGameState {
             totalResources = 12;
 
         //g.drawImage(ResourceManager.getImage(Client.LOADING_SKY_RSC));
-        boatDude.render(g);
+        boatDude.render(g, 500);
 
         g.drawImage(ResourceManager.getImage(Client.LOADING_SEA_RSC).getScaledCopy(client.ScreenWidth, client.ScreenHeight*5/7), 0, 200);
 

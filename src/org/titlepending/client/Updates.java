@@ -1,13 +1,18 @@
 package org.titlepending.client;
 
+import org.titlepending.server.ServerObjects.Ship;
 import org.titlepending.shared.ClientThread;
-import org.titlepending.shared.Directive;
+import org.titlepending.shared.CommandObject;
+import org.titlepending.shared.Initializer;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Updates {
-    private ConcurrentLinkedQueue<Directive> queue;
+    private ConcurrentLinkedQueue<CommandObject> queue;
     private static Updates updates;
+    private HashMap<Integer, Ship> Ships;
     private Updates(){
         queue = new ConcurrentLinkedQueue<>();
     }
@@ -19,13 +24,17 @@ public class Updates {
         return updates;
     }
 
-    public void addToQueue(Directive cmd){ queue.add(cmd);}
+    public void addToQueue(CommandObject cmd){ queue.add(cmd);}
 
-    public ConcurrentLinkedQueue<Directive> getQueue() {
+    public ConcurrentLinkedQueue<CommandObject> getQueue() {
         return queue;
     }
 
+    public void setShips(HashMap<Integer, Ship> Ships){this.Ships = Ships;}
+
     public void setThread(ClientThread thread) {this.thread = thread;}
+
+    public HashMap<Integer, Ship> getShips(){return Ships;}
 
     public ClientThread getThread(){return thread;}
 }

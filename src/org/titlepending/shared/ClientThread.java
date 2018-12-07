@@ -37,17 +37,11 @@ public class ClientThread extends Thread{
         try{
             while (!done){
                 try{
-                    Directive input = (Directive) in.readObject();
+                    CommandObject input = (CommandObject) in.readObject();
                     if(isServer){
                         //code to add to server queue
-                        if(Server.DEBUG) {
-                            System.out.println("Receiving command on Server");
-                        }
                         Server.commands.add(input);
                     }else {
-                        if(Client.DEBUG) {
-                            System.out.println("Receiving command on  Client");
-                        }
                         Updates.getInstance().addToQueue(input);
                     }
                 }catch (ClassNotFoundException e){
@@ -79,7 +73,7 @@ public class ClientThread extends Thread{
         return clientId;
     }
 
-    public void sendCommand(Directive cmd) throws IOException{
+    public void sendCommand(CommandObject cmd) throws IOException{
         out.writeObject(cmd);
         out.flush();
     }

@@ -21,6 +21,7 @@ public class RejectedState extends BasicGameState{
     public void enter(GameContainer container, StateBasedGame game)
         throws SlickException{
         timer = 30000;
+        ResourceManager.getMusic(Client.HTP_MUSIC).loop();
         if(Updates.getInstance().getThread()!=null)
             Updates.getInstance().getThread().stopThread();
 
@@ -46,6 +47,7 @@ public class RejectedState extends BasicGameState{
         timer -= delta;
         if(timer<=0){
             Client client = (Client)game;
+            ResourceManager.getMusic(Client.HTP_MUSIC).stop();
             ResourceManager.getMusic(Client.TITLE_MUSIC).loop();
             client.enterState(Client.MAINMENUSTATE);
         }
