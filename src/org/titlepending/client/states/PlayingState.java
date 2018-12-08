@@ -1,6 +1,7 @@
 package org.titlepending.client.states;
 
 import jig.Collision;
+import jig.ConvexPolygon;
 import jig.ResourceManager;
 import jig.Vector;
 import org.newdawn.slick.*;
@@ -29,7 +30,7 @@ public class PlayingState extends BasicGameState {
     private int islandLayer;
     private int oceanLayer;
     private int whirlpoolLayer;
-    private int cmdDelay;
+    private int bounceDelay;
     private TargetingComputer cannonsTargeting;
     private TargetReticle reticle;
     private boolean anchor;
@@ -73,7 +74,7 @@ public class PlayingState extends BasicGameState {
             throws SlickException{
 
 
-        cmdDelay =0;
+        bounceDelay =0;
         HashMap<Integer,Ship> ships = Updates.getInstance().getShips();
         this.CShips = new HashMap<>();
         if(Client.DEBUG){
@@ -183,7 +184,7 @@ public class PlayingState extends BasicGameState {
             }
         }
 
-        cmdDelay -= delta;
+        bounceDelay -= delta;
         Input input = container.getInput();
         boolean changed = false;
         if(input.isKeyDown(Input.KEY_W)){
@@ -247,10 +248,13 @@ public class PlayingState extends BasicGameState {
             reticle.setVisible(false);
         }
 
+//(float)(myBoat.getX()+288 *Math.cos((double)myBoat.getHeading())),(float) (myBoat.getY()+288*Math.sin((double)myBoat.getHeading())))
 
-        if(!notanIsland((float)(myBoat.getX()+288 *Math.cos((double)myBoat.getHeading())),(float) (myBoat.getY()+288*Math.sin((double)myBoat.getHeading())))){
+        if(!notanIsland(myBoat.getHitbox()) && bounceDelay <= 0){
             // Here we need to
             System.out.println("LAND HO!!");
+            changed = true;
+            bounceDelay = 100;
         }
 
 
@@ -274,11 +278,49 @@ public class PlayingState extends BasicGameState {
         }
     }
 
-    public boolean notanIsland(float x, float y){
+    public boolean notanIsland(ConvexPolygon hitbox){
 
-        //map.getTileId(0, 0, islandLayer);
+        float minX = myBoat.getX() + hitbox.getMinX();
+        float maxX = myBoat.getX() + hitbox.getMaxX();
+        float minY = myBoat.getY() + hitbox.getMinY();
+        float maxY = myBoat.getY() + hitbox.getMaxY();
 
-        if(map.getTileId((int) x/160, (int) y/160, islandLayer) != 0){
+        if(Client.DEBUG) {
+            System.out.println("minX: " + minX + " maxX: " + maxX);
+            System.out.println("minY: " + minY + " maxY: " + maxY);
+            System.out.println("Current x: " + myBoat.getX() + " Current y: " + myBoat.getY());
+        }
+
+        if(map.getTileId((int) minX/160, (int) maxY/160, islandLayer) != 0 &&
+                map.getTileId((int) maxX/160, (int) maxY/160, islandLayer) != 0){
+            if(Client.DEBUG)
+                System.out.println("Boat Front hit");
+            //Front of boat
+            myBoat.setVelocity(myBoat.getVelocity().scale(-1));
+            return false;
+        } else if(map.getTileId((int) minX/160, (int) minY/160, islandLayer) != 0){
+            //Back right of boat
+
+            return false;
+        } else if(map.getTileId((int) minX/160, (int) maxY/160, islandLayer) != 0){
+            //Front right of boat
+            //ADD 45 degrees
+            if(Client.DEBUG)
+                System.out.println("Island front right hit");
+            myBoat.setHeading(myBoat.getHeading() + 45);
+            myBoat.setVelocity(myBoat.getVelocity().scale(-1));
+            return false;
+        }  else if(map.getTileId((int) maxX/160, (int) minY/160, islandLayer) != 0){
+            //Back left of boat
+
+            return false;
+        } else if(map.getTileId((int) maxX/160, (int) maxY/160, islandLayer) != 0){
+            //Front right of boat
+            //SUBTRACT 45 degrees
+            if(Client.DEBUG)
+                System.out.println("Island front left hit");
+            myBoat.setHeading(myBoat.getHeading()-45);
+            myBoat.setVelocity(myBoat.getVelocity().scale(-1));
             return false;
         }
 
@@ -290,6 +332,9 @@ public class PlayingState extends BasicGameState {
         return false;
     }
 
+    public void bounce(){
+        myBoat.setVelocity(new Vector(myBoat.getVelocity().getX() * -1, myBoat.getVelocity().getY() * -1));
+    }
 
 
     public int getID(){return Client.PLAYINGSTATE; }

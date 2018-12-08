@@ -14,7 +14,7 @@ import java.awt.Color;
 import java.awt.Font;
 
 public class Client extends StateBasedGame {
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public static final int PORT = 8000;
     public static final int LOADSTATE = 0;
     public static final int CONNECTSTATE = 1;
