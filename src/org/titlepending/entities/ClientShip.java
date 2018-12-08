@@ -68,7 +68,7 @@ public class ClientShip extends Entity {
     }
 
     public void isHit(Entity object,Ship target){
-        //if object is cannon ball take x damage
+        //if object is cannon Ball take x damage
         //takeDamage(target, x)
         //else if object is ship check velocity of ship object
         //takedamage(target,dmg based off of object speed)

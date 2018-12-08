@@ -10,11 +10,12 @@ import org.titlepending.client.Client;
 
 public class CannonBall extends Entity {
     private Vector velocity;
+    private int playerID;
     private float destinationX;
     private float destinationY;
     private int ttl;
     private boolean dead;
-    public CannonBall (float x, float y, float destX,float destY, float rotation){
+    public CannonBall (float x, float y, float destX,float destY, float rotation,int playerID){
         super(x,y);
         SpriteSheet ss = ResourceManager.getSpriteSheet(Client.SS2_RSC, 32, 32);
         Vector dest = new Vector(destX,destY);
@@ -26,6 +27,7 @@ public class CannonBall extends Entity {
         destinationY = destY;
         ttl = 5000;
         dead = false;
+        this.playerID = playerID;
     }
 
     public void update(int delta){

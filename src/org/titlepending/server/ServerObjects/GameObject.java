@@ -11,6 +11,7 @@ public class GameObject implements Serializable {
     protected float vx;
     protected float vy;
     protected boolean updated;
+    protected int playerID;
     public GameObject(float x, float y, float vx, float vy){
         this.x=x;
         this.y=y;

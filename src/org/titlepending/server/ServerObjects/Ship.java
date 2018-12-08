@@ -6,7 +6,6 @@ import java.io.Serializable;
 
 public class Ship extends GameObject implements Serializable {
     private int[] stats;
-    private int playerID;
     private float heading;
     public Ship(float x, float y, int playerID){
         super(x,y,0,0);

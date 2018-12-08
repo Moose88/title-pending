@@ -252,10 +252,10 @@ public class PlayingState extends BasicGameState {
                     System.out.println("Firing cannon at ("+reticle.getX()+","+reticle.getY()+") Number of cannonballs: "+myBoat.getStats()[2]);
                 for(int j=0; j<myBoat.getStats()[2]+1;j++){
                     if(cannonsTargeting.getFireRight()&&rightDelay<=0) {
-                        cannonBalls.add(new CannonBall(myBoat.getX() + j * 20, myBoat.getY() + j, reticle.getX(), reticle.getY(), +90));
+                        cannonBalls.add(new CannonBall(myBoat.getX() + j * 20, myBoat.getY() + j, reticle.getX(), reticle.getY(), +90, myBoat.getPlayerID()));
                         justFired = true;
                     }else if(!cannonsTargeting.getFireRight()&& leftDelay<=0){
-                        cannonBalls.add(new CannonBall(myBoat.getX()+j*20,myBoat.getY()+j,reticle.getX(),reticle.getY(), +90));
+                        cannonBalls.add(new CannonBall(myBoat.getX()+j*20,myBoat.getY()+j,reticle.getX(),reticle.getY(), +90, myBoat.getPlayerID()));
                         justFired = true;
                     }
                 }
