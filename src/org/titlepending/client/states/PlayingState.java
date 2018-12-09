@@ -174,12 +174,17 @@ public class PlayingState extends BasicGameState {
         /** update all ships from server command before we do local updates **/
         ShipUpdater shipUpdater;
         BallUpdater ballUpdater;
+        WindUpdater windUpdater;
         while(!Updates.getInstance().getQueue().isEmpty()){
             CommandObject cmd = Updates.getInstance().getQueue().poll();
             assert cmd !=null;
             if(cmd.getType()==1){
                 shipUpdater = (ShipUpdater) cmd;
+                //windUpdater = (WindUpdater) cmd;
                 //do stuff to client representation of ships
+                //
+                System.out.println("Player ID: " + myBoat.getPlayerID() + " player direction: " + myBoat.getHeading()%360);
+                System.out.println("Wind direction: " + (Math.toDegrees(Math.atan((double)wind.getWind().getVy()/(double)wind.getWind().getVx()))));
                 ClientShip update = CShips.get(shipUpdater.getUpdatedShip());
                 update.setPosition(shipUpdater.getX(),shipUpdater.getY());
                 if(shipUpdater.getUpdatedShip() != myBoat.getPlayerID())
@@ -200,11 +205,12 @@ public class PlayingState extends BasicGameState {
                     cannonBalls.put(newBall.getId(),newBall);
                 }
             }else{
-                if(Client.DEBUG)
-                    System.out.println("Received wind update");
-                WindUpdater windUpdater = (WindUpdater) cmd;
+                //if(Client.DEBUG)
+                    //System.out.println("Received wind update");
+                windUpdater = (WindUpdater) cmd;
                 if(Client.DEBUG)
                 wind.update(new Vector(windUpdater.getVx(),windUpdater.getVy()));
+                //check
             }
         }
 
