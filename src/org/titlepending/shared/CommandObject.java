@@ -5,18 +5,18 @@ import java.io.Serializable;
 public class CommandObject implements Serializable {
     // ID of what is sending the message 0 reserved for the server.
     private int id;
-    private boolean cannonBall;
+    int type;
     protected boolean isDead;
-    public CommandObject(int id, boolean cannonBall){
+    public CommandObject(int id, int type){
         this.id=id;
-        this.cannonBall = cannonBall;
+        this.type = type;
         this.isDead = false;
     }
 
     public int getId() {
         return id;
     }
-    public boolean getCannonBall(){return cannonBall;}
+    public int getType(){return type;}
     public void setIsDead(boolean isDead){this.isDead = isDead;}
     public boolean getIsDead(){return isDead;}
 

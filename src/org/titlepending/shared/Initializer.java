@@ -17,7 +17,7 @@ public class Initializer extends CommandObject implements Serializable {
     private HashMap<Integer, Ship> Ships;
 
     public Initializer(int id){
-        super(id,false);
+        super(id,0);
     }
 
     public void setStateTransition(int stateTransition){this.stateTransition = stateTransition;}
