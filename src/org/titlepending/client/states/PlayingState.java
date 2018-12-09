@@ -11,6 +11,7 @@ import org.newdawn.slick.tiled.TiledMap;
 import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
 import org.titlepending.entities.*;
+import org.titlepending.entities.Character;
 import org.titlepending.server.ServerObjects.Ship;
 import org.titlepending.shared.BallUpdater;
 import org.titlepending.shared.CommandObject;
@@ -32,13 +33,15 @@ public class PlayingState extends BasicGameState {
     private int oceanLayer;
     private int whirlpoolLayer;
 
+    private Character character;
+
     private int bounceDelay;
     private int rightDelay;
     private int leftDelay;
     private TargetingComputer cannonsTargeting;
     private TargetReticle reticle;
     private boolean anchor;
-    private static SpriteSheet RSC_32_32;
+
     private static Image topleft;
     private static Image top;
     private static Image topright;
@@ -47,6 +50,8 @@ public class PlayingState extends BasicGameState {
     private static Image bottom;
     private static Image bottomleft;
     private static Image left;
+    private static Image[] Dudeface = new Image[3];
+
     private WindIndicator wind;
 
     public void init(GameContainer container, StateBasedGame game)
@@ -55,7 +60,8 @@ public class PlayingState extends BasicGameState {
         anchor = true;
 
 
-        RSC_32_32 = new SpriteSheet(ResourceManager.getImage(Client.SS2_RSC), 32, 32);
+        SpriteSheet RSC_32_32 = new SpriteSheet(ResourceManager.getImage(Client.SS2_RSC), 32, 32);
+
 
         // Breadown of the RSC_32_32
         topleft = RSC_32_32.getSubImage(0, 0).getScaledCopy(3f);
@@ -73,13 +79,13 @@ public class PlayingState extends BasicGameState {
 
 
 
+
     }
 
     public void enter(GameContainer container, StateBasedGame game)
             throws SlickException{
 
         System.out.println("Made it to the playing state");
-
         bounceDelay =0;
         HashMap<Integer,Ship> ships = Updates.getInstance().getShips();
         this.cannonBalls = new HashMap<>();
@@ -120,6 +126,7 @@ public class PlayingState extends BasicGameState {
         reticle = new TargetReticle(0,0);
         rightDelay=leftDelay=0;
 
+        character = new Character(myBoat.getHealth(), myBoat.getStats()[3],0, 0);
     }
 
     public void render(GameContainer container, StateBasedGame game,
@@ -148,7 +155,9 @@ public class PlayingState extends BasicGameState {
         }
 
         wind.render(g);
+        character.render(g);
         g.popTransform();
+
         int Xsofar;
         int Ysofar = 0;
 
@@ -243,6 +252,9 @@ public class PlayingState extends BasicGameState {
         leftDelay-=delta;
         rightDelay-=delta;
         Input input = container.getInput();
+
+        
+
         boolean changed = false;
         if(input.isKeyDown(Input.KEY_W) && bounceDelay <= 0){
             // Send raise anchor command to server
@@ -343,6 +355,7 @@ public class PlayingState extends BasicGameState {
                     && ball.getPlayerID() != myBoat.getPlayerID()){
                 if(Client.DEBUG) {
                     System.out.println("I got hit bois");
+                    myBoat.setHealth(myBoat.getHealth()-1);
                 }
                 ballUpdater= new BallUpdater(myBoat.getPlayerID());
                 ballUpdater.setBallID(ball.getId());
@@ -377,6 +390,8 @@ public class PlayingState extends BasicGameState {
 
 
         wind.update(myBoat.getX()+800,myBoat.getY()+450);
+        character.setPosition(myBoat.getX()-750,myBoat.getY()+330);
+        character.update(myBoat.getHealth());
 
         if(changed){
             ShipUpdater cmd = new ShipUpdater(Updates.getInstance().getThread().getClientId());

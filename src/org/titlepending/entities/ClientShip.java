@@ -23,6 +23,11 @@ public class ClientShip extends Entity {
     private ConvexPolygon medHitbox;
     private ConvexPolygon lgHitbox;
 
+    private int health;
+    private int lgHullHP;
+    private int medHullHP;
+    private int smHullHP;
+
     private ConvexPolygon headingCircle;
     private Circle detectionCircle;
 
@@ -87,6 +92,10 @@ public class ClientShip extends Entity {
                 new Vector(-37,0),
                 new Vector(-20,-50)
         });
+
+        lgHullHP = 27;
+        medHullHP = 18;
+        smHullHP = 9;
 
         headingCircle = new ConvexPolygon(20);
         addShape(headingCircle, new Vector(0, -288), Color.pink, Color.black);
@@ -184,14 +193,17 @@ public class ClientShip extends Entity {
         // Setting Hull Image and bounding box
         switch (stats[0]) {
             case 2:
+                setHealth(smHullHP);
                 addImage(smallHull);
                 addShape(smHitbox, Color.transparent,Color.transparent);
                 break;
             case 1:
+                setHealth(medHullHP);
                 addImage(medHull);
                 addShape(medHitbox, Color.transparent,Color.transparent);
                 break;
             case 0:
+                setHealth(lgHullHP);
                 addImage(lgHull);
                 addShape(lgHitbox, Color.transparent,Color.transparent);
                 break;
@@ -271,6 +283,14 @@ public class ClientShip extends Entity {
 
     public void setDetectionCircle(Circle detectionCircle) {
         this.detectionCircle = detectionCircle;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
     }
 //
 //    public void imageRotate(){
