@@ -269,13 +269,13 @@ public class PlayingState extends BasicGameState {
                     System.out.println("Firing cannon at ("+reticle.getX()+","+reticle.getY()+") Number of cannonballs: "+myBoat.getStats()[2]);
                 for(int j=0; j<myBoat.getStats()[2]+1;j++){
                     if(cannonsTargeting.getFireRight()&&rightDelay<=0) {
-                        CannonBall ball = new CannonBall(myBoat.getX() + j * 20, myBoat.getY() + j, reticle.getX(), reticle.getY(), +90, ThreadLocalRandom.current().nextInt());
+                        CannonBall ball = new CannonBall(myBoat.getX() + 10*5, myBoat.getY() + 10*5, reticle.getX(), reticle.getY(), +90, ThreadLocalRandom.current().nextInt());
                         cannonBalls.put(ball.getId(),ball);
                         buildBallCommand(ball);
                         justFired = true;
 
                     }else if(!cannonsTargeting.getFireRight()&& leftDelay<=0){
-                        CannonBall ball = new CannonBall(myBoat.getX() + j * 20, myBoat.getY() + j, reticle.getX(), reticle.getY(), +90, ThreadLocalRandom.current().nextInt());
+                        CannonBall ball = new CannonBall(myBoat.getX() + 10*5, myBoat.getY() + 10*5, reticle.getX(), reticle.getY(), +90, ThreadLocalRandom.current().nextInt());
                         cannonBalls.put(ball.getId(),ball);
                         buildBallCommand(ball);
                         justFired = true;
@@ -311,6 +311,23 @@ public class PlayingState extends BasicGameState {
 //            System.out.println("LAND HO!!");
         }
 
+        i=cannonBalls.entrySet().iterator();
+        while (i.hasNext()){
+            Map.Entry pair = (Map.Entry) i.next();
+            CannonBall ball =cannonBalls.get(pair.getKey());
+            Collision collision = ball.collides(myBoat);
+            if(collision !=null){
+                if(Client.DEBUG)
+                    System.out.println("I got hit bois");
+                Action cmd = new Action(myBoat.getPlayerID());
+                cmd.setCannonBall(true);
+                cmd.setBallID(ball.getId());
+                cmd.setDead(true);
+                sendCommand(cmd);
+                ball.setDead(true);
+            }
+
+        }
 
         if(changed){
 //            if(Client.DEBUG)

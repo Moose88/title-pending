@@ -4,6 +4,7 @@ import jig.Entity;
 import jig.ResourceManager;
 import jig.Vector;
 import org.newdawn.slick.Animation;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
 import org.titlepending.client.Client;
@@ -15,6 +16,7 @@ public class CannonBall extends Entity {
     private float destinationY;
     private int ttl;
     private boolean dead;
+    private int playerID;
     public CannonBall (float x, float y, float destX,float destY, float rotation,int id){
         super(x,y);
         SpriteSheet ss = ResourceManager.getSpriteSheet(Client.SS2_RSC, 32, 32);
@@ -48,5 +50,12 @@ public class CannonBall extends Entity {
     public int getTtl(){return ttl;}
     public boolean isDead(){
         return dead;
+    }
+    public void setDead(boolean dead){this.dead=dead;}
+    @Override
+    public void render(Graphics g){
+        if(!isDead()){
+            super.render(g);
+        }
     }
 }

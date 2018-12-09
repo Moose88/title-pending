@@ -47,6 +47,8 @@ public class GameObject implements Serializable {
 
     public float getY(){return y;}
 
+    public void setDead(boolean dead){this.dead=dead;}
+
     public void update(int delta){
         x += vx*delta;
         y += vy*delta;

@@ -272,7 +272,16 @@ public class Server {
                         buildBallCommand(ballUpdater);
                     }else {
                         if(actions.getIsDead()){
+                            if(DEBUG){
+                                System.out.println("Ball "+actions.getBallID()+" hit something");
+                            }
+                            Ball ball = ballHashMap.get(actions.getBallID());
+                            ball.setDead(true);
                             ballHashMap.remove(actions.getId());
+                            actions = new Action(0);
+                            actions.setCannonBall(true);
+                            actions.setBallID(ball.getBallID());
+                            updateAll(actions);
                         }
                     }
                 }
