@@ -182,7 +182,7 @@ public class PlayingState extends BasicGameState {
                         cannonBalls.remove(cmd.getBallID());
                     }
                 }else{
-                    CannonBall newBall = new CannonBall(cmd.getX(),cmd.getY(),cmd.getBallDestX(),cmd.getBallDestY(),cmd.getHeading(),cmd.getBallID());
+                    CannonBall newBall = new CannonBall(cmd.getX(),cmd.getY(),cmd.getBallDestX(),cmd.getBallDestY(),cmd.getHeading()+90,cmd.getBallID());
                     cannonBalls.put(newBall.getId(),newBall);
                 }
             }
