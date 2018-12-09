@@ -7,7 +7,6 @@ import org.newdawn.slick.Animation;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
-import org.titlepending.client.Client;
 
 public class boatGuy extends Entity {
 

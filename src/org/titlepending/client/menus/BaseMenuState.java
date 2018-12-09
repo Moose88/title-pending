@@ -1,7 +1,6 @@
 package org.titlepending.client.menus;
 
 import jig.ResourceManager;
-import org.lwjgl.Sys;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;

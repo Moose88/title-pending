@@ -3,7 +3,6 @@ package org.titlepending.shared;
 import org.titlepending.server.ServerObjects.Ship;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -18,7 +17,7 @@ public class Initializer extends CommandObject implements Serializable {
     private HashMap<Integer, Ship> Ships;
 
     public Initializer(int id){
-        super(id);
+        super(id,false);
     }
 
     public void setStateTransition(int stateTransition){this.stateTransition = stateTransition;}
