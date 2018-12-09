@@ -263,7 +263,9 @@ public class Server {
                                 actions.getVx(),
                                 actions.getVy(),
                                 actions.getId(),
-                                actions.getTtl()
+                                actions.getTtl(),
+                                actions.getBallDestX(),
+                                actions.getBallDestY()
                         );
                         ballHashMap.put(actions.getId(),ballUpdater);
                     }else {

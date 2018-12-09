@@ -183,7 +183,8 @@ public class PlayingState extends BasicGameState {
                         cannonBalls.remove(cmd.getBallID());
                     }
                 }else{
-                    CannonBall newBall = new CannonBall(cmd.getX(),cmd.getY())
+                    CannonBall newBall = new CannonBall(cmd.getX(),cmd.getY(),cmd.getBallDestX(),cmd.getBallDestY(),cmd.getHeading(),cmd.getBallID());
+                    cannonBalls.put(newBall.getId(),newBall);
                 }
             }
         }
@@ -340,6 +341,8 @@ public class PlayingState extends BasicGameState {
         cmd.setVy(ball.getVelocity().getY());
         cmd.setCannonBall(true);
         cmd.setTtl(ball.getTtl());
+        cmd.setBallDestX(ball.getDestX());
+        cmd.setBallDestY(ball.getDestY());
         sendCommand(cmd);
 
     }

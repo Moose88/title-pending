@@ -43,7 +43,8 @@ public class CannonBall extends Entity {
     }
 
     public int getId(){return id;}
-
+    public float getDestX(){return destinationX;}
+    public float getDestY(){return destinationY;}
     public int getTtl(){return ttl;}
     public boolean isDead(){
         return dead;

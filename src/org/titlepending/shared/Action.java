@@ -13,6 +13,8 @@ public class Action extends CommandObject implements Serializable {
     private int ttl;
     private boolean isDead;
     private int ballID;
+    private float ballDestX;
+    private float ballDestY;
     public  Action(int id){
         super(id);
         cannonBall =false;
@@ -29,6 +31,8 @@ public class Action extends CommandObject implements Serializable {
     public void setUpdatedShip(int updatedShip){this.updatedShip=updatedShip;}
     public void setTtl(int ttl){this.ttl = ttl;}
     public void setDead(boolean isDead){this.isDead = isDead;}
+    public void setBallDestX(float ballDestX){this.ballDestX=ballDestX;}
+    public void setBallDestY(float ballDestY){this.ballDestY=ballDestY;}
     public boolean getCannonBall(){return cannonBall;}
     public float getX(){return x;}
     public float getY(){return y;}
@@ -39,4 +43,6 @@ public class Action extends CommandObject implements Serializable {
     public int getTtl(){return ttl;}
     public boolean getIsDead(){return isDead;}
     public int getBallID(){return  ballID;}
+    public float getBallDestX(){return ballDestX;}
+    public float getBallDestY(){return ballDestY;}
 }

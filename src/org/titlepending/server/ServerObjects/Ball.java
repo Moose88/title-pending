@@ -5,10 +5,14 @@ import java.io.Serializable;
 public class Ball extends GameObject implements Serializable {
     private int ttl;
     private int ballID;
-    public Ball(float x, float y, float vx, float vy, int ballID, int ttl){
+    private float destX;
+    private float destY;
+    public Ball(float x, float y, float vx, float vy, int ballID, int ttl, float destX, float destY){
         super(x,y,vx,vy);
         this.ttl = ttl;
         this.ballID= ballID;
+        this.destX = destX;
+        this.destY = destY;
     }
     public int getTtl(){return this.ttl;}
     public void update(int delta){
