@@ -9,14 +9,12 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
 import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
-import org.titlepending.entities.CannonBall;
-import org.titlepending.entities.ClientShip;
-import org.titlepending.entities.TargetReticle;
-import org.titlepending.entities.TargetingComputer;
+import org.titlepending.entities.*;
 import org.titlepending.server.ServerObjects.Ship;
-import org.titlepending.shared.ShipUpdater;
 import org.titlepending.shared.BallUpdater;
 import org.titlepending.shared.CommandObject;
+import org.titlepending.shared.ShipUpdater;
+import org.titlepending.shared.WindUpdater;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -48,6 +46,7 @@ public class PlayingState extends BasicGameState {
     private static Image bottomleft;
     private static Image left;
     private static Image arrow;
+    private WindIndicator wind;
 
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException {
@@ -72,11 +71,13 @@ public class PlayingState extends BasicGameState {
         oceanLayer = map.getLayerIndex("Tile Layer 5"); // = 0
 
 
+
     }
 
     public void enter(GameContainer container, StateBasedGame game)
             throws SlickException{
 
+        System.out.println("Made it to the playing state");
 
         cmdDelay =0;
         HashMap<Integer,Ship> ships = Updates.getInstance().getShips();
@@ -85,8 +86,9 @@ public class PlayingState extends BasicGameState {
         if(Client.DEBUG){
             System.out.println("Attepting to create tiled map from: "+Client.MAP_RSC);
         }
-        if(Client.DEBUG)
+        if(Client.DEBUG) {
             System.out.println("Before myBoat thread ID: " + Updates.getInstance().getThread().getClientId());
+        }
 
         Iterator i = ships.entrySet().iterator();
 
@@ -103,16 +105,20 @@ public class PlayingState extends BasicGameState {
         }
 
         myBoat = CShips.get(Updates.getInstance().getThread().getClientId());
-        if(Client.DEBUG)
+        if(Client.DEBUG) {
             System.out.println("After myBoat thread ID: " + Updates.getInstance().getThread().getClientId());
-        if(Client.DEBUG)
+        }
+        if(Client.DEBUG) {
             System.out.println("Boat x: " + myBoat.getX() + " Boat y: " + myBoat.getY() + " Boat id: " + myBoat.getPlayerID());
+        }
 
+        wind = new WindIndicator( container.getScreenWidth()-128,container.getHeight()-128);
+        wind.setWind(new Wind(0,-1));
 
         cannonsTargeting = new TargetingComputer(myBoat);
         reticle = new TargetReticle(0,0);
-        System.out.println("Made it to the playing state");
         rightDelay=leftDelay=0;
+
     }
 
     public void render(GameContainer container, StateBasedGame game,
@@ -140,6 +146,7 @@ public class PlayingState extends BasicGameState {
             ball.render(g);
         }
 
+        wind.render(g);
         g.popTransform();
         int Xsofar;
         int Ysofar = 0;
@@ -159,6 +166,7 @@ public class PlayingState extends BasicGameState {
         g.drawImage(topright, client.ScreenWidth - topright.getWidth(), 0);
         g.drawImage(bottomright, client.ScreenWidth - topright.getWidth(), client.ScreenHeight - bottomright.getHeight());
 
+
     }
 
     public void update(GameContainer container, StateBasedGame game,
@@ -169,7 +177,7 @@ public class PlayingState extends BasicGameState {
         while(!Updates.getInstance().getQueue().isEmpty()){
             CommandObject cmd = Updates.getInstance().getQueue().poll();
             assert cmd !=null;
-            if(!cmd.getCannonBall()){
+            if(cmd.getType()==1){
                 shipUpdater = (ShipUpdater) cmd;
                 //do stuff to client representation of ships
                 ClientShip update = CShips.get(shipUpdater.getUpdatedShip());
@@ -177,7 +185,7 @@ public class PlayingState extends BasicGameState {
                 if(shipUpdater.getUpdatedShip() != myBoat.getPlayerID())
                     update.setHeading(shipUpdater.getHeading());
                 update.setVelocity(new Vector(shipUpdater.getVx(),shipUpdater.getVy()));
-            }else{
+            }else if(cmd.getType() ==2){
                 //do stuff to client representation of cannonballs
                 ballUpdater = (BallUpdater) cmd;
                 if(cannonBalls.containsKey(ballUpdater.getBallID())){
@@ -191,6 +199,12 @@ public class PlayingState extends BasicGameState {
                     CannonBall newBall = new CannonBall(ballUpdater.getX(),ballUpdater.getY(),ballUpdater.getBallDestX(),ballUpdater.getBallDestY(),ballUpdater.getHeading()+90,ballUpdater.getBallID(),cmd.getId());
                     cannonBalls.put(newBall.getId(),newBall);
                 }
+            }else{
+                if(Client.DEBUG)
+                    System.out.println("Received wind update");
+                WindUpdater windUpdater = (WindUpdater) cmd;
+                if(Client.DEBUG)
+                wind.update(new Vector(windUpdater.getVx(),windUpdater.getVy()));
             }
         }
 
@@ -338,7 +352,7 @@ public class PlayingState extends BasicGameState {
             }
 
         }
-
+        wind.update(myBoat.getX()+800,myBoat.getY()+450);
         if(changed){
 //            if(Client.DEBUG)
 //                System.out.println("Sending vx: "+myBoat.getVelocity().getX()+" vy: "+myBoat.getVelocity().getY()+" heading: "+myBoat.getHeading());

@@ -10,7 +10,7 @@ public class ShipUpdater extends CommandObject implements Serializable {
     private float heading;
     private int updatedShip;
     public ShipUpdater(int id){
-        super(id,false);
+        super(id,1);
 
     }
 
