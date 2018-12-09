@@ -144,13 +144,13 @@ public class LobbyState extends BasicGameState {
         Image stwoCannons = ship_RSC_96.getSubImage(5, 2).getScaledCopy(3f);
         Image sthreeCannons = ship_RSC_96.getSubImage(4, 2).getScaledCopy(3f);
 
-        cannons[2] = oneCannon;
+        cannons[0] = oneCannon;
         cannons[1] = twoCannons;
-        cannons[0] = threeCannons;
+        cannons[2] = threeCannons;
 
-        scannons[2] = soneCannon;
+        scannons[0] = soneCannon;
         scannons[1] = stwoCannons;
-        scannons[0] = sthreeCannons;
+        scannons[2] = sthreeCannons;
 
         cannonString[2] = "Two Cannons";
         cannonString[1] = "Four Cannons";

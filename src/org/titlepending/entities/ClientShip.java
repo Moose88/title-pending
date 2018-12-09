@@ -166,19 +166,19 @@ public class ClientShip extends Entity {
     public void addSprites(){
         //Setting Cannons
         switch (stats[2]) {
-            case 2:
-                if(stats[0] == 2)
+            case 0:
+                if(stats[1] == 2)
                     addImage(SoneCannon);
                 else
                     addImage(oneCannon);
                 break;
             case 1:
-                if(stats[0] == 2)
+                if(stats[1] == 2)
                     addImage(StwoCannons);
                 else
                     addImage(twoCannons);
                 break;
-            case 0:
+            case 2:
                 if(stats[0] == 2)
                     addImage(SthreeCannons);
                 else
