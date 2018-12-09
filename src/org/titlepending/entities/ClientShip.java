@@ -139,7 +139,10 @@ public class ClientShip extends Entity {
         this.setRotation(heading);
 
     }
-
+    public void updateHeading(float bounce){
+        heading+=bounce;
+        this.setRotation(heading);
+    }
     public void setHeading(float heading){
         this.heading = heading;
     }
