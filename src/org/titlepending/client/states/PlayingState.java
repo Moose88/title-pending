@@ -17,7 +17,6 @@ import org.titlepending.server.ServerObjects.Ship;
 import org.titlepending.shared.Action;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -272,13 +271,13 @@ public class PlayingState extends BasicGameState {
                     if(cannonsTargeting.getFireRight()&&rightDelay<=0) {
                         CannonBall ball = new CannonBall(myBoat.getX() + j * 20, myBoat.getY() + j, reticle.getX(), reticle.getY(), +90, ThreadLocalRandom.current().nextInt());
                         cannonBalls.put(ball.getId(),ball);
-                        buildCommand(ball);
+                        buildBallCommand(ball);
                         justFired = true;
 
                     }else if(!cannonsTargeting.getFireRight()&& leftDelay<=0){
                         CannonBall ball = new CannonBall(myBoat.getX() + j * 20, myBoat.getY() + j, reticle.getX(), reticle.getY(), +90, ThreadLocalRandom.current().nextInt());
                         cannonBalls.put(ball.getId(),ball);
-                        buildCommand(ball);
+                        buildBallCommand(ball);
                         justFired = true;
                     }
                 }
@@ -333,7 +332,7 @@ public class PlayingState extends BasicGameState {
         }
     }
 
-    private void buildCommand(CannonBall ball){
+    private void buildBallCommand(CannonBall ball){
         Action cmd = new Action(myBoat.getPlayerID());
         cmd.setX(ball.getX());
         cmd.setY(ball.getY());

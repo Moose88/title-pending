@@ -1,6 +1,7 @@
 package org.titlepending.server;
 
 
+import org.titlepending.entities.CannonBall;
 import org.titlepending.server.ServerObjects.Ball;
 import org.titlepending.server.ServerObjects.GameObject;
 import org.titlepending.server.ServerObjects.Ship;
@@ -268,6 +269,7 @@ public class Server {
                                 actions.getBallDestY()
                         );
                         ballHashMap.put(actions.getId(),ballUpdater);
+                        buildBallCommand(ballUpdater);
                     }else {
                         if(actions.getIsDead()){
                             ballHashMap.remove(actions.getId());
@@ -341,25 +343,35 @@ public class Server {
             }
             i = ballHashMap.entrySet().iterator();
             //update all cannon balls on client side.
-            while (i.hasNext()){
-                Map.Entry pair = (Map.Entry) i.next();
-                if(updateAll){
-                    Ball updateBall = ballHashMap.get(pair.getKey());
-                    actions = new Action(0);
-                    actions.setBallID(updateBall.getBallID());
-                    actions.setCannonBall(true);
-                    actions.setVx(updateBall.getVx());
-                    actions.setVy(updateBall.getVy());
-                    actions.setX(updateBall.getX());
-                    actions.setY(updateBall.getY());
-                    updateAll(actions);
-                }
-            }
+//            while (i.hasNext()){
+//                Map.Entry pair = (Map.Entry) i.next();
+//                    Ball updateBall = ballHashMap.get(pair.getKey());
+//                    actions = new Action(0);
+//                    actions.setBallID(updateBall.getBallID());
+//                    actions.setCannonBall(true);
+//                    actions.setVx(updateBall.getVx());
+//                    actions.setVy(updateBall.getVy());
+//                    actions.setX(updateBall.getX());
+//                    actions.setY(updateBall.getY());
+//                    updateAll(actions);
+//
+//            }
             prevTime = curTime;
         }
 
     }
-
+    private static void buildBallCommand(Ball ball){
+        Action cmd = new Action(0);
+        cmd.setX(ball.getX());
+        cmd.setY(ball.getY());
+        cmd.setVx(ball.getVx());
+        cmd.setVy(ball.getVy());
+        cmd.setCannonBall(true);
+        cmd.setTtl(ball.getTtl());
+        cmd.setBallDestX(ball.getDestX());
+        cmd.setBallDestY(ball.getDestY());
+        try{updateAll(cmd);}catch (IOException e){e.printStackTrace();}
+    }
     private static void updateAll(CommandObject action)throws IOException{
         for(ClientThread player : players){
             player.sendCommand(action);

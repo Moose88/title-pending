@@ -19,6 +19,8 @@ public class Ball extends GameObject implements Serializable {
         super.update(delta);
         ttl -= delta;
     }
+    public float getDestX(){return destX;}
+    public float getDestY(){return destY;}
     public int getBallID(){return ballID;}
 
 }
