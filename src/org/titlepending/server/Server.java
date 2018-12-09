@@ -1,9 +1,9 @@
 package org.titlepending.server;
 
 
-import org.titlepending.server.ServerObjects.GameObject;
-import org.titlepending.server.ServerObjects.Ship;
 import org.titlepending.entities.ShipFactory;
+import org.titlepending.server.ServerObjects.Ball;
+import org.titlepending.server.ServerObjects.Ship;
 import org.titlepending.shared.*;
 
 import java.io.IOException;
@@ -67,9 +67,6 @@ public class Server {
 
         // Timer for the lobby
 
-        // Check that if current players say ready OR timer == 0, move into playing state.
-        // Once we transition, the server will need to assign a finalShip array to each
-        // player ID.
 
         int lobbyTimer;
         if(DEBUG) {
@@ -81,6 +78,7 @@ public class Server {
         int curReady = 0;
 
         Initializer cmd;
+
         while(lobbyTimer > 0){
             if(DEBUG) System.out.println("Timer is: " + lobbyTimer+"\nCurrent players: "+players.size());
             for (ClientThread player : players){
@@ -138,7 +136,7 @@ public class Server {
 
 
         /** final timer sent to client with transition state **/
-         cmd = new Initializer(0);
+        cmd = new Initializer(0);
         cmd.setStateTransition(WAITINGSTATE);
         cmd.setTime(lobbyTimer);
         for(ClientThread player : players)
@@ -199,8 +197,15 @@ public class Server {
                 System.out.println("Cannon: "+cmd.getShip()[2]);
                 System.out.println("Captain: "+cmd.getShip()[3]);
             }
-            double shipX = (3200 + (radAlpha*Math.cos(degree*playerNo)));
-            double shipY = (3200 + (radAlpha*Math.sin(degree*playerNo)));
+            double shipX;
+            double shipY;
+            if(DEBUG){
+                shipX = 27000;
+                shipY = 8000;
+            }else{
+                shipX =(3200 + (radAlpha*Math.cos(degree*playerNo)));
+                shipY = (3200 + (radAlpha*Math.sin(degree*playerNo)));
+            }
             if(DEBUG) System.out.println("Ship x: "+shipX+" Ship y: "+shipY);
             Ship temp =ShipFactory.getInstance().createNewPlayerShip(shipX, shipY, cmd.getShip(), cmd.getId());
             if(DEBUG) System.out.println("Temp x: "+temp.getX()+" Temp y: "+temp.getY());
@@ -231,31 +236,67 @@ public class Server {
         if(DEBUG)
             System.out.println("Starting game loop");
 
-        Action actions;
+        CommandObject actions;
+        BallUpdater bUpdate;
+        ShipUpdater sUpdate;
         long prevTime= System.currentTimeMillis();
         timer = 0;
         boolean updateAll = false;
+        int windTimer = 0;
+        HashMap<Integer,Ball>ballHashMap = new HashMap<>();
         while(inGame){
-            // Game logic goes here
-            //TODO empty queue
-
+            //Empty command queue
             while (!commands.isEmpty()){
-                actions = (Action) commands.poll();
-                Ship updater = ships.get(actions.getId());
-                assert updater != null;
-                if(DEBUG)
-                    System.out.println("Updating ship "+actions.getId()+" vx: "+actions.getVx()+" vy: "+actions.getVy());
-                updater.setVelocity(actions.getVx(),actions.getVy());
-                updater.setHeading(actions.getHeading());
-                updater.setUpdated(true);
+                actions = commands.poll();
+                Ball ballUpdater;
+                Ship shipUpdater;
+                if(actions.getType()==1) {
+                    sUpdate = (ShipUpdater) actions;
+                    shipUpdater = ships.get(sUpdate.getId());
+                    if(DEBUG)
+                        System.out.println("Updating ship "+sUpdate.getId()+" vx: "+sUpdate.getVx()+" vy: "+sUpdate.getVy());
+                    shipUpdater.setVelocity(sUpdate.getVx(),sUpdate.getVy());
+                    shipUpdater.setHeading(sUpdate.getHeading());
+                    shipUpdater.setUpdated(true);
+                }else{
+                    bUpdate = (BallUpdater) actions;
+                    if(!ballHashMap.containsKey(bUpdate.getBallID())){
+                        ballUpdater = new Ball(
+                                bUpdate.getX(),
+                                bUpdate.getY(),
+                                bUpdate.getVx(),
+                                bUpdate.getVy(),
+                                bUpdate.getId(),
+                                bUpdate.getTtl(),
+                                bUpdate.getBallDestX(),
+                                bUpdate.getBallDestY(),
+                                bUpdate.getId()
+                        );
+                        ballHashMap.put(actions.getId(),ballUpdater);
+                        updateBall(ballUpdater);
+                    }else {
+                        if(actions.getIsDead()){
+                            if(DEBUG){
+                                System.out.println("Ball "+bUpdate.getBallID()+" hit something");
+                            }
+                            Ball ball = ballHashMap.get(bUpdate.getBallID());
+                            ball.setDead(true);
+                            BallUpdater temp = new BallUpdater(ball.getPlayerID());
+                            temp.setIsDead(true);
+                            temp.setBallID(ball.getBallID());
+                            updateAll(temp);
+                            ballHashMap.remove(bUpdate.getId());
+                        }
+                    }
+                }
 
             }
 
             // Calc Delta Preserve Prev Time
             long curTime = System.currentTimeMillis();
-            if(curTime - prevTime < 50 ){
+            if(curTime - prevTime < 30 ){
                 try {
-                    Thread.sleep(50-(curTime-prevTime));
+                    Thread.sleep(30-(curTime-prevTime));
                 } catch(InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -263,45 +304,93 @@ public class Server {
             }
             long delta = curTime - prevTime;
 
-           // if(Server.DEBUG) System.out.println("Delta: "+delta+" Timer: "+timer);
 
             Iterator i = ships.entrySet().iterator();
 
+            //update ships
             while (i.hasNext()){
                 Map.Entry pair = (Map.Entry)i.next();
                 ships.get(pair.getKey()).update((int)delta);
 
             }
+            i = ballHashMap.entrySet().iterator();
+            //update cannon balls;
+            while (i.hasNext()){
+                Map.Entry pair = (Map.Entry)i.next();
+                Ball updateBall = ballHashMap.get(pair.getKey());
+                updateBall.update((int)delta);
+                if(updateBall.getTtl() <=0){
+                    BallUpdater temp = new BallUpdater(0);
+                    temp.setBallID(updateBall.getBallID());
+                    temp.setIsDead(true);
+                    updateAll(temp);
+                    i.remove();
+
+                }
+            }
             // Sleep if we havn't done enough work
 
-
+            windTimer -= (int)delta;
+            if(windTimer <= 0){
+                updateWind();
+                if(DEBUG)
+                    windTimer = 10000;
+                else
+                    windTimer = 600000;
+            }
             timer -= (int) delta;
             if(timer<=0){
                 updateAll = true; timer =150;
             }else {
                 updateAll=false;
             }
-
+            //Update all ships on client side.
             i = ships.entrySet().iterator();
             while (i.hasNext()){
                 Map.Entry pair = (Map.Entry) i.next();
                 if(updateAll || ships.get(pair.getKey()).getUpdated()){
-                    actions = new Action(0);
-                    Ship updatedShip = ships.get(pair.getKey());
-                    actions.setUpdatedShip(updatedShip.getPlayerID());
-                    actions.setVy(updatedShip.getVy());
-                    actions.setVx(updatedShip.getVx());
-                    actions.setX(updatedShip.getX());
-                    actions.setY(updatedShip.getY());
-                    actions.setHeading(updatedShip.getHeading());
-                    updateAll(actions);
+                    Ship ship = ships.get(pair.getKey());
+                    updateShip(ship);
                 }
             }
             prevTime = curTime;
         }
 
     }
+    private static void updateBall(Ball ball){
+        BallUpdater cmd = new BallUpdater(ball.getPlayerID());
+        cmd.setX(ball.getX());
+        cmd.setY(ball.getY());
+        cmd.setVx(ball.getVx());
+        cmd.setVy(ball.getVy());
+        cmd.setTtl(ball.getTtl());
+        cmd.setBallDestX(ball.getDestX());
+        cmd.setBallDestY(ball.getDestY());
+        try{updateAll(cmd);}catch (IOException e){e.printStackTrace();}
+    }
+    private static void updateShip(Ship ship){
+        ShipUpdater cmd = new ShipUpdater(0);
+        cmd.setUpdatedShip(ship.getPlayerID());
+        cmd.setVy(ship.getVy());
+        cmd.setVx(ship.getVx());
+        cmd.setX(ship.getX());
+        cmd.setY(ship.getY());
+        cmd.setHeading(ship.getHeading());
+       try{updateAll(cmd);}catch (IOException e){e.printStackTrace();}
 
+    }
+
+    private static void updateWind(){
+        if(DEBUG)
+            System.out.println("Attempting to update wind");
+        float vx = ThreadLocalRandom.current().nextFloat();
+        float vy = ThreadLocalRandom.current().nextFloat();
+        WindUpdater cmd = new WindUpdater(0);
+        cmd.setVx(vx);
+        cmd.setVy(vy);
+        try{updateAll(cmd);}catch (IOException e){e.printStackTrace();}
+
+    }
     private static void updateAll(CommandObject action)throws IOException{
         for(ClientThread player : players){
             player.sendCommand(action);
