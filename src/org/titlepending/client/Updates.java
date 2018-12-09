@@ -3,9 +3,7 @@ package org.titlepending.client;
 import org.titlepending.server.ServerObjects.Ship;
 import org.titlepending.shared.ClientThread;
 import org.titlepending.shared.CommandObject;
-import org.titlepending.shared.Initializer;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 

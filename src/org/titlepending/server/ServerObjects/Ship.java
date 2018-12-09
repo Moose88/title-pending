@@ -1,7 +1,5 @@
 package org.titlepending.server.ServerObjects;
 
-import org.titlepending.server.Server;
-
 import java.io.Serializable;
 
 public class Ship extends GameObject implements Serializable {
@@ -25,18 +23,6 @@ public class Ship extends GameObject implements Serializable {
 
     public float getHeading(){return heading;}
     public void setHeading(float heading){this.heading = heading;}
-    public void update(int delta){
-//        if(Server.DEBUG)
-//            System.out.println("Ship "+playerID+": current vx:"+this.vx+" updating vx: "+vx+
-//                    " current vy: "+vy+" current x: "+this.x+" current y: "+this.y);
-
-        x+=vx*delta;
-        y+=vy*delta;
-
-//        if(Server.DEBUG)
-//            System.out.println("Updated x: " +this.x+" Updated y: "+this.y);
-
-    }
 
 
 

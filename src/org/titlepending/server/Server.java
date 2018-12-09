@@ -1,6 +1,7 @@
 package org.titlepending.server;
 
 
+import org.titlepending.server.ServerObjects.Ball;
 import org.titlepending.server.ServerObjects.GameObject;
 import org.titlepending.server.ServerObjects.Ship;
 import org.titlepending.entities.ShipFactory;
@@ -67,9 +68,6 @@ public class Server {
 
         // Timer for the lobby
 
-        // Check that if current players say ready OR timer == 0, move into playing state.
-        // Once we transition, the server will need to assign a finalShip array to each
-        // player ID.
 
         int lobbyTimer;
         if(DEBUG) {
@@ -81,6 +79,7 @@ public class Server {
         int curReady = 0;
 
         Initializer cmd;
+
         while(lobbyTimer > 0){
             if(DEBUG) System.out.println("Timer is: " + lobbyTimer+"\nCurrent players: "+players.size());
             for (ClientThread player : players){
@@ -138,7 +137,7 @@ public class Server {
 
 
         /** final timer sent to client with transition state **/
-         cmd = new Initializer(0);
+        cmd = new Initializer(0);
         cmd.setStateTransition(WAITINGSTATE);
         cmd.setTime(lobbyTimer);
         for(ClientThread player : players)
@@ -242,27 +241,45 @@ public class Server {
         long prevTime= System.currentTimeMillis();
         timer = 0;
         boolean updateAll = false;
+        HashMap<Integer,Ball>ballHashMap = new HashMap<>();
         while(inGame){
-            // Game logic goes here
-            //TODO empty queue
-
+            //Empty command queue
             while (!commands.isEmpty()){
                 actions = (Action) commands.poll();
-                Ship updater = ships.get(actions.getId());
-                assert updater != null;
-                if(DEBUG)
-                    System.out.println("Updating ship "+actions.getId()+" vx: "+actions.getVx()+" vy: "+actions.getVy());
-                updater.setVelocity(actions.getVx(),actions.getVy());
-                updater.setHeading(actions.getHeading());
-                updater.setUpdated(true);
+                Ball ballUpdater;
+                Ship shipUpdater;
+                if(!actions.getCannonBall()) {
+                    shipUpdater = ships.get(actions.getId());
+                    if(DEBUG)
+                        System.out.println("Updating ship "+actions.getId()+" vx: "+actions.getVx()+" vy: "+actions.getVy());
+                    shipUpdater.setVelocity(actions.getVx(),actions.getVy());
+                    shipUpdater.setHeading(actions.getHeading());
+                    shipUpdater.setUpdated(true);
+                }else{
+                    if(!ballHashMap.containsKey(actions.getBallID())){
+                        ballUpdater = new Ball(
+                                actions.getX(),
+                                actions.getY(),
+                                actions.getVx(),
+                                actions.getVy(),
+                                actions.getId(),
+                                actions.getTtl()
+                        );
+                        ballHashMap.put(actions.getId(),ballUpdater);
+                    }else {
+                        if(actions.getIsDead()){
+                            ballHashMap.remove(actions.getId());
+                        }
+                    }
+                }
 
             }
 
             // Calc Delta Preserve Prev Time
             long curTime = System.currentTimeMillis();
-            if(curTime - prevTime < 50 ){
+            if(curTime - prevTime < 30 ){
                 try {
-                    Thread.sleep(50-(curTime-prevTime));
+                    Thread.sleep(30-(curTime-prevTime));
                 } catch(InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -270,14 +287,29 @@ public class Server {
             }
             long delta = curTime - prevTime;
 
-           // if(Server.DEBUG) System.out.println("Delta: "+delta+" Timer: "+timer);
 
             Iterator i = ships.entrySet().iterator();
 
+            //update ships
             while (i.hasNext()){
                 Map.Entry pair = (Map.Entry)i.next();
                 ships.get(pair.getKey()).update((int)delta);
 
+            }
+            i = ballHashMap.entrySet().iterator();
+            //update cannon balls;
+            while (i.hasNext()){
+                Map.Entry pair = (Map.Entry)i.next();
+                Ball updateBall = ballHashMap.get(pair.getKey());
+                updateBall.update((int)delta);
+                if(updateBall.getTtl() <=0){
+                    actions = new Action(0);
+                    actions.setBallID(updateBall.getBallID());
+                    actions.setDead(true);
+                    updateAll(actions);
+                    i.remove();
+
+                }
             }
             // Sleep if we havn't done enough work
 
@@ -288,7 +320,7 @@ public class Server {
             }else {
                 updateAll=false;
             }
-
+            //Update all ships on client side.
             i = ships.entrySet().iterator();
             while (i.hasNext()){
                 Map.Entry pair = (Map.Entry) i.next();
@@ -301,6 +333,22 @@ public class Server {
                     actions.setX(updatedShip.getX());
                     actions.setY(updatedShip.getY());
                     actions.setHeading(updatedShip.getHeading());
+                    updateAll(actions);
+                }
+            }
+            i = ballHashMap.entrySet().iterator();
+            //update all cannon balls on client side.
+            while (i.hasNext()){
+                Map.Entry pair = (Map.Entry) i.next();
+                if(updateAll){
+                    Ball updateBall = ballHashMap.get(pair.getKey());
+                    actions = new Action(0);
+                    actions.setBallID(updateBall.getBallID());
+                    actions.setCannonBall(true);
+                    actions.setVx(updateBall.getVx());
+                    actions.setVy(updateBall.getVy());
+                    actions.setX(updateBall.getX());
+                    actions.setY(updateBall.getY());
                     updateAll(actions);
                 }
             }

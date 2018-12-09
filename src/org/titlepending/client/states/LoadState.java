@@ -1,8 +1,8 @@
 package org.titlepending.client.states;
 
 import jig.ResourceManager;
-import org.newdawn.slick.*;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.loading.DeferredResource;
 import org.newdawn.slick.loading.LoadingList;

@@ -1,6 +1,5 @@
 package org.titlepending.server.ServerObjects;
 
-import jig.Vector;
 import org.titlepending.server.Server;
 
 import java.io.Serializable;
@@ -12,6 +11,7 @@ public class GameObject implements Serializable {
     protected float vy;
     protected boolean updated;
     protected int playerID;
+    protected boolean dead;
     public GameObject(float x, float y, float vx, float vy){
         this.x=x;
         this.y=y;
@@ -21,22 +21,12 @@ public class GameObject implements Serializable {
             System.out.println("Given x: "+x+"My x: "+this.x+" Given y: "+y+" My y: "+this.y);
         }
         this.updated = false;
-    }
-
-    public GameObject(){
-
-    }
-    public void setPosition(float x, float y){
-        this.x = x; this.y=y;
+        this.dead=false;
     }
 
     public void setVelocity(float vx, float vy){
         this.vx = vx;
-        // Matt can go fuck himself
         this.vy = vy;
-    }
-    public void setPosition(Vector pos){
-        this.setPosition(pos.getX(),pos.getY());
     }
 
     public void setUpdated(boolean updated) {
@@ -56,5 +46,10 @@ public class GameObject implements Serializable {
     public float getX(){return x;}
 
     public float getY(){return y;}
+
+    public void update(int delta){
+        x += vx*delta;
+        y += vy*delta;
+    }
 
 }

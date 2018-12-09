@@ -21,10 +21,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class PlayingState extends BasicGameState {
     private HashMap<Integer, ClientShip> CShips;
-    private ArrayList<CannonBall> cannonBalls;
+    private HashMap<Integer, CannonBall> cannonBalls;
     private ClientShip myBoat;
     private TiledMap map;
     private int islandLayer;
@@ -78,7 +79,7 @@ public class PlayingState extends BasicGameState {
 
         cmdDelay =0;
         HashMap<Integer,Ship> ships = Updates.getInstance().getShips();
-        cannonBalls = new ArrayList<CannonBall>();
+        this.cannonBalls = new HashMap<>();
         this.CShips = new HashMap<>();
         if(Client.DEBUG){
             System.out.println("Attepting to create tiled map from: "+Client.MAP_RSC);
@@ -133,7 +134,8 @@ public class PlayingState extends BasicGameState {
         }
         cannonsTargeting.render(g);
         reticle.render(g);
-        for (CannonBall ball : cannonBalls){
+        for (Map.Entry<Integer, CannonBall> integerCannonBallEntry : cannonBalls.entrySet()){
+            CannonBall ball = cannonBalls.get(((Map.Entry) integerCannonBallEntry).getKey());
             ball.render(g);
         }
 
@@ -164,12 +166,26 @@ public class PlayingState extends BasicGameState {
         while(!Updates.getInstance().getQueue().isEmpty()){
             Action cmd = (Action) Updates.getInstance().getQueue().poll();
             assert cmd !=null;
-
-            ClientShip update = CShips.get(cmd.getUpdatedShip());
-            update.setPosition(cmd.getX(),cmd.getY());
-            if(cmd.getUpdatedShip() != myBoat.getPlayerID())
-                update.setHeading(cmd.getHeading());
-            update.setVelocity(new Vector(cmd.getVx(),cmd.getVy()));
+            if(!cmd.getCannonBall()){
+                //do stuff to client representation of ships
+                ClientShip update = CShips.get(cmd.getUpdatedShip());
+                update.setPosition(cmd.getX(),cmd.getY());
+                if(cmd.getUpdatedShip() != myBoat.getPlayerID())
+                    update.setHeading(cmd.getHeading());
+                update.setVelocity(new Vector(cmd.getVx(),cmd.getVy()));
+            }else{
+                //do stuff to client representation of cannonballs
+                if(cannonBalls.containsKey(cmd.getBallID())){
+                    CannonBall update = cannonBalls.get(cmd.getBallID());
+                    if(!update.isDead()){
+                        update.setPosition(cmd.getX(),cmd.getY());
+                    }else{
+                        cannonBalls.remove(cmd.getBallID());
+                    }
+                }else{
+                    CannonBall newBall = new CannonBall(cmd.getX(),cmd.getY())
+                }
+            }
         }
 
         Iterator i = CShips.entrySet().iterator();
@@ -179,9 +195,10 @@ public class PlayingState extends BasicGameState {
             update.update(delta);
         }
 
-        i = cannonBalls.iterator();
+        i = cannonBalls.entrySet().iterator();
         while (i.hasNext()){
-            CannonBall ball = (CannonBall) i.next();
+            Map.Entry pair = (Map.Entry) i.next();
+            CannonBall ball = cannonBalls.get(pair.getKey());
             if(ball.isDead()){
                 i.remove();
             }else{
@@ -252,10 +269,15 @@ public class PlayingState extends BasicGameState {
                     System.out.println("Firing cannon at ("+reticle.getX()+","+reticle.getY()+") Number of cannonballs: "+myBoat.getStats()[2]);
                 for(int j=0; j<myBoat.getStats()[2]+1;j++){
                     if(cannonsTargeting.getFireRight()&&rightDelay<=0) {
-                        cannonBalls.add(new CannonBall(myBoat.getX() + j * 20, myBoat.getY() + j, reticle.getX(), reticle.getY(), +90, myBoat.getPlayerID()));
+                        CannonBall ball = new CannonBall(myBoat.getX() + j * 20, myBoat.getY() + j, reticle.getX(), reticle.getY(), +90, ThreadLocalRandom.current().nextInt());
+                        cannonBalls.put(ball.getId(),ball);
+                        buildCommand(ball);
                         justFired = true;
+
                     }else if(!cannonsTargeting.getFireRight()&& leftDelay<=0){
-                        cannonBalls.add(new CannonBall(myBoat.getX()+j*20,myBoat.getY()+j,reticle.getX(),reticle.getY(), +90, myBoat.getPlayerID()));
+                        CannonBall ball = new CannonBall(myBoat.getX() + j * 20, myBoat.getY() + j, reticle.getX(), reticle.getY(), +90, ThreadLocalRandom.current().nextInt());
+                        cannonBalls.put(ball.getId(),ball);
+                        buildCommand(ball);
                         justFired = true;
                     }
                 }
@@ -308,6 +330,18 @@ public class PlayingState extends BasicGameState {
         }catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    private void buildCommand(CannonBall ball){
+        Action cmd = new Action(myBoat.getPlayerID());
+        cmd.setX(ball.getX());
+        cmd.setY(ball.getY());
+        cmd.setVx(ball.getVelocity().getX());
+        cmd.setVy(ball.getVelocity().getY());
+        cmd.setCannonBall(true);
+        cmd.setTtl(ball.getTtl());
+        sendCommand(cmd);
+
     }
 
     public boolean notanIsland(float x, float y){
