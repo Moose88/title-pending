@@ -17,7 +17,7 @@ public class CannonBall extends Entity {
     private int ttl;
     private boolean dead;
     private int playerID;
-    public CannonBall (float x, float y, float destX,float destY, float rotation,int id){
+    public CannonBall (float x, float y, float destX,float destY, float rotation,int id,int playerID){
         super(x,y);
         SpriteSheet ss = ResourceManager.getSpriteSheet(Client.SS2_RSC, 32, 32);
         Vector dest = new Vector(destX,destY);
@@ -30,6 +30,7 @@ public class CannonBall extends Entity {
         ttl = 5000;
         dead = false;
         this.id = id;
+        this.playerID=playerID;
     }
 
     public void update(int delta){
@@ -45,6 +46,7 @@ public class CannonBall extends Entity {
     }
 
     public int getId(){return id;}
+    public int getPlayerID(){return playerID;}
     public float getDestX(){return destinationX;}
     public float getDestY(){return destinationY;}
     public int getTtl(){return ttl;}

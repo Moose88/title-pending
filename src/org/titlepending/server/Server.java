@@ -266,7 +266,8 @@ public class Server {
                                 actions.getId(),
                                 actions.getTtl(),
                                 actions.getBallDestX(),
-                                actions.getBallDestY()
+                                actions.getBallDestY(),
+                                actions.getId()
                         );
                         ballHashMap.put(actions.getId(),ballUpdater);
                         buildBallCommand(ballUpdater);
@@ -278,7 +279,7 @@ public class Server {
                             Ball ball = ballHashMap.get(actions.getBallID());
                             ball.setDead(true);
                             ballHashMap.remove(actions.getId());
-                            actions = new Action(0);
+                            actions = new Action(ball.getPlayerID());
                             actions.setCannonBall(true);
                             actions.setBallID(ball.getBallID());
                             updateAll(actions);
@@ -370,7 +371,7 @@ public class Server {
 
     }
     private static void buildBallCommand(Ball ball){
-        Action cmd = new Action(0);
+        Action cmd = new Action(ball.getPlayerID());
         cmd.setX(ball.getX());
         cmd.setY(ball.getY());
         cmd.setVx(ball.getVx());
