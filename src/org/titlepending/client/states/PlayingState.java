@@ -446,6 +446,16 @@ public class PlayingState extends BasicGameState {
 
     }
 
+    /**
+     * At this time, all this function does is just reverse your
+     * direction for one second when a collision occurs.
+     *
+     * Future direction would be to identify the angle of collision
+     * and to change velocity from that angle.
+     * 
+     * @param a The angle at which the velocity needs to transform to
+     *
+     */
     private void bounce(float a){
         if(Client.DEBUG){
             System.out.println("Current heading: " + myBoat.getHeading() + " New heading: " +  a);
