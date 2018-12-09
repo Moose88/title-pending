@@ -14,7 +14,7 @@ public class BallUpdater extends CommandObject implements Serializable {
     private float heading;
 
     public BallUpdater(int id){
-        super(id,true);
+        super(id,2);
     }
     public void setX(float x){this.x=x;}
     public void setY(float y){this.y=y;}

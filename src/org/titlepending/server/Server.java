@@ -1,9 +1,9 @@
 package org.titlepending.server;
 
 
+import org.titlepending.entities.ShipFactory;
 import org.titlepending.server.ServerObjects.Ball;
 import org.titlepending.server.ServerObjects.Ship;
-import org.titlepending.entities.ShipFactory;
 import org.titlepending.shared.*;
 
 import java.io.IOException;
@@ -200,8 +200,8 @@ public class Server {
             double shipX;
             double shipY;
             if(DEBUG){
-                shipX = 1000;
-                shipY = 1000;
+                shipX = 27000;
+                shipY = 8000;
             }else{
                 shipX =(3200 + (radAlpha*Math.cos(degree*playerNo)));
                 shipY = (3200 + (radAlpha*Math.sin(degree*playerNo)));
@@ -242,6 +242,7 @@ public class Server {
         long prevTime= System.currentTimeMillis();
         timer = 0;
         boolean updateAll = false;
+        int windTimer = 0;
         HashMap<Integer,Ball>ballHashMap = new HashMap<>();
         while(inGame){
             //Empty command queue
@@ -249,7 +250,7 @@ public class Server {
                 actions = commands.poll();
                 Ball ballUpdater;
                 Ship shipUpdater;
-                if(!actions.getCannonBall()) {
+                if(actions.getType()==1) {
                     sUpdate = (ShipUpdater) actions;
                     shipUpdater = ships.get(sUpdate.getId());
                     if(DEBUG)
@@ -329,7 +330,14 @@ public class Server {
             }
             // Sleep if we havn't done enough work
 
-
+            windTimer -= (int)delta;
+            if(windTimer <= 0){
+                updateWind();
+                if(DEBUG)
+                    windTimer = 10000;
+                else
+                    windTimer = 600000;
+            }
             timer -= (int) delta;
             if(timer<=0){
                 updateAll = true; timer =150;
@@ -369,6 +377,18 @@ public class Server {
         cmd.setY(ship.getY());
         cmd.setHeading(ship.getHeading());
        try{updateAll(cmd);}catch (IOException e){e.printStackTrace();}
+
+    }
+
+    private static void updateWind(){
+        if(DEBUG)
+            System.out.println("Attempting to update wind");
+        float vx = ThreadLocalRandom.current().nextFloat();
+        float vy = ThreadLocalRandom.current().nextFloat();
+        WindUpdater cmd = new WindUpdater(0);
+        cmd.setVx(vx);
+        cmd.setVy(vy);
+        try{updateAll(cmd);}catch (IOException e){e.printStackTrace();}
 
     }
     private static void updateAll(CommandObject action)throws IOException{

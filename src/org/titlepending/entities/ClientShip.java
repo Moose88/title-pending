@@ -19,9 +19,15 @@ public class ClientShip extends Entity {
     private float rotationRate;
     private TiledMap map;
 
+    private ConvexPolygon smHitbox;
+    private ConvexPolygon medHitbox;
+    private ConvexPolygon lgHitbox;
 
+    private int health;
+    private int lgHullHP;
+    private int medHullHP;
+    private int smHullHP;
 
-    private Shape circle;
     private ConvexPolygon headingCircle;
     private Circle detectionCircle;
 
@@ -53,6 +59,43 @@ public class ClientShip extends Entity {
         heading = center;
 
         detectionCircle = new Circle(getX(), getY(), 288);
+
+        smHitbox = new ConvexPolygon(new Vector[]{
+                new Vector(0,-72 ),
+                new Vector(15,-40),
+                new Vector(20,0),
+                new Vector(15,40),
+                new Vector(0,72),
+                new Vector(-15,40),
+                new Vector(-20,0),
+                new Vector(-15,-40)
+        });
+
+        medHitbox = new ConvexPolygon(new Vector[]{
+                new Vector(0,-72 ),
+                new Vector(20,-40),
+                new Vector(30,0),
+                new Vector(20,40),
+                new Vector(0,72),
+                new Vector(-20,40),
+                new Vector(-30,0),
+                new Vector(-20,-40)
+        });
+
+        lgHitbox = new ConvexPolygon(new Vector[]{
+                new Vector(0,-72 ),
+                new Vector(20,-50),
+                new Vector(37,0),
+                new Vector(20,50),
+                new Vector(0,72),
+                new Vector(-20,50),
+                new Vector(-37,0),
+                new Vector(-20,-50)
+        });
+
+        lgHullHP = 27;
+        medHullHP = 18;
+        smHullHP = 9;
 
         headingCircle = new ConvexPolygon(20);
         addShape(headingCircle, new Vector(0, -288), Color.pink, Color.black);
@@ -105,7 +148,10 @@ public class ClientShip extends Entity {
         this.setRotation(heading);
 
     }
-
+    public void updateHeading(float bounce){
+        heading+=bounce;
+        this.setRotation(heading);
+    }
     public void setHeading(float heading){
         this.heading = heading;
     }
@@ -147,43 +193,19 @@ public class ClientShip extends Entity {
         // Setting Hull Image and bounding box
         switch (stats[0]) {
             case 2:
+                setHealth(smHullHP);
                 addImage(smallHull);
-                addShape(new ConvexPolygon(new Vector[]{
-                        new Vector(0,-72 ),
-                        new Vector(15,-40),
-                        new Vector(20,0),
-                        new Vector(15,40),
-                        new Vector(0,72),
-                        new Vector(-15,40),
-                        new Vector(-20,0),
-                        new Vector(-15,-40)
-                }),Color.transparent,Color.transparent);
+                addShape(smHitbox, Color.transparent,Color.transparent);
                 break;
             case 1:
+                setHealth(medHullHP);
                 addImage(medHull);
-                addShape(new ConvexPolygon(new Vector[]{
-                        new Vector(0,-72 ),
-                        new Vector(20,-40),
-                        new Vector(30,0),
-                        new Vector(20,40),
-                        new Vector(0,72),
-                        new Vector(-20,40),
-                        new Vector(-30,0),
-                        new Vector(-20,-40)
-                }),Color.transparent,Color.transparent);
+                addShape(medHitbox, Color.transparent,Color.transparent);
                 break;
             case 0:
+                setHealth(lgHullHP);
                 addImage(lgHull);
-                addShape(new ConvexPolygon(new Vector[]{
-                        new Vector(0,-72 ),
-                        new Vector(20,-50),
-                        new Vector(37,0),
-                        new Vector(20,50),
-                        new Vector(0,72),
-                        new Vector(-20,50),
-                        new Vector(-37,0),
-                        new Vector(-20,-50)
-                }),Color.transparent,Color.transparent);
+                addShape(lgHitbox, Color.transparent,Color.transparent);
                 break;
             default:
                 System.out.println("I BROKE MY haul!!!");
@@ -216,13 +238,22 @@ public class ClientShip extends Entity {
 
     }
 
-    public void boundingBox(){
-//        Vector topofBoat = new Vector((float) (getX() + 48 * Math.cos(Math.toRadians(heading))), (float) (getY() - 48 * Math.sin(Math.toRadians(heading))));
-//        Vector backofBoat = new Vector((float) (getX() - 48 * Math.cos(Math.toRadians(heading))), (float) (getY() + 48 * Math.sin(Math.toRadians(heading))));
-//        Vector portBoat = new Vector((float) (getX() - 32 * Math.sin(Math.toRadians(heading))), (float) (getY() - 32 * Math.cos(Math.toRadians(heading))));
-//        Vector starboardBoat = new Vector((float) (getX() + 32 * Math.sin(Math.toRadians(heading))), (float) (getY() + 32 * Math.cos(Math.toRadians(heading))));
+    public ConvexPolygon getHitbox(){
 
+        switch (stats[0]) {
+            case 2:
+                return smHitbox;
+            case 1:
+                return medHitbox;
+            case 0:
+                return lgHitbox;
+            default:
+                System.out.println("I BROKE MY haul!!!");
+                System.exit(-100);
+                break;
+        }
 
+        return null;
     }
 
     @Override
@@ -236,6 +267,7 @@ public class ClientShip extends Entity {
     }
 
     public void update(final int delta) {
+
         Vector pos = getPosition();
         detectionCircle.setCenterX(this.getX());
         detectionCircle.setCenterY(this.getY());
@@ -251,6 +283,14 @@ public class ClientShip extends Entity {
 
     public void setDetectionCircle(Circle detectionCircle) {
         this.detectionCircle = detectionCircle;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
     }
 //
 //    public void imageRotate(){
