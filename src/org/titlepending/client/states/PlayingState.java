@@ -1,5 +1,6 @@
 package org.titlepending.client.states;
 
+import jig.Collision;
 import jig.ResourceManager;
 import jig.Vector;
 import org.newdawn.slick.*;
@@ -9,6 +10,9 @@ import org.newdawn.slick.tiled.TiledMap;
 import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
 import org.titlepending.entities.ClientShip;
+import org.titlepending.entities.TargetNet;
+import org.titlepending.entities.TargetReticle;
+import org.titlepending.entities.TargetingComputer;
 import org.titlepending.shared.Action;
 
 import java.io.IOException;
@@ -22,7 +26,12 @@ public class PlayingState extends BasicGameState {
     private HashMap<Integer, ClientShip> CShips;
     private ClientShip myBoat;
     private TiledMap map;
+    private int islandLayer;
+    private int oceanLayer;
+    private int whirlpoolLayer;
     private int cmdDelay;
+    private TargetingComputer cannonsTargeting;
+    private TargetReticle reticle;
     private boolean anchor;
     private static SpriteSheet RSC_32_32;
     private static Image topleft;
@@ -53,6 +62,9 @@ public class PlayingState extends BasicGameState {
         bottomleft = RSC_32_32.getSubImage(0, 2).getScaledCopy(3f);
         left = RSC_32_32.getSubImage(0, 1).getScaledCopy(3f);
 
+        islandLayer = map.getLayerIndex("Tile Layer 2"); // = 2
+        whirlpoolLayer = map.getLayerIndex("Tile Layer 3"); // = 1
+        oceanLayer = map.getLayerIndex("Tile Layer 5"); // = 0
 
 
     }
@@ -91,7 +103,8 @@ public class PlayingState extends BasicGameState {
             System.out.println("Boat x: " + myBoat.getX() + " Boat y: " + myBoat.getY() + " Boat id: " + myBoat.getPlayerID());
 
 
-
+        cannonsTargeting = new TargetingComputer(myBoat);
+        reticle = new TargetReticle(0,0);
         System.out.println("Made it to the playing state");
     }
 
@@ -101,7 +114,7 @@ public class PlayingState extends BasicGameState {
         int screenX = (int) myBoat.getX() - client.ScreenWidth/2;
         int screenY = (int) myBoat.getY() - client.ScreenHeight/2;
 
-
+        g.pushTransform();
         g.translate(-screenX, -screenY);
 
         g.pushTransform();
@@ -115,9 +128,10 @@ public class PlayingState extends BasicGameState {
             ClientShip ship = CShips.get(pair.getKey());
             ship.render(g);
         }
+        cannonsTargeting.render(g);
+        reticle.render(g);
 
-        g.translate(screenX, screenY);
-
+        g.popTransform();
         int Xsofar;
         int Ysofar = 0;
 
@@ -159,6 +173,16 @@ public class PlayingState extends BasicGameState {
             ClientShip update = CShips.get(pair.getKey());
             update.update(delta);
         }
+        i = CShips.entrySet().iterator();
+        while(i.hasNext()){
+            Map.Entry pair = (Map.Entry) i.next();
+            if(myBoat.getDetectionCircle().contains(CShips.get(pair.getKey()).getX(), CShips.get(pair.getKey()).getY())
+                    && CShips.get(pair.getKey()).getPlayerID() != myBoat.getPlayerID()){
+                if(Client.DEBUG)
+                    System.out.println("O LAWD HE COMIN!");
+            }
+        }
+
         cmdDelay -= delta;
         Input input = container.getInput();
         boolean changed = false;
@@ -191,8 +215,45 @@ public class PlayingState extends BasicGameState {
         }
 
         if(input.isKeyDown(Input.KEY_SPACE)){
-
+            if(input.isKeyDown(Input.KEY_A)){
+                cannonsTargeting.setVisible(true);
+                cannonsTargeting.aimLeft();
+            }else if(input.isKeyDown(Input.KEY_D)){
+                cannonsTargeting.setVisible(true);
+                cannonsTargeting.aimRight();
+            }else
+                cannonsTargeting.setVisible(false);
+        }else{
+            cannonsTargeting.setVisible(false);
+            if(reticle.isVisible()){
+                if(Client.DEBUG)
+                    System.out.println("Firing cannon at ("+reticle.getX()+","+reticle.getY()+")");
+            }
         }
+
+        if(cannonsTargeting.isVisible()){
+            i = CShips.entrySet().iterator();
+            while (i.hasNext()){
+                Map.Entry pair = (Map.Entry) i.next();
+                ClientShip ship = CShips.get(pair.getKey());
+                if(ship.getPlayerID() != myBoat.getPlayerID()){
+                    Collision collision = cannonsTargeting.getTargetNet().collides(ship);
+                    if(collision!=null){
+                        reticle.setVisible(true);
+                        reticle.setPosition(ship.getX(),ship.getY());
+                    }
+                }
+        }}else{
+            reticle.setVisible(false);
+        }
+
+
+        if(!notanIsland((float)(myBoat.getX()+288 *Math.cos((double)myBoat.getHeading())),(float) (myBoat.getY()+288*Math.sin((double)myBoat.getHeading())))){
+            // Here we need to
+            System.out.println("LAND HO!!");
+        }
+
+
         if(changed){
             if(Client.DEBUG)
                 System.out.println("Sending vx: "+myBoat.getVelocity().getX()+" vy: "+myBoat.getVelocity().getY()+" heading: "+myBoat.getHeading());
@@ -213,9 +274,23 @@ public class PlayingState extends BasicGameState {
         }
     }
 
+    public boolean notanIsland(float x, float y){
+
+        //map.getTileId(0, 0, islandLayer);
+
+        if(map.getTileId((int) x/160, (int) y/160, islandLayer) != 0){
+            return false;
+        }
+
+        return true;
+
+    }
+
     public boolean isGameInProgress(){
         return false;
     }
+
+
 
     public int getID(){return Client.PLAYINGSTATE; }
 }

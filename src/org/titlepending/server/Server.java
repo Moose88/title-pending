@@ -199,8 +199,15 @@ public class Server {
                 System.out.println("Cannon: "+cmd.getShip()[2]);
                 System.out.println("Captain: "+cmd.getShip()[3]);
             }
-            double shipX = (3200 + (radAlpha*Math.cos(degree*playerNo)));
-            double shipY = (3200 + (radAlpha*Math.sin(degree*playerNo)));
+            double shipX;
+            double shipY;
+            if(DEBUG){
+                shipX = 1000;
+                shipY = 1000;
+            }else{
+                shipX =(3200 + (radAlpha*Math.cos(degree*playerNo)));
+                shipY = (3200 + (radAlpha*Math.sin(degree*playerNo)));
+            }
             if(DEBUG) System.out.println("Ship x: "+shipX+" Ship y: "+shipY);
             Ship temp =ShipFactory.getInstance().createNewPlayerShip(shipX, shipY, cmd.getShip(), cmd.getId());
             if(DEBUG) System.out.println("Temp x: "+temp.getX()+" Temp y: "+temp.getY());

@@ -1,12 +1,13 @@
 package org.titlepending.entities;
 
-import jig.Entity;
-import jig.ResourceManager;
-import jig.Vector;
+import jig.*;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
+import org.newdawn.slick.geom.Circle;
+import org.newdawn.slick.tiled.TiledMap;
 import org.titlepending.client.Client;
-import org.titlepending.server.Server;
 import org.titlepending.server.ServerObjects.Ship;
 
 public class ClientShip extends Entity {
@@ -16,6 +17,13 @@ public class ClientShip extends Entity {
     private int playerID;
     private Vector velocity;
     private float rotationRate;
+    private TiledMap map;
+
+
+
+    private Shape circle;
+    private ConvexPolygon headingCircle;
+    private Circle detectionCircle;
 
     private float heading;
 
@@ -23,9 +31,9 @@ public class ClientShip extends Entity {
 
     private static SpriteSheet ship_RSC_96 = new SpriteSheet(ResourceManager.getImage(Client.SHIP_RSC), 64, 96);
 
-    private Image lgHaul = ship_RSC_96.getSubImage(1, 0).getScaledCopy(1.5f);
-    private Image medHaul = ship_RSC_96.getSubImage(0, 0).getScaledCopy(1.5f);
-    private Image smallHaul = ship_RSC_96.getSubImage(2, 0).getScaledCopy(1.5f);
+    private Image lgHull = ship_RSC_96.getSubImage(1, 0).getScaledCopy(1.5f);
+    private Image medHull = ship_RSC_96.getSubImage(0, 0).getScaledCopy(1.5f);
+    private Image smallHull = ship_RSC_96.getSubImage(2, 0).getScaledCopy(1.5f);
     private Image oneSail = ship_RSC_96.getSubImage(5, 0).getScaledCopy(1.5f);
     private Image twoSails = ship_RSC_96.getSubImage(4, 0).getScaledCopy(1.5f);
     private Image threeSails = ship_RSC_96.getSubImage(3, 0).getScaledCopy(1.5f);
@@ -40,11 +48,17 @@ public class ClientShip extends Entity {
         super((float) x, (float) y);
         this.playerID = playerID;
         velocity = new Vector(0f, 0f);
-        float center = (float) new Vector((float) x, (float) y).angleTo(new Vector(3200, 3200));
+        float center = (float) new Vector((float) x, (float) y).angleTo(new Vector(3200*5, 3200*5));
+
         heading = center;
+
+        detectionCircle = new Circle(getX(), getY(), 288);
+
+        headingCircle = new ConvexPolygon(20);
+        addShape(headingCircle, new Vector(0, -288), Color.pink, Color.black);
+
+        setHeading(center);
         rotationRate = 0.08f;
-
-
 
     }
 
@@ -88,7 +102,7 @@ public class ClientShip extends Entity {
 
     public void updateHeading(int delta){
         heading += delta * rotationRate;
-        imageRotate();
+        this.setRotation(heading);
 
     }
 
@@ -97,17 +111,13 @@ public class ClientShip extends Entity {
     }
 
     public void updateVelocity(){
-        setVelocity(sailVector.setRotation(heading));
-        imageRotate();
+        setVelocity(sailVector.setRotation(heading-90));
     }
 
     public void updateVelocity(Vector stop){
         setVelocity(stop.setRotation(heading));
     }
     public void addSprites(){
-        //these will change depending on what is selected most likely handled elsewhere
-//
-
         //Setting Cannons
         switch (stats[2]) {
             case 2:
@@ -134,16 +144,46 @@ public class ClientShip extends Entity {
                 break;
         }
 
-        // Setting Hull
+        // Setting Hull Image and bounding box
         switch (stats[0]) {
             case 2:
-                addImage(smallHaul);
+                addImage(smallHull);
+                addShape(new ConvexPolygon(new Vector[]{
+                        new Vector(0,-72 ),
+                        new Vector(15,-40),
+                        new Vector(20,0),
+                        new Vector(15,40),
+                        new Vector(0,72),
+                        new Vector(-15,40),
+                        new Vector(-20,0),
+                        new Vector(-15,-40)
+                }),Color.transparent,Color.transparent);
                 break;
             case 1:
-                addImage(medHaul);
+                addImage(medHull);
+                addShape(new ConvexPolygon(new Vector[]{
+                        new Vector(0,-72 ),
+                        new Vector(20,-40),
+                        new Vector(30,0),
+                        new Vector(20,40),
+                        new Vector(0,72),
+                        new Vector(-20,40),
+                        new Vector(-30,0),
+                        new Vector(-20,-40)
+                }),Color.transparent,Color.transparent);
                 break;
             case 0:
-                addImage(lgHaul);
+                addImage(lgHull);
+                addShape(new ConvexPolygon(new Vector[]{
+                        new Vector(0,-72 ),
+                        new Vector(20,-50),
+                        new Vector(37,0),
+                        new Vector(20,50),
+                        new Vector(0,72),
+                        new Vector(-20,50),
+                        new Vector(-37,0),
+                        new Vector(-20,-50)
+                }),Color.transparent,Color.transparent);
                 break;
             default:
                 System.out.println("I BROKE MY haul!!!");
@@ -176,36 +216,65 @@ public class ClientShip extends Entity {
 
     }
 
-    public void update(float x,float y, float heading){
-        translate(new Vector(x,y));
-        this.heading=heading;
+    public void boundingBox(){
+//        Vector topofBoat = new Vector((float) (getX() + 48 * Math.cos(Math.toRadians(heading))), (float) (getY() - 48 * Math.sin(Math.toRadians(heading))));
+//        Vector backofBoat = new Vector((float) (getX() - 48 * Math.cos(Math.toRadians(heading))), (float) (getY() + 48 * Math.sin(Math.toRadians(heading))));
+//        Vector portBoat = new Vector((float) (getX() - 32 * Math.sin(Math.toRadians(heading))), (float) (getY() - 32 * Math.cos(Math.toRadians(heading))));
+//        Vector starboardBoat = new Vector((float) (getX() + 32 * Math.sin(Math.toRadians(heading))), (float) (getY() + 32 * Math.cos(Math.toRadians(heading))));
+
+
+    }
+
+    @Override
+    public void render(Graphics g){
+        super.render(g);
+        if(Client.DEBUG) {
+            g.draw(detectionCircle);
+        }
+
+
     }
 
     public void update(final int delta) {
+        if(Client.DEBUG) {
+            System.out.println("heading = " + getHeading());
+            System.out.println("Test x: " + (getX()+288*Math.cos((double) getHeading())));
+            System.out.println("Test x: " + (getX() + 288 *Math.cos((double) this.heading)));
+        }
         Vector pos = getPosition();
+        detectionCircle.setCenterX(this.getX());
+        detectionCircle.setCenterY(this.getY());
         pos.setX(velocity.getX()*delta);
         pos.setY(velocity.getY()*delta);
-        imageRotate();
+        this.setRotation(heading);
 
     }
 
-    public void imageRotate(){
-
-        oneCannon.setRotation(heading+90);
-        twoCannons.setRotation(heading+90);
-        threeCannons.setRotation(heading+90);
-
-        SoneCannon.setRotation(heading+90);
-        StwoCannons.setRotation(heading+90);
-        SthreeCannons.setRotation(heading+90);
-
-        smallHaul.setRotation(heading+90);
-        medHaul.setRotation(heading+90);
-        lgHaul.setRotation(heading+90);
-
-        oneSail.setRotation(heading+90);
-        twoSails.setRotation(heading+90);
-        threeSails.setRotation(heading+90);
-
+    public Circle getDetectionCircle() {
+        return detectionCircle;
     }
+
+    public void setDetectionCircle(Circle detectionCircle) {
+        this.detectionCircle = detectionCircle;
+    }
+//
+//    public void imageRotate(){
+//
+//        oneCannon.setRotation(heading+90);
+//        twoCannons.setRotation(heading+90);
+//        threeCannons.setRotation(heading+90);
+//
+//        SoneCannon.setRotation(heading+90);
+//        StwoCannons.setRotation(heading+90);
+//        SthreeCannons.setRotation(heading+90);
+//
+//        smallHull.setRotation(heading+90);
+//        medHull.setRotation(heading+90);
+//        lgHull.setRotation(heading+90);
+//
+//        oneSail.setRotation(heading+90);
+//        twoSails.setRotation(heading+90);
+//        threeSails.setRotation(heading+90);
+//
+//    }
 }
