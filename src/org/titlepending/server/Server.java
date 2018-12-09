@@ -1,9 +1,7 @@
 package org.titlepending.server;
 
 
-import org.titlepending.entities.CannonBall;
 import org.titlepending.server.ServerObjects.Ball;
-import org.titlepending.server.ServerObjects.GameObject;
 import org.titlepending.server.ServerObjects.Ship;
 import org.titlepending.entities.ShipFactory;
 import org.titlepending.shared.*;
@@ -238,7 +236,9 @@ public class Server {
         if(DEBUG)
             System.out.println("Starting game loop");
 
-        Action actions;
+        CommandObject actions;
+        BallUpdater bUpdate;
+        ShipUpdater sUpdate;
         long prevTime= System.currentTimeMillis();
         timer = 0;
         boolean updateAll = false;
@@ -246,43 +246,45 @@ public class Server {
         while(inGame){
             //Empty command queue
             while (!commands.isEmpty()){
-                actions = (Action) commands.poll();
+                actions = commands.poll();
                 Ball ballUpdater;
                 Ship shipUpdater;
                 if(!actions.getCannonBall()) {
-                    shipUpdater = ships.get(actions.getId());
+                    sUpdate = (ShipUpdater) actions;
+                    shipUpdater = ships.get(sUpdate.getId());
                     if(DEBUG)
-                        System.out.println("Updating ship "+actions.getId()+" vx: "+actions.getVx()+" vy: "+actions.getVy());
-                    shipUpdater.setVelocity(actions.getVx(),actions.getVy());
-                    shipUpdater.setHeading(actions.getHeading());
+                        System.out.println("Updating ship "+sUpdate.getId()+" vx: "+sUpdate.getVx()+" vy: "+sUpdate.getVy());
+                    shipUpdater.setVelocity(sUpdate.getVx(),sUpdate.getVy());
+                    shipUpdater.setHeading(sUpdate.getHeading());
                     shipUpdater.setUpdated(true);
                 }else{
-                    if(!ballHashMap.containsKey(actions.getBallID())){
+                    bUpdate = (BallUpdater) actions;
+                    if(!ballHashMap.containsKey(bUpdate.getBallID())){
                         ballUpdater = new Ball(
-                                actions.getX(),
-                                actions.getY(),
-                                actions.getVx(),
-                                actions.getVy(),
-                                actions.getId(),
-                                actions.getTtl(),
-                                actions.getBallDestX(),
-                                actions.getBallDestY(),
-                                actions.getId()
+                                bUpdate.getX(),
+                                bUpdate.getY(),
+                                bUpdate.getVx(),
+                                bUpdate.getVy(),
+                                bUpdate.getId(),
+                                bUpdate.getTtl(),
+                                bUpdate.getBallDestX(),
+                                bUpdate.getBallDestY(),
+                                bUpdate.getId()
                         );
                         ballHashMap.put(actions.getId(),ballUpdater);
-                        buildBallCommand(ballUpdater);
+                        updateBall(ballUpdater);
                     }else {
                         if(actions.getIsDead()){
                             if(DEBUG){
-                                System.out.println("Ball "+actions.getBallID()+" hit something");
+                                System.out.println("Ball "+bUpdate.getBallID()+" hit something");
                             }
-                            Ball ball = ballHashMap.get(actions.getBallID());
+                            Ball ball = ballHashMap.get(bUpdate.getBallID());
                             ball.setDead(true);
-                            ballHashMap.remove(actions.getId());
-                            actions = new Action(ball.getPlayerID());
-                            actions.setCannonBall(true);
-                            actions.setBallID(ball.getBallID());
-                            updateAll(actions);
+                            BallUpdater temp = new BallUpdater(ball.getPlayerID());
+                            temp.setIsDead(true);
+                            temp.setBallID(ball.getBallID());
+                            updateAll(temp);
+                            ballHashMap.remove(bUpdate.getId());
                         }
                     }
                 }
@@ -317,11 +319,10 @@ public class Server {
                 Ball updateBall = ballHashMap.get(pair.getKey());
                 updateBall.update((int)delta);
                 if(updateBall.getTtl() <=0){
-                    actions = new Action(0);
-                    actions.setCannonBall(true);
-                    actions.setBallID(updateBall.getBallID());
-                    actions.setDead(true);
-                    updateAll(actions);
+                    BallUpdater temp = new BallUpdater(0);
+                    temp.setBallID(updateBall.getBallID());
+                    temp.setIsDead(true);
+                    updateAll(temp);
                     i.remove();
 
                 }
@@ -340,47 +341,35 @@ public class Server {
             while (i.hasNext()){
                 Map.Entry pair = (Map.Entry) i.next();
                 if(updateAll || ships.get(pair.getKey()).getUpdated()){
-                    actions = new Action(0);
-                    Ship updatedShip = ships.get(pair.getKey());
-                    actions.setUpdatedShip(updatedShip.getPlayerID());
-                    actions.setVy(updatedShip.getVy());
-                    actions.setVx(updatedShip.getVx());
-                    actions.setX(updatedShip.getX());
-                    actions.setY(updatedShip.getY());
-                    actions.setHeading(updatedShip.getHeading());
-                    updateAll(actions);
+                    Ship ship = ships.get(pair.getKey());
+                    updateShip(ship);
                 }
             }
-            i = ballHashMap.entrySet().iterator();
-            //update all cannon balls on client side.
-//            while (i.hasNext()){
-//                Map.Entry pair = (Map.Entry) i.next();
-//                    Ball updateBall = ballHashMap.get(pair.getKey());
-//                    actions = new Action(0);
-//                    actions.setBallID(updateBall.getBallID());
-//                    actions.setCannonBall(true);
-//                    actions.setVx(updateBall.getVx());
-//                    actions.setVy(updateBall.getVy());
-//                    actions.setX(updateBall.getX());
-//                    actions.setY(updateBall.getY());
-//                    updateAll(actions);
-//
-//            }
             prevTime = curTime;
         }
 
     }
-    private static void buildBallCommand(Ball ball){
-        Action cmd = new Action(ball.getPlayerID());
+    private static void updateBall(Ball ball){
+        BallUpdater cmd = new BallUpdater(ball.getPlayerID());
         cmd.setX(ball.getX());
         cmd.setY(ball.getY());
         cmd.setVx(ball.getVx());
         cmd.setVy(ball.getVy());
-        cmd.setCannonBall(true);
         cmd.setTtl(ball.getTtl());
         cmd.setBallDestX(ball.getDestX());
         cmd.setBallDestY(ball.getDestY());
         try{updateAll(cmd);}catch (IOException e){e.printStackTrace();}
+    }
+    private static void updateShip(Ship ship){
+        ShipUpdater cmd = new ShipUpdater(0);
+        cmd.setUpdatedShip(ship.getPlayerID());
+        cmd.setVy(ship.getVy());
+        cmd.setVx(ship.getVx());
+        cmd.setX(ship.getX());
+        cmd.setY(ship.getY());
+        cmd.setHeading(ship.getHeading());
+       try{updateAll(cmd);}catch (IOException e){e.printStackTrace();}
+
     }
     private static void updateAll(CommandObject action)throws IOException{
         for(ClientThread player : players){

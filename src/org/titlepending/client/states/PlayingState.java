@@ -14,7 +14,9 @@ import org.titlepending.entities.ClientShip;
 import org.titlepending.entities.TargetReticle;
 import org.titlepending.entities.TargetingComputer;
 import org.titlepending.server.ServerObjects.Ship;
-import org.titlepending.shared.Action;
+import org.titlepending.shared.ShipUpdater;
+import org.titlepending.shared.BallUpdater;
+import org.titlepending.shared.CommandObject;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -162,27 +164,31 @@ public class PlayingState extends BasicGameState {
     public void update(GameContainer container, StateBasedGame game,
                        int delta) throws SlickException{
         /** update all ships from server command before we do local updates **/
+        ShipUpdater shipUpdater;
+        BallUpdater ballUpdater;
         while(!Updates.getInstance().getQueue().isEmpty()){
-            Action cmd = (Action) Updates.getInstance().getQueue().poll();
+            CommandObject cmd = Updates.getInstance().getQueue().poll();
             assert cmd !=null;
             if(!cmd.getCannonBall()){
+                shipUpdater = (ShipUpdater) cmd;
                 //do stuff to client representation of ships
-                ClientShip update = CShips.get(cmd.getUpdatedShip());
-                update.setPosition(cmd.getX(),cmd.getY());
-                if(cmd.getUpdatedShip() != myBoat.getPlayerID())
-                    update.setHeading(cmd.getHeading());
-                update.setVelocity(new Vector(cmd.getVx(),cmd.getVy()));
+                ClientShip update = CShips.get(shipUpdater.getUpdatedShip());
+                update.setPosition(shipUpdater.getX(),shipUpdater.getY());
+                if(shipUpdater.getUpdatedShip() != myBoat.getPlayerID())
+                    update.setHeading(shipUpdater.getHeading());
+                update.setVelocity(new Vector(shipUpdater.getVx(),shipUpdater.getVy()));
             }else{
                 //do stuff to client representation of cannonballs
-                if(cannonBalls.containsKey(cmd.getBallID())){
-                    CannonBall update = cannonBalls.get(cmd.getBallID());
+                ballUpdater = (BallUpdater) cmd;
+                if(cannonBalls.containsKey(ballUpdater.getBallID())){
+                    CannonBall update = cannonBalls.get(ballUpdater.getBallID());
                     if(!update.isDead()){
-                        update.setPosition(cmd.getX(),cmd.getY());
+                        update.setPosition(ballUpdater.getX(),ballUpdater.getY());
                     }else{
-                        cannonBalls.remove(cmd.getBallID());
+                        cannonBalls.remove(ballUpdater.getBallID());
                     }
                 }else{
-                    CannonBall newBall = new CannonBall(cmd.getX(),cmd.getY(),cmd.getBallDestX(),cmd.getBallDestY(),cmd.getHeading()+90,cmd.getBallID(),cmd.getId());
+                    CannonBall newBall = new CannonBall(ballUpdater.getX(),ballUpdater.getY(),ballUpdater.getBallDestX(),ballUpdater.getBallDestY(),ballUpdater.getHeading()+90,ballUpdater.getBallID(),cmd.getId());
                     cannonBalls.put(newBall.getId(),newBall);
                 }
             }
@@ -237,13 +243,17 @@ public class PlayingState extends BasicGameState {
 
         }
 
-        if(input.isKeyDown(Input.KEY_A) && !anchor){
+        if(input.isKeyDown(Input.KEY_A)
+                && !anchor
+                && !input.isKeyDown(Input.KEY_SPACE)){
             // Send command to turn left
                 myBoat.updateHeading(-delta);
                 myBoat.updateVelocity();
                 changed =true;
 
-        } else if(input.isKeyDown(Input.KEY_D) && !anchor){
+        } else if(input.isKeyDown(Input.KEY_D)
+                && !anchor
+                && !input.isKeyDown(Input.KEY_SPACE)){
             // Send command to turn right
                 myBoat.updateHeading(delta);
                 myBoat.updateVelocity();
@@ -320,11 +330,10 @@ public class PlayingState extends BasicGameState {
                     && ball.getPlayerID() != myBoat.getPlayerID()){
                 if(Client.DEBUG)
                     System.out.println("I got hit bois");
-                Action cmd = new Action(myBoat.getPlayerID());
-                cmd.setCannonBall(true);
-                cmd.setBallID(ball.getId());
-                cmd.setDead(true);
-                sendCommand(cmd);
+                ballUpdater= new BallUpdater(myBoat.getPlayerID());
+                ballUpdater.setBallID(ball.getId());
+                ballUpdater.setIsDead(true);
+                sendCommand(ballUpdater);
                 ball.setDead(true);
             }
 
@@ -333,7 +342,7 @@ public class PlayingState extends BasicGameState {
         if(changed){
 //            if(Client.DEBUG)
 //                System.out.println("Sending vx: "+myBoat.getVelocity().getX()+" vy: "+myBoat.getVelocity().getY()+" heading: "+myBoat.getHeading());
-            Action cmd = new Action(Updates.getInstance().getThread().getClientId());
+            ShipUpdater cmd = new ShipUpdater(Updates.getInstance().getThread().getClientId());
             cmd.setHeading(myBoat.getHeading());
             cmd.setVx(myBoat.getVelocity().getX());
             cmd.setVy(myBoat.getVelocity().getY());
@@ -342,7 +351,7 @@ public class PlayingState extends BasicGameState {
 
     }
 
-    private void sendCommand(Action cmd){
+    private void sendCommand(CommandObject cmd){
         try{
             Updates.getInstance().getThread().sendCommand(cmd);
         }catch (IOException e){
@@ -351,12 +360,12 @@ public class PlayingState extends BasicGameState {
     }
 
     private void buildBallCommand(CannonBall ball){
-        Action cmd = new Action(myBoat.getPlayerID());
+        BallUpdater cmd = new BallUpdater(myBoat.getPlayerID());
         cmd.setX(ball.getX());
         cmd.setY(ball.getY());
         cmd.setVx(ball.getVelocity().getX());
         cmd.setVy(ball.getVelocity().getY());
-        cmd.setCannonBall(true);
+        cmd.setBallID(ball.getId());
         cmd.setTtl(ball.getTtl());
         cmd.setBallDestX(ball.getDestX());
         cmd.setBallDestY(ball.getDestY());
