@@ -306,6 +306,7 @@ public class Server {
                 updateBall.update((int)delta);
                 if(updateBall.getTtl() <=0){
                     actions = new Action(0);
+                    actions.setCannonBall(true);
                     actions.setBallID(updateBall.getBallID());
                     actions.setDead(true);
                     updateAll(actions);
