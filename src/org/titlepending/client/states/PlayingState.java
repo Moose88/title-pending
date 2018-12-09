@@ -9,27 +9,32 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
 import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
+import org.titlepending.entities.CannonBall;
 import org.titlepending.entities.ClientShip;
-import org.titlepending.entities.TargetNet;
 import org.titlepending.entities.TargetReticle;
 import org.titlepending.entities.TargetingComputer;
-import org.titlepending.shared.Action;
+import org.titlepending.server.ServerObjects.Ship;
+import org.titlepending.shared.ShipUpdater;
+import org.titlepending.shared.BallUpdater;
+import org.titlepending.shared.CommandObject;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import org.titlepending.server.ServerObjects.Ship;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class PlayingState extends BasicGameState {
     private HashMap<Integer, ClientShip> CShips;
+    private HashMap<Integer, CannonBall> cannonBalls;
     private ClientShip myBoat;
     private TiledMap map;
     private int islandLayer;
     private int oceanLayer;
     private int whirlpoolLayer;
     private int cmdDelay;
+    private int rightDelay;
+    private int leftDelay;
     private TargetingComputer cannonsTargeting;
     private TargetReticle reticle;
     private boolean anchor;
@@ -75,6 +80,7 @@ public class PlayingState extends BasicGameState {
 
         cmdDelay =0;
         HashMap<Integer,Ship> ships = Updates.getInstance().getShips();
+        this.cannonBalls = new HashMap<>();
         this.CShips = new HashMap<>();
         if(Client.DEBUG){
             System.out.println("Attepting to create tiled map from: "+Client.MAP_RSC);
@@ -106,6 +112,7 @@ public class PlayingState extends BasicGameState {
         cannonsTargeting = new TargetingComputer(myBoat);
         reticle = new TargetReticle(0,0);
         System.out.println("Made it to the playing state");
+        rightDelay=leftDelay=0;
     }
 
     public void render(GameContainer container, StateBasedGame game,
@@ -122,14 +129,16 @@ public class PlayingState extends BasicGameState {
         map.render(0,0);
         g.popTransform();
 
-        Iterator i = CShips.entrySet().iterator();
-        while (i.hasNext()){
-            Map.Entry pair = (Map.Entry) i.next();
-            ClientShip ship = CShips.get(pair.getKey());
+        for (Map.Entry<Integer, ClientShip> integerClientShipEntry : CShips.entrySet()) {
+            ClientShip ship = CShips.get(((Map.Entry) integerClientShipEntry).getKey());
             ship.render(g);
         }
         cannonsTargeting.render(g);
         reticle.render(g);
+        for (Map.Entry<Integer, CannonBall> integerCannonBallEntry : cannonBalls.entrySet()){
+            CannonBall ball = cannonBalls.get(((Map.Entry) integerCannonBallEntry).getKey());
+            ball.render(g);
+        }
 
         g.popTransform();
         int Xsofar;
@@ -150,21 +159,39 @@ public class PlayingState extends BasicGameState {
         g.drawImage(topright, client.ScreenWidth - topright.getWidth(), 0);
         g.drawImage(bottomright, client.ScreenWidth - topright.getWidth(), client.ScreenHeight - bottomright.getHeight());
 
-
     }
 
     public void update(GameContainer container, StateBasedGame game,
                        int delta) throws SlickException{
         /** update all ships from server command before we do local updates **/
+        ShipUpdater shipUpdater;
+        BallUpdater ballUpdater;
         while(!Updates.getInstance().getQueue().isEmpty()){
-            Action cmd = (Action) Updates.getInstance().getQueue().poll();
+            CommandObject cmd = Updates.getInstance().getQueue().poll();
             assert cmd !=null;
-
-            ClientShip update = CShips.get(cmd.getUpdatedShip());
-            update.setPosition(cmd.getX(),cmd.getY());
-            if(cmd.getUpdatedShip() != myBoat.getPlayerID())
-                update.setHeading(cmd.getHeading());
-            update.setVelocity(new Vector(cmd.getVx(),cmd.getVy()));
+            if(!cmd.getCannonBall()){
+                shipUpdater = (ShipUpdater) cmd;
+                //do stuff to client representation of ships
+                ClientShip update = CShips.get(shipUpdater.getUpdatedShip());
+                update.setPosition(shipUpdater.getX(),shipUpdater.getY());
+                if(shipUpdater.getUpdatedShip() != myBoat.getPlayerID())
+                    update.setHeading(shipUpdater.getHeading());
+                update.setVelocity(new Vector(shipUpdater.getVx(),shipUpdater.getVy()));
+            }else{
+                //do stuff to client representation of cannonballs
+                ballUpdater = (BallUpdater) cmd;
+                if(cannonBalls.containsKey(ballUpdater.getBallID())){
+                    CannonBall update = cannonBalls.get(ballUpdater.getBallID());
+                    if(!update.isDead()){
+                        update.setPosition(ballUpdater.getX(),ballUpdater.getY());
+                    }else{
+                        cannonBalls.remove(ballUpdater.getBallID());
+                    }
+                }else{
+                    CannonBall newBall = new CannonBall(ballUpdater.getX(),ballUpdater.getY(),ballUpdater.getBallDestX(),ballUpdater.getBallDestY(),ballUpdater.getHeading()+90,ballUpdater.getBallID(),cmd.getId());
+                    cannonBalls.put(newBall.getId(),newBall);
+                }
+            }
         }
 
         Iterator i = CShips.entrySet().iterator();
@@ -173,17 +200,32 @@ public class PlayingState extends BasicGameState {
             ClientShip update = CShips.get(pair.getKey());
             update.update(delta);
         }
+
+        i = cannonBalls.entrySet().iterator();
+        while (i.hasNext()){
+            Map.Entry pair = (Map.Entry) i.next();
+            CannonBall ball = cannonBalls.get(pair.getKey());
+            if(ball.isDead()){
+                i.remove();
+            }else{
+                ball.update(delta);
+            }
+
+        }
+
         i = CShips.entrySet().iterator();
         while(i.hasNext()){
             Map.Entry pair = (Map.Entry) i.next();
             if(myBoat.getDetectionCircle().contains(CShips.get(pair.getKey()).getX(), CShips.get(pair.getKey()).getY())
                     && CShips.get(pair.getKey()).getPlayerID() != myBoat.getPlayerID()){
-                if(Client.DEBUG)
-                    System.out.println("O LAWD HE COMIN!");
+//                if(Client.DEBUG)
+//                    System.out.println("O LAWD HE COMIN!");
             }
         }
 
         cmdDelay -= delta;
+        leftDelay-=delta;
+        rightDelay-=delta;
         Input input = container.getInput();
         boolean changed = false;
         if(input.isKeyDown(Input.KEY_W)){
@@ -201,23 +243,29 @@ public class PlayingState extends BasicGameState {
 
         }
 
-        if(input.isKeyDown(Input.KEY_A) && !anchor){
+        if(input.isKeyDown(Input.KEY_A)
+                && !anchor
+                && !input.isKeyDown(Input.KEY_SPACE)){
             // Send command to turn left
                 myBoat.updateHeading(-delta);
                 myBoat.updateVelocity();
                 changed =true;
 
-        } else if(input.isKeyDown(Input.KEY_D) && !anchor){
+        } else if(input.isKeyDown(Input.KEY_D)
+                && !anchor
+                && !input.isKeyDown(Input.KEY_SPACE)){
             // Send command to turn right
                 myBoat.updateHeading(delta);
                 myBoat.updateVelocity();
                 changed = true;
         }
+        boolean isLeft = true;
 
         if(input.isKeyDown(Input.KEY_SPACE)){
             if(input.isKeyDown(Input.KEY_A)){
                 cannonsTargeting.setVisible(true);
                 cannonsTargeting.aimLeft();
+
             }else if(input.isKeyDown(Input.KEY_D)){
                 cannonsTargeting.setVisible(true);
                 cannonsTargeting.aimRight();
@@ -226,13 +274,33 @@ public class PlayingState extends BasicGameState {
         }else{
             cannonsTargeting.setVisible(false);
             if(reticle.isVisible()){
+                boolean justFired = false;
                 if(Client.DEBUG)
-                    System.out.println("Firing cannon at ("+reticle.getX()+","+reticle.getY()+")");
+                    System.out.println("Firing cannon at ("+reticle.getX()+","+reticle.getY()+") Number of cannonballs: "+myBoat.getStats()[2]);
+                for(int j=0; j<myBoat.getStats()[2]+1;j++){
+                    if(cannonsTargeting.getFireRight()&&rightDelay<=0) {
+                        CannonBall ball = new CannonBall(myBoat.getX() + 10*5, myBoat.getY() + 10*5, reticle.getX(), reticle.getY(), +90, ThreadLocalRandom.current().nextInt(),myBoat.getPlayerID());
+                        cannonBalls.put(ball.getId(),ball);
+                        buildBallCommand(ball);
+                        justFired = true;
+
+                    }else if(!cannonsTargeting.getFireRight()&& leftDelay<=0){
+                        CannonBall ball = new CannonBall(myBoat.getX() + 10*5, myBoat.getY() + 10*5, reticle.getX(), reticle.getY(), +90, ThreadLocalRandom.current().nextInt(),myBoat.getPlayerID());
+                        cannonBalls.put(ball.getId(),ball);
+                        buildBallCommand(ball);
+                        justFired = true;
+                    }
+                }
+                if(!cannonsTargeting.getFireRight() && justFired)
+                    leftDelay=3000;
+                else if(justFired)
+                    rightDelay=3000;
             }
         }
 
         if(cannonsTargeting.isVisible()){
             i = CShips.entrySet().iterator();
+            reticle.setVisible(false);
             while (i.hasNext()){
                 Map.Entry pair = (Map.Entry) i.next();
                 ClientShip ship = CShips.get(pair.getKey());
@@ -250,14 +318,31 @@ public class PlayingState extends BasicGameState {
 
         if(!notanIsland((float)(myBoat.getX()+288 *Math.cos((double)myBoat.getHeading())),(float) (myBoat.getY()+288*Math.sin((double)myBoat.getHeading())))){
             // Here we need to
-            System.out.println("LAND HO!!");
+//            System.out.println("LAND HO!!");
         }
 
+        i=cannonBalls.entrySet().iterator();
+        while (i.hasNext()){
+            Map.Entry pair = (Map.Entry) i.next();
+            CannonBall ball =cannonBalls.get(pair.getKey());
+            Collision collision = ball.collides(myBoat);
+            if(collision !=null
+                    && ball.getPlayerID() != myBoat.getPlayerID()){
+                if(Client.DEBUG)
+                    System.out.println("I got hit bois");
+                ballUpdater= new BallUpdater(myBoat.getPlayerID());
+                ballUpdater.setBallID(ball.getId());
+                ballUpdater.setIsDead(true);
+                sendCommand(ballUpdater);
+                ball.setDead(true);
+            }
+
+        }
 
         if(changed){
-            if(Client.DEBUG)
-                System.out.println("Sending vx: "+myBoat.getVelocity().getX()+" vy: "+myBoat.getVelocity().getY()+" heading: "+myBoat.getHeading());
-            Action cmd = new Action(Updates.getInstance().getThread().getClientId());
+//            if(Client.DEBUG)
+//                System.out.println("Sending vx: "+myBoat.getVelocity().getX()+" vy: "+myBoat.getVelocity().getY()+" heading: "+myBoat.getHeading());
+            ShipUpdater cmd = new ShipUpdater(Updates.getInstance().getThread().getClientId());
             cmd.setHeading(myBoat.getHeading());
             cmd.setVx(myBoat.getVelocity().getX());
             cmd.setVy(myBoat.getVelocity().getY());
@@ -266,12 +351,26 @@ public class PlayingState extends BasicGameState {
 
     }
 
-    private void sendCommand(Action cmd){
+    private void sendCommand(CommandObject cmd){
         try{
             Updates.getInstance().getThread().sendCommand(cmd);
         }catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    private void buildBallCommand(CannonBall ball){
+        BallUpdater cmd = new BallUpdater(myBoat.getPlayerID());
+        cmd.setX(ball.getX());
+        cmd.setY(ball.getY());
+        cmd.setVx(ball.getVelocity().getX());
+        cmd.setVy(ball.getVelocity().getY());
+        cmd.setBallID(ball.getId());
+        cmd.setTtl(ball.getTtl());
+        cmd.setBallDestX(ball.getDestX());
+        cmd.setBallDestY(ball.getDestY());
+        sendCommand(cmd);
+
     }
 
     public boolean notanIsland(float x, float y){

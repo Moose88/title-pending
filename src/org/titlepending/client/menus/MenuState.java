@@ -1,13 +1,13 @@
 package org.titlepending.client.menus;
 
 import jig.ResourceManager;
-import org.newdawn.slick.state.transition.FadeOutTransition;
-import org.titlepending.client.Client;
-import org.titlepending.client.states.PlayingState;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.state.transition.EmptyTransition;
 import org.newdawn.slick.state.transition.FadeInTransition;
+import org.newdawn.slick.state.transition.FadeOutTransition;
+import org.titlepending.client.Client;
+import org.titlepending.client.states.PlayingState;
 
 public class MenuState extends BaseMenuState {
 
