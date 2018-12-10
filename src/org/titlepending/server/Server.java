@@ -33,6 +33,7 @@ public class Server {
     public static final int OPTIONSMENUSTATE = 7;
     public static final int LOBBYSTATE = 8;
     public static final int REJECTSTATE= 9;
+    public static final int WINNINGSTATE=10;
     public static final int r1 = 896;
     public static final int r2 = 1824;
     public static final int r3 = 3200;
@@ -176,7 +177,7 @@ public class Server {
             timer -= 1000;
         }
 
-        HashMap<Integer, Ship> ships = new HashMap();
+        HashMap<Integer, Ship> ships = new HashMap<>();
         double degree = Math.toRadians((float)360/players.size());
         double radAlpha;
         if(players.size()<=4){
@@ -185,10 +186,9 @@ public class Server {
             radAlpha = r3;
         }
         int playerNo = 1;
-        //Entity.setCoarseGrainedCollisionBoundary(Entity.CIRCLE);
 
         while(!commands.isEmpty()){
-            /** construct player ships here **/
+            //construct player ships here
             cmd = (Initializer) commands.poll();
             if(DEBUG){
                 System.out.println("Received from Client: "+cmd.getId());
@@ -248,22 +248,33 @@ public class Server {
             //Empty command queue
             while (!commands.isEmpty()){
                 actions = commands.poll();
-                Ball ballUpdater;
-                Ship shipUpdater;
                 if(actions.getType()==1) {
                     sUpdate = (ShipUpdater) actions;
-                    shipUpdater = ships.get(sUpdate.getId());
-                    if(DEBUG)
-                        System.out.println("Updating ship "+sUpdate.getId()+" vx: "+sUpdate.getVx()+" vy: "+sUpdate.getVy());
-                    shipUpdater.setVelocity(sUpdate.getVx(),sUpdate.getVy());
-                    shipUpdater.setHeading(sUpdate.getHeading());
-                    shipUpdater.setUpdated(true);
+                    Ship shipUpdater = ships.get(sUpdate.getId());
+                    if(sUpdate.getIsDead()){
+                        shipUpdater.setDead(true);
+                        shipUpdater.setUpdated(true);
+                        Finalizer update = new Finalizer(0);
+                        update.setStateTransition(GAMEOVERSTATE);
+                        for(ClientThread player : players){
+                            if(shipUpdater.getPlayerID()==player.getClientId()){
+                                player.sendCommand(update);
+                                player.stopThread();
+                            }
+                        }
+                    }else{
+                        if(DEBUG)
+                            System.out.println("Updating ship "+sUpdate.getId()+" vx: "+sUpdate.getVx()+" vy: "+sUpdate.getVy());
+                        shipUpdater.setVelocity(sUpdate.getVx(),sUpdate.getVy());
+                        shipUpdater.setHeading(sUpdate.getHeading());
+                        shipUpdater.setUpdated(true);
+                    }
                 }else{
                     bUpdate = (BallUpdater) actions;
                     if(DEBUG)
                         System.out.println("Received information about "+bUpdate.getBallID());
                     if(!ballHashMap.containsKey(bUpdate.getBallID())){
-                        ballUpdater = new Ball(
+                        Ball ballUpdater = new Ball(
                                 bUpdate.getX(),
                                 bUpdate.getY(),
                                 bUpdate.getVx(),
@@ -340,7 +351,7 @@ public class Server {
                 if(DEBUG)
                     windTimer = 10000;
                 else
-                    windTimer = 600000;
+                    windTimer = 60000;
             }
             timer -= (int) delta;
             if(timer<=0){
@@ -359,7 +370,13 @@ public class Server {
             }
             prevTime = curTime;
             if(players.size()==1){
-
+                inGame = false;
+                Finalizer end = new Finalizer(0);
+                end.setStateTransition(WINNINGSTATE);
+                for(ClientThread player : players){
+                    player.sendCommand(end);
+                    player.stopThread();
+                }
             }
         }
 
@@ -408,7 +425,7 @@ public class Server {
     private static class  Handler extends Thread{
         ServerSocket listener;
         long startTime;
-        public Handler(){
+        Handler(){
             startTime = System.currentTimeMillis();
         }
 

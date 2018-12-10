@@ -114,6 +114,7 @@ public class Client extends StateBasedGame {
         addState(new OptionsState());
         addState(new LobbyState());
         addState(new RejectedState());
+        addState(new WinningState());
 
         try{
             Font UIFont0 = Font.createFont(Font.TRUETYPE_FONT, ResourceLoader.getResourceAsStream(Client.FONT_RSC));
