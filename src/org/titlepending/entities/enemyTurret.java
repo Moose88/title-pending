@@ -34,7 +34,7 @@ public class enemyTurret extends Entity {
         isDead =false;
         float center = (float) new Vector(x, y).angleTo(new Vector(3200*5, 3200*5));
         hitbox = new ConvexPolygon(100);
-        detectionCircle = new ConvexPolygon(500);
+        detectionCircle = new ConvexPolygon(650);
         heading = center;
         setHeading(center);
         rotationRate = 0.08f;
@@ -52,7 +52,12 @@ public class enemyTurret extends Entity {
         this.setRotation(heading);
     }
 
-    public void update(final int delta) { this.setRotation(heading); }
+    public void update(final int delta) {
+        // This is where we want to check for ships in our detection circle,
+        // Then to rotate and fire at the first/remaining ships in its circle.
+
+        this.setRotation(heading);
+    }
 
     public float getHeading() { return heading; }
     public int getTurretID() { return turretID; }
