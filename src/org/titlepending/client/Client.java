@@ -26,6 +26,7 @@ public class Client extends StateBasedGame {
     public static final int OPTIONSMENUSTATE = 7;
     public static final int LOBBYSTATE = 8;
     public static final int REJECTSTATE= 9;
+    public static final int WINNINGSTATE=10;
 
     /**
      * These are all the game resources to include-
@@ -114,6 +115,7 @@ public class Client extends StateBasedGame {
         addState(new OptionsState());
         addState(new LobbyState());
         addState(new RejectedState());
+        addState(new WinningState());
 
         try{
             Font UIFont0 = Font.createFont(Font.TRUETYPE_FONT, ResourceLoader.getResourceAsStream(Client.FONT_RSC));

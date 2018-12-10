@@ -15,10 +15,12 @@ public class WaitingState extends BasicGameState {
 
     private boatGuy boatDude;
 
+    @Override
     public void init(GameContainer container, StateBasedGame game){
 
     }
 
+    @Override
     public void enter(GameContainer container, StateBasedGame game){
         Client client = (Client) game;
         if(Client.DEBUG)
@@ -29,6 +31,7 @@ public class WaitingState extends BasicGameState {
         ResourceManager.getSound(Client.SCREAM_SOUND).loop(2f, 0.5f);
     }
 
+    @Override
     public void render(GameContainer container, StateBasedGame game,
                        Graphics g){
         Client client = (Client) game;
@@ -44,6 +47,7 @@ public class WaitingState extends BasicGameState {
 
     }
 
+    @Override
     public void update(GameContainer container, StateBasedGame game,
                        int delta){
 
@@ -61,6 +65,7 @@ public class WaitingState extends BasicGameState {
 
     }
 
+    @Override
     public int getID(){return Client.WAITINGSTATE;}
 
 }

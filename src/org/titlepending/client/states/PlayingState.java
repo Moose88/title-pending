@@ -10,14 +10,16 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
 import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
-import org.titlepending.entities.*;
-import org.titlepending.entities.Character;
+import org.titlepending.client.entities.*;
+import org.titlepending.client.entities.Character;
+import org.titlepending.entities.enemyTurret;
 import org.titlepending.server.ServerObjects.Ship;
 import org.titlepending.server.ServerObjects.TurretObject;
 import org.titlepending.shared.BallUpdater;
 import org.titlepending.shared.CommandObject;
 import org.titlepending.shared.ShipUpdater;
 import org.titlepending.shared.WindUpdater;
+import org.titlepending.shared.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -34,7 +36,7 @@ public class PlayingState extends BasicGameState {
     private int islandLayer;
     private int oceanLayer;
     private int whirlpoolLayer;
-
+    private boolean isDead;
     private Character character;
 
     private int bounceDelay;
@@ -55,11 +57,12 @@ public class PlayingState extends BasicGameState {
 
     private WindIndicator wind;
 
+    @Override
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException {
 
         anchor = true;
-
+        isDead =false;
 
         SpriteSheet RSC_32_32 = new SpriteSheet(ResourceManager.getImage(Client.SS2_RSC), 32, 32);
 
@@ -78,6 +81,7 @@ public class PlayingState extends BasicGameState {
 
     }
 
+    @Override
     public void enter(GameContainer container, StateBasedGame game)
             throws SlickException{
         map = new TiledMap(Client.MAP_RSC);
@@ -203,6 +207,7 @@ public class PlayingState extends BasicGameState {
 
     }
 
+    @Override
     public void update(GameContainer container, StateBasedGame game,
                        int delta) throws SlickException{
         /** update all ships from server command before we do local updates **/
@@ -214,36 +219,60 @@ public class PlayingState extends BasicGameState {
         while(!Updates.getInstance().getQueue().isEmpty()){
             CommandObject cmd = Updates.getInstance().getQueue().poll();
             assert cmd !=null;
-            if(cmd.getType()==1){
-                shipUpdater = (ShipUpdater) cmd;
-                ClientShip update = CShips.get(shipUpdater.getUpdatedShip());
-                update.setPosition(shipUpdater.getX(),shipUpdater.getY());
-                if(shipUpdater.getUpdatedShip() != myBoat.getPlayerID())
-                    update.setHeading(shipUpdater.getHeading());
-                update.setVelocity(new Vector(shipUpdater.getVx(),shipUpdater.getVy()));
-            }else if(cmd.getType() ==2){
-                //do stuff to client representation of cannonballs
-                ballUpdater = (BallUpdater) cmd;
-                if(Client.DEBUG)
-                    System.out.println("Received information about ball "+ballUpdater.getBallID());
-                if(cannonBalls.containsKey(ballUpdater.getBallID())){
-                    CannonBall update = cannonBalls.get(ballUpdater.getBallID());
-                    if(ballUpdater.getIsDead()){
-                        cannonBalls.remove(ballUpdater.getBallID());
+            switch(cmd.getType()){
+                case 1:
+                    shipUpdater = (ShipUpdater) cmd;
+                    if(CShips.containsKey(shipUpdater.getUpdatedShip())){
+                        ClientShip update = CShips.get(shipUpdater.getUpdatedShip());
+                        update.setPosition(shipUpdater.getX(),shipUpdater.getY());
+                        update.setDead(cmd.getIsDead());
+                        if(shipUpdater.getUpdatedShip() != myBoat.getPlayerID())
+                            update.setHeading(shipUpdater.getHeading());
+                        update.setVelocity(new Vector(shipUpdater.getVx(),shipUpdater.getVy()));
+                        if(update.getDead()){
+                            CShips.remove(update.getPlayerID());
+                        }
                     }
-                    else{
-                        update.setPosition(ballUpdater.getX(),ballUpdater.getY());
+                    break;
+                case 2:
+                    ballUpdater = (BallUpdater) cmd;
+                    if(Client.DEBUG)
+                        System.out.println("Received information about ball "+ballUpdater.getBallID());
+                    if(cannonBalls.containsKey(ballUpdater.getBallID())){
+                        CannonBall updater = cannonBalls.get(ballUpdater.getBallID());
+                        if(ballUpdater.getIsDead()){
+                            cannonBalls.remove(ballUpdater.getBallID());
+                        }
+                        else{
+                            updater.setPosition(ballUpdater.getX(),ballUpdater.getY());
+                        }
+                    }else{
+                        CannonBall newBall = new CannonBall(ballUpdater.getX(),ballUpdater.getY(),ballUpdater.getBallDestX(),ballUpdater.getBallDestY(),ballUpdater.getHeading()+90,ballUpdater.getBallID(),cmd.getId());
+                        cannonBalls.put(newBall.getBallId(),newBall);
                     }
-                }else{
-                    CannonBall newBall = new CannonBall(ballUpdater.getX(),ballUpdater.getY(),ballUpdater.getBallDestX(),ballUpdater.getBallDestY(),ballUpdater.getHeading()+90,ballUpdater.getBallID(),cmd.getId());
-                    cannonBalls.put(newBall.getBallId(),newBall);
-                }
-            }else{
-                windUpdater = (WindUpdater) cmd;
-                wind.update(new Vector(windUpdater.getVx(),windUpdater.getVy()));
-                myBoat.updateVelocity(wind);
-                changed=true;
-                //check
+                    break;
+                case 3:
+                    windUpdater = (WindUpdater) cmd;
+                    wind.update(new Vector(windUpdater.getVx(),windUpdater.getVy()));
+                    myBoat.updateVelocity(wind);
+                    changed=true;
+                    break;
+                case 4:
+                    if(Client.DEBUG) System.out.println("Code for npc updates goes here");
+                    break;
+                case 5:
+                    if(Client.DEBUG) System.out.println("Code for fog updates goes here");
+                    break;
+                case 6:
+                    Finalizer end = (Finalizer) cmd;
+                    Updates.getInstance().getThread().stopThread();
+                    Client client = (Client)game;
+                    client.enterState(end.getStateTransition());
+                    break;
+                default:
+                    System.out.println("Congrats you somehow broke it, see ya.");
+                    System.exit(-200);
+                    break;
             }
         }
 
@@ -284,14 +313,18 @@ public class PlayingState extends BasicGameState {
 
 
 
-        if(input.isKeyDown(Input.KEY_W) && bounceDelay <= 0){
+        if(input.isKeyDown(Input.KEY_W)
+                && bounceDelay <= 0
+                && myBoat.getHealth() > 0){
             // Send raise anchor command to server
 
             anchor = false;
             myBoat.updateVelocity();
             changed =true;
 
-        } else if(input.isKeyDown(Input.KEY_S) && bounceDelay <= 0){
+        } else if(input.isKeyDown(Input.KEY_S)
+                && bounceDelay <= 0
+                && myBoat.getHealth() > 0){
             // Send lower anchor command to server
             anchor = true;
             myBoat.updateVelocity(new Vector(0f,0f));
@@ -302,7 +335,8 @@ public class PlayingState extends BasicGameState {
         if(input.isKeyDown(Input.KEY_A)
                 && !anchor
                 && !input.isKeyDown(Input.KEY_SPACE)
-                && bounceDelay <= 0){
+                && bounceDelay <= 0
+                && myBoat.getHealth()>0){
             // Send command to turn left
                 myBoat.updateHeading(-delta);
                 myBoat.updateVelocity();
@@ -311,7 +345,8 @@ public class PlayingState extends BasicGameState {
         } else if(input.isKeyDown(Input.KEY_D)
                 && !anchor
                 && !input.isKeyDown(Input.KEY_SPACE)
-                && bounceDelay <= 0){
+                && bounceDelay <= 0
+                && myBoat.getHealth() >0){
             // Send command to turn right
                 myBoat.updateHeading(delta);
                 myBoat.updateVelocity();
@@ -319,7 +354,7 @@ public class PlayingState extends BasicGameState {
         }
         boolean isLeft = true;
 
-        if(input.isKeyDown(Input.KEY_SPACE)){
+        if(input.isKeyDown(Input.KEY_SPACE) && myBoat.getHealth() >0){
             if(input.isKeyDown(Input.KEY_A)){
                 cannonsTargeting.setVisible(true);
                 cannonsTargeting.aimLeft();
@@ -416,6 +451,7 @@ public class PlayingState extends BasicGameState {
         wind.update(myBoat.getX()+800,myBoat.getY()+450);
         character.setPosition(myBoat.getX()-750,myBoat.getY()+330);
         character.update(myBoat.getHealth());
+        checkIfDead();
         if(!anchor && bounceDelay <= 0)
             myBoat.updateVelocity(wind);
         if(changed){
@@ -526,6 +562,16 @@ public class PlayingState extends BasicGameState {
 
     }
 
-
+    private void checkIfDead(){
+        if(myBoat.getHealth() <= 0 && !isDead){
+            System.out.println("I am dead");
+            ShipUpdater cmd = new ShipUpdater(Updates.getInstance().getThread().getClientId());
+            cmd.setUpdatedShip(myBoat.getPlayerID());
+            cmd.setIsDead(true);
+            sendCommand(cmd);
+            isDead = true;
+        }
+    }
+    @Override
     public int getID(){return Client.PLAYINGSTATE; }
 }
