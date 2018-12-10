@@ -312,11 +312,11 @@ public class PlayingState extends BasicGameState {
                     System.out.println("Firing cannon at ("+reticle.getX()+","+reticle.getY()+") Number of cannonballs: "+myBoat.getStats()[2]);
                 for(int j=0; j<myBoat.getStats()[2]+1;j++){
                     if(cannonsTargeting.getFireRight()&&rightDelay<=0) {
-                        fireCannonBall();
+                        fireCannonBall(j);
                         justFired = true;
 
                     }else if(!cannonsTargeting.getFireRight()&& leftDelay<=0){
-                        fireCannonBall();
+                        fireCannonBall(j);
                         justFired = true;
                     }
                 }
@@ -410,8 +410,20 @@ public class PlayingState extends BasicGameState {
         }
     }
 
-    private void fireCannonBall(){
-        CannonBall ball = new CannonBall(myBoat.getX() + 10*5, myBoat.getY() + 10*5, reticle.getX(), reticle.getY(), +90, ThreadLocalRandom.current().nextInt(),myBoat.getPlayerID());
+    private void fireCannonBall(int j){
+        int offset;
+        switch (j){
+            case 1:
+                offset = 24;
+                break;
+            case 2:
+                offset = -24;
+                break;
+            default:
+                offset=0;
+                break;
+        }
+        CannonBall ball = new CannonBall(myBoat.getX(), myBoat.getY() + offset, reticle.getX(), reticle.getY(), +90, ThreadLocalRandom.current().nextInt(),myBoat.getPlayerID());
         if(Client.DEBUG)
             System.out.println("Sending cannonball with id "+ball.getBallId());
         cannonBalls.put(ball.getBallId(),ball);

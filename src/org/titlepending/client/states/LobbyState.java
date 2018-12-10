@@ -152,13 +152,13 @@ public class LobbyState extends BasicGameState {
         scannons[1] = stwoCannons;
         scannons[2] = sthreeCannons;
 
-        cannonString[2] = "Two Cannons";
+        cannonString[0] = "Two Cannons";
         cannonString[1] = "Four Cannons";
-        cannonString[0] = "Six Cannons";
+        cannonString[2] = "Six Cannons";
 
-        cannonMod[2] = 3;
+        cannonMod[0] = 3;
         cannonMod[1] = 5;
-        cannonMod[0] = 7;
+        cannonMod[2] = 7;
 
         // Crew Images, Mod values and Names/Arrays
 
