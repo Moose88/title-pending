@@ -392,7 +392,7 @@ public class PlayingState extends BasicGameState {
         wind.update(myBoat.getX()+800,myBoat.getY()+450);
         character.setPosition(myBoat.getX()-750,myBoat.getY()+330);
         character.update(myBoat.getHealth());
-        if(!anchor)
+        if(!anchor && bounceDelay <= 0)
             myBoat.updateVelocity(wind);
         if(changed){
             ShipUpdater cmd = new ShipUpdater(Updates.getInstance().getThread().getClientId());
@@ -452,7 +452,8 @@ public class PlayingState extends BasicGameState {
 
         if(map.getTileId((int) minX/160, (int) maxY/160, islandLayer) != 0 &&
                 map.getTileId((int) maxX/160, (int) maxY/160, islandLayer) != 0){
-
+            if(Client.DEBUG)
+                System.out.println("Hit a wall/Island");
 
             return false;
         }
@@ -495,6 +496,7 @@ public class PlayingState extends BasicGameState {
         if(Client.DEBUG){
             System.out.println("Current heading: " + myBoat.getHeading() + " New heading: " +  a);
         }
+        myBoat.setHealth(myBoat.getHealth()-2);
         myBoat.setVelocity(myBoat.getVelocity().scale(-1));
         //myBoat.setVelocity(new Vector(myBoat.getVelocity().setRotation(a)));
 
