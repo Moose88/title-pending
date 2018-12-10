@@ -258,7 +258,7 @@ public class PlayingState extends BasicGameState {
         rightDelay-=delta;
         Input input = container.getInput();
 
-        
+
 
         if(input.isKeyDown(Input.KEY_W) && bounceDelay <= 0){
             // Send raise anchor command to server
