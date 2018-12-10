@@ -198,16 +198,19 @@ public class PlayingState extends BasicGameState {
             }else if(cmd.getType() ==2){
                 //do stuff to client representation of cannonballs
                 ballUpdater = (BallUpdater) cmd;
+                if(Client.DEBUG)
+                    System.out.println("Received information about ball "+ballUpdater.getBallID());
                 if(cannonBalls.containsKey(ballUpdater.getBallID())){
                     CannonBall update = cannonBalls.get(ballUpdater.getBallID());
-                    if(!update.isDead()){
-                        update.setPosition(ballUpdater.getX(),ballUpdater.getY());
-                    }else{
+                    if(ballUpdater.getIsDead()){
                         cannonBalls.remove(ballUpdater.getBallID());
+                    }
+                    else{
+                        update.setPosition(ballUpdater.getX(),ballUpdater.getY());
                     }
                 }else{
                     CannonBall newBall = new CannonBall(ballUpdater.getX(),ballUpdater.getY(),ballUpdater.getBallDestX(),ballUpdater.getBallDestY(),ballUpdater.getHeading()+90,ballUpdater.getBallID(),cmd.getId());
-                    cannonBalls.put(newBall.getId(),newBall);
+                    cannonBalls.put(newBall.getBallId(),newBall);
                 }
             }else{
                 if(Client.DEBUG)
@@ -309,15 +312,11 @@ public class PlayingState extends BasicGameState {
                     System.out.println("Firing cannon at ("+reticle.getX()+","+reticle.getY()+") Number of cannonballs: "+myBoat.getStats()[2]);
                 for(int j=0; j<myBoat.getStats()[2]+1;j++){
                     if(cannonsTargeting.getFireRight()&&rightDelay<=0) {
-                        CannonBall ball = new CannonBall(myBoat.getX() + 10*5, myBoat.getY() + 10*5, reticle.getX(), reticle.getY(), +90, ThreadLocalRandom.current().nextInt(),myBoat.getPlayerID());
-                        cannonBalls.put(ball.getId(),ball);
-                        buildBallCommand(ball);
+                        fireCannonBall(j);
                         justFired = true;
 
                     }else if(!cannonsTargeting.getFireRight()&& leftDelay<=0){
-                        CannonBall ball = new CannonBall(myBoat.getX() + 10*5, myBoat.getY() + 10*5, reticle.getX(), reticle.getY(), +90, ThreadLocalRandom.current().nextInt(),myBoat.getPlayerID());
-                        cannonBalls.put(ball.getId(),ball);
-                        buildBallCommand(ball);
+                        fireCannonBall(j);
                         justFired = true;
                     }
                 }
@@ -354,11 +353,11 @@ public class PlayingState extends BasicGameState {
             if(collision !=null
                     && ball.getPlayerID() != myBoat.getPlayerID()){
                 if(Client.DEBUG) {
-                    System.out.println("I got hit bois");
-                    myBoat.setHealth(myBoat.getHealth()-1);
+                    System.out.println("I got hit bois by ball "+ball.getBallId()+" from "+ball.getPlayerID());
                 }
+                myBoat.setHealth(myBoat.getHealth()-1);
                 ballUpdater= new BallUpdater(myBoat.getPlayerID());
-                ballUpdater.setBallID(ball.getId());
+                ballUpdater.setBallID(ball.getBallId());
                 ballUpdater.setIsDead(true);
                 sendCommand(ballUpdater);
                 ball.setDead(true);
@@ -371,8 +370,8 @@ public class PlayingState extends BasicGameState {
 
             float curHeading = Math.abs(myBoat.getHeading() % 360);
 
-            float tilex = (int) myBoat.getX()/160;
-            float tiley = (int) (myBoat.getY() + 48)/160;
+            float tilex =  (int) myBoat.getX()/160f;
+            float tiley =  (int) (myBoat.getY() + 48)/160f;
 
             Vector tileCenter = new Vector(tilex * 160 + 16*5, tiley * 160 + 16*5);
             Vector boatPosition = new Vector(myBoat.getX(), myBoat.getY());
@@ -411,13 +410,32 @@ public class PlayingState extends BasicGameState {
         }
     }
 
+    private void fireCannonBall(int j){
+        int offset;
+        switch (j){
+            case 1:
+                offset = 24;
+                break;
+            case 2:
+                offset = -24;
+                break;
+            default:
+                offset=0;
+                break;
+        }
+        CannonBall ball = new CannonBall(myBoat.getX(), myBoat.getY() + offset, reticle.getX(), reticle.getY(), +90, ThreadLocalRandom.current().nextInt(),myBoat.getPlayerID());
+        if(Client.DEBUG)
+            System.out.println("Sending cannonball with id "+ball.getBallId());
+        cannonBalls.put(ball.getBallId(),ball);
+        buildBallCommand(ball);
+    }
     private void buildBallCommand(CannonBall ball) {
         BallUpdater cmd = new BallUpdater(myBoat.getPlayerID());
         cmd.setX(ball.getX());
         cmd.setY(ball.getY());
         cmd.setVx(ball.getVelocity().getX());
         cmd.setVy(ball.getVelocity().getY());
-        cmd.setBallID(ball.getId());
+        cmd.setBallID(ball.getBallId());
         cmd.setTtl(ball.getTtl());
         cmd.setBallDestX(ball.getDestX());
         cmd.setBallDestY(ball.getDestY());
