@@ -97,6 +97,7 @@ public class Client extends StateBasedGame {
         ResourceManager.loadImage(TEST_RSC);
         ResourceManager.loadImage(SHIP_RSC);
         ResourceManager.loadImage(SS2_RSC);
+        ResourceManager.loadImage(CHARACTER_RSC);
         ResourceManager.loadImage(LOADING_SEA_RSC);
         ResourceManager.loadImage(LOADING_SKY_RSC);
         ResourceManager.loadSound(LOADING_SOUND);

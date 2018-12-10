@@ -54,6 +54,7 @@ public class WaitingState extends BasicGameState {
             Initializer cmd =(Initializer) Updates.getInstance().getQueue().poll();
             Client client = (Client) game;
             Updates.getInstance().setShips(cmd.getShips());
+            Updates.getInstance().setTurrets(cmd.getTurret());
             ResourceManager.getSound(Client.SCREAM_SOUND).stop();
             client.enterState(cmd.getStateTransition());
         }

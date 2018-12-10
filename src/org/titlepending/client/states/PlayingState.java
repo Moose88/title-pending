@@ -57,7 +57,7 @@ public class PlayingState extends BasicGameState {
 
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException {
-        map = new TiledMap(Client.MAP_RSC);
+
         anchor = true;
 
 
@@ -74,17 +74,22 @@ public class PlayingState extends BasicGameState {
         bottomleft = RSC_32_32.getSubImage(0, 2).getScaledCopy(3f);
         left = RSC_32_32.getSubImage(0, 1).getScaledCopy(3f);
 
-        islandLayer = map.getLayerIndex("Tile Layer 2"); // = 2
-        whirlpoolLayer = map.getLayerIndex("Tile Layer 3"); // = 1
-        oceanLayer = map.getLayerIndex("Tile Layer 5"); // = 0
+
+
     }
 
     public void enter(GameContainer container, StateBasedGame game)
             throws SlickException{
+        map = new TiledMap(Client.MAP_RSC);
+
+        islandLayer = map.getLayerIndex("Tile Layer 2"); // = 2
+        whirlpoolLayer = map.getLayerIndex("Tile Layer 3"); // = 1
+        oceanLayer = map.getLayerIndex("Tile Layer 5"); // = 0
 
         System.out.println("Made it to the playing state");
         bounceDelay =0;
         HashMap<Integer,Ship> ships = Updates.getInstance().getShips();
+        HashMap<Integer,TurretObject> turrets = Updates.getInstance().getTurrets();
         this.cannonBalls = new HashMap<>();
         this.CShips = new HashMap<>();
         this.enemyTurrets = new HashMap<>();
@@ -110,11 +115,13 @@ public class PlayingState extends BasicGameState {
             CShips.put(ship.getPlayerID(),temp);
         }
 
-        HashMap<Integer,TurretObject> turrets = Updates.getInstance().getTurrets();
         Iterator n = turrets.entrySet().iterator();
         while(n.hasNext()){
             Map.Entry pair = (Map.Entry) i.next();
             TurretObject turret = turrets.get(pair.getKey());
+            if(Client.DEBUG){
+                System.out.println("Turret ID: " + turret.getTurretID() + " x: " + turret.getX() + " y: " + turret.getY());
+            }
             enemyTurret temp = new enemyTurret(turret.getX(), turret.getY(), 0);
             temp.setImage();
             enemyTurrets.put(turret.getTurretID(), temp);
@@ -125,6 +132,7 @@ public class PlayingState extends BasicGameState {
         if(Client.DEBUG) {
             System.out.println("After myBoat thread ID: " + Updates.getInstance().getThread().getClientId());
         }
+
         if(Client.DEBUG) {
             System.out.println("Boat x: " + myBoat.getX() + " Boat y: " + myBoat.getY() + " Boat id: " + myBoat.getPlayerID());
         }

@@ -231,14 +231,13 @@ public class Server {
 
         }
 
-
-
         if(DEBUG) System.out.println("Generated "+ships.size()+" ships.");
 
 
         for(ClientThread player : players){
             cmd = new Initializer(0);
             cmd.setShips(ships);
+            cmd.setTurret(turrets);
             cmd.setStateTransition(PLAYINGSTATE);
             try{
                 player.sendCommand(cmd);
@@ -258,6 +257,7 @@ public class Server {
         CommandObject actions;
         BallUpdater bUpdate;
         ShipUpdater sUpdate;
+        TurretUpdater tUpdate;
         long prevTime= System.currentTimeMillis();
         timer = 0;
         boolean updateAll = false;
