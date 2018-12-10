@@ -188,7 +188,6 @@ public class Server {
             radAlpha = r3;
         }
         int playerNo = 1;
-        int turretNO = 27;
         //Entity.setCoarseGrainedCollisionBoundary(Entity.CIRCLE);
 
         while(!commands.isEmpty()){
@@ -227,11 +226,10 @@ public class Server {
             ships.put(cmd.getId(), temp);
             turrets.put(enemy.getTurretID(), enemy);
             playerNo += 1;
-            turretNO += 1;
 
         }
 
-        if(DEBUG) System.out.println("Generated "+ships.size()+" ships.");
+        if(DEBUG) System.out.println("Generated "+ships.size()+" ships and " + turrets.size() + " turrets.");
 
 
         for(ClientThread player : players){

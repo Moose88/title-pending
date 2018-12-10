@@ -2,8 +2,13 @@ package org.titlepending.entities;
 
 import jig.Collision;
 import jig.Entity;
+import jig.ResourceManager;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.geom.Circle;
+import org.titlepending.client.Client;
+
 import java.util.HashMap;
 
 public class enemyTurret extends Entity {
@@ -16,6 +21,8 @@ public class enemyTurret extends Entity {
     private int turretID;
     private Circle hitbox;
     private Circle detectionCircle;
+
+    private SpriteSheet test = new SpriteSheet(ResourceManager.getImage(Client.SS2_RSC), 32, 32);
 
     public enemyTurret(float x, float y, float direction){
         super(x, y);
@@ -30,6 +37,17 @@ public class enemyTurret extends Entity {
 
     public void setImage(){
         hitbox.setLocation(this.getX(), this.getY());
+    }
+
+    @Override
+    public void render(Graphics g){
+        super.render(g);
+        if(Client.DEBUG) {
+            g.draw(hitbox);
+            g.draw(detectionCircle);
+        }
+
+
     }
 
 

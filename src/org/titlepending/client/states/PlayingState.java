@@ -117,7 +117,7 @@ public class PlayingState extends BasicGameState {
 
         Iterator n = turrets.entrySet().iterator();
         while(n.hasNext()){
-            Map.Entry pair = (Map.Entry) i.next();
+            Map.Entry pair = (Map.Entry) n.next();
             TurretObject turret = turrets.get(pair.getKey());
             if(Client.DEBUG){
                 System.out.println("Turret ID: " + turret.getTurretID() + " x: " + turret.getX() + " y: " + turret.getY());
@@ -165,6 +165,12 @@ public class PlayingState extends BasicGameState {
             ClientShip ship = CShips.get(((Map.Entry) integerClientShipEntry).getKey());
             ship.render(g);
         }
+
+        for(Map.Entry<Integer, enemyTurret> integerenemyTurretEntry : enemyTurrets.entrySet()){
+            enemyTurret turret = enemyTurrets.get(((Map.Entry) integerenemyTurretEntry).getKey());
+            turret.render(g);
+        }
+
         cannonsTargeting.render(g);
         reticle.render(g);
         for (Map.Entry<Integer, CannonBall> integerCannonBallEntry : cannonBalls.entrySet()){
