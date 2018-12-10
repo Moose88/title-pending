@@ -150,10 +150,12 @@ public class ClientShip extends Entity {
         this.setRotation(heading);
 
     }
+
     public void updateHeading(float bounce){
         heading+=bounce;
         this.setRotation(heading);
     }
+
     public void setHeading(float heading){
         this.heading = heading;
     }
@@ -179,6 +181,7 @@ public class ClientShip extends Entity {
     public void updateVelocity(Vector stop){
         setVelocity(stop.setRotation(heading));
     }
+
     public void addSprites(){
         //Setting Cannons
         switch (stats[2]) {

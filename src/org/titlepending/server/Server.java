@@ -1,7 +1,6 @@
 package org.titlepending.server;
 
 
-import org.titlepending.entities.turretFactory;
 import org.titlepending.server.ServerObjects.ShipFactory;
 import org.titlepending.server.ServerObjects.Ball;
 import org.titlepending.server.ServerObjects.Ship;
@@ -211,8 +210,8 @@ public class Server {
                 shipX = 27000;
                 shipY = 8000;
 
-                turretX = 27000;
-                turretY = 9000;
+                turretX = 26880 + 80;
+                turretY = 8640 + 80;
 
             }else{
                 shipX =(3200 + (radAlpha*Math.cos(degree*playerNo)));
@@ -220,7 +219,7 @@ public class Server {
             }
             if(DEBUG) System.out.println("Ship x: "+shipX+" Ship y: "+shipY);
             Ship temp = ShipFactory.getInstance().createNewPlayerShip(shipX, shipY, cmd.getShip(), cmd.getId());
-            TurretObject enemy = turretFactory.getInstance().createNewTurret((float) turretX, (float) turretY);
+            TurretObject enemy = ShipFactory.getInstance().createNewTurret((float) turretX, (float) turretY);
 
 
             if(DEBUG) System.out.println("Temp x: "+temp.getX()+" Temp y: "+temp.getY());

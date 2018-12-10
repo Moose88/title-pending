@@ -29,5 +29,9 @@ public class ShipFactory {
         return temp;
     }
 
+    public TurretObject createNewTurret(float x, float y){
+        TurretObject temp = new TurretObject(x, y, ThreadLocalRandom.current().nextInt());
+        return temp;
+    }
 
 }
