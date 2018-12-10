@@ -26,6 +26,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class PlayingState extends BasicGameState {
     private HashMap<Integer, ClientShip> CShips;
+    private HashMap<Integer, enemyTurret> enemyTurrets;
     private HashMap<Integer, CannonBall> cannonBalls;
     private ClientShip myBoat;
     private TiledMap map;
@@ -85,6 +86,8 @@ public class PlayingState extends BasicGameState {
         HashMap<Integer,Ship> ships = Updates.getInstance().getShips();
         this.cannonBalls = new HashMap<>();
         this.CShips = new HashMap<>();
+        this.enemyTurrets = new HashMap<>();
+
         if(Client.DEBUG){
             System.out.println("Attepting to create tiled map from: "+Client.MAP_RSC);
         }

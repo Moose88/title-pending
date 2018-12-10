@@ -21,7 +21,10 @@ public class enemyTurret extends Entity {
         super(x, y);
 
 
+        // The x and y will be its initial placement on the map
+        
         hitbox = new Circle(27000, 8000, 50);
+        detectionCircle = new Circle(27000, 8000, 400);
 
     }
 
