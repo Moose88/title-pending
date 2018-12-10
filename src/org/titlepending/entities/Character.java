@@ -25,7 +25,7 @@ public class Character extends Entity {
 
     public void update(int currrentHP){
 
-        System.out.println("My health is: " + currrentHP);
+        //System.out.println("My health is: " + currrentHP);
 
         removeImage(Dudeface[0]);
         removeImage(Dudeface[1]);
