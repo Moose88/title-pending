@@ -33,6 +33,7 @@ public class Server {
     public static final int OPTIONSMENUSTATE = 7;
     public static final int LOBBYSTATE = 8;
     public static final int REJECTSTATE= 9;
+    public static final int WINNINGSTATE=10;
     public static final int r1 = 896;
     public static final int r2 = 1824;
     public static final int r3 = 3200;
@@ -176,7 +177,7 @@ public class Server {
             timer -= 1000;
         }
 
-        HashMap<Integer, Ship> ships = new HashMap();
+        HashMap<Integer, Ship> ships = new HashMap<>();
         double degree = Math.toRadians((float)360/players.size());
         double radAlpha;
         if(players.size()<=4){
@@ -185,10 +186,9 @@ public class Server {
             radAlpha = r3;
         }
         int playerNo = 1;
-        //Entity.setCoarseGrainedCollisionBoundary(Entity.CIRCLE);
 
         while(!commands.isEmpty()){
-            /** construct player ships here **/
+            //construct player ships here
             cmd = (Initializer) commands.poll();
             if(DEBUG){
                 System.out.println("Received from Client: "+cmd.getId());
@@ -248,51 +248,77 @@ public class Server {
             //Empty command queue
             while (!commands.isEmpty()){
                 actions = commands.poll();
-                Ball ballUpdater;
-                Ship shipUpdater;
-                if(actions.getType()==1) {
-                    sUpdate = (ShipUpdater) actions;
-                    shipUpdater = ships.get(sUpdate.getId());
-                    if(DEBUG)
-                        System.out.println("Updating ship "+sUpdate.getId()+" vx: "+sUpdate.getVx()+" vy: "+sUpdate.getVy());
-                    shipUpdater.setVelocity(sUpdate.getVx(),sUpdate.getVy());
-                    shipUpdater.setHeading(sUpdate.getHeading());
-                    shipUpdater.setUpdated(true);
-                }else{
-                    bUpdate = (BallUpdater) actions;
-                    if(!ballHashMap.containsKey(bUpdate.getBallID())){
-                        ballUpdater = new Ball(
-                                bUpdate.getX(),
-                                bUpdate.getY(),
-                                bUpdate.getVx(),
-                                bUpdate.getVy(),
-                                bUpdate.getId(),
-                                bUpdate.getTtl(),
-                                bUpdate.getBallDestX(),
-                                bUpdate.getBallDestY(),
-                                bUpdate.getId()
-                        );
-                        ballHashMap.put(actions.getId(),ballUpdater);
-                        updateBall(ballUpdater);
-                    }else {
-                        if(actions.getIsDead()){
-                            if(DEBUG){
-                                System.out.println("Ball "+bUpdate.getBallID()+" hit something");
+                switch (actions.getType()){
+                    case 1: //Ship updates
+                        sUpdate = (ShipUpdater) actions;
+                        Ship shipUpdater = ships.get(sUpdate.getId());
+                        if(sUpdate.getIsDead()){
+                            shipUpdater.setDead(true);
+                            shipUpdater.setUpdated(true);
+                            updateShip(shipUpdater);
+                            Finalizer update = new Finalizer(0);
+                            update.setStateTransition(GAMEOVERSTATE);
+                            for(ClientThread player : players){
+                                if(shipUpdater.getPlayerID()==player.getClientId()){
+                                    player.sendCommand(update);
+                                    player.stopThread();
+                                }
                             }
-                            Ball ball = ballHashMap.get(bUpdate.getBallID());
-                            ball.setDead(true);
-                            BallUpdater temp = new BallUpdater(ball.getPlayerID());
-                            temp.setIsDead(true);
-                            temp.setBallID(ball.getBallID());
-                            updateAll(temp);
-                            ballHashMap.remove(bUpdate.getId());
-                        }
-                    }
-                }
 
+                        }else{
+                            if(DEBUG)
+                                System.out.println("Updating ship "+sUpdate.getId()+" vx: "+sUpdate.getVx()+" vy: "+sUpdate.getVy());
+                            shipUpdater.setVelocity(sUpdate.getVx(),sUpdate.getVy());
+                            shipUpdater.setHeading(sUpdate.getHeading());
+                            shipUpdater.setUpdated(true);
+                        }
+                        break;
+                    case 2: //Cannonball updates
+                        bUpdate = (BallUpdater) actions;
+                        if(DEBUG)
+                            System.out.println("Received information about "+bUpdate.getBallID());
+                        if(!ballHashMap.containsKey(bUpdate.getBallID())){
+                            Ball ballUpdater = new Ball(
+                                    bUpdate.getX(),
+                                    bUpdate.getY(),
+                                    bUpdate.getVx(),
+                                    bUpdate.getVy(),
+                                    bUpdate.getBallID(),
+                                    bUpdate.getTtl(),
+                                    bUpdate.getBallDestX(),
+                                    bUpdate.getBallDestY(),
+                                    bUpdate.getId()
+                            );
+                            ballHashMap.put(bUpdate.getBallID(),ballUpdater);
+                            if(DEBUG)
+                                System.out.println("Updating all clients about ball "+ballUpdater.getBallID());
+                            updateBall(ballUpdater);
+                        }else {
+                            if(bUpdate.getIsDead()){
+                                if(DEBUG){
+                                    System.out.println("Ball "+bUpdate.getBallID()+" hit something");
+                                }
+                                Ball ball = ballHashMap.get(bUpdate.getBallID());
+                                ball.setDead(true);
+                                BallUpdater temp = new BallUpdater(ball.getPlayerID());
+                                temp.setIsDead(true);
+                                temp.setBallID(ball.getBallID());
+                                updateAll(temp);
+                                ballHashMap.remove(bUpdate.getId());
+                            }
+                        }
+                        break;
+                    case 4://Npc updates go here
+                        break;
+                    default://Server will crash if it somehow receives a finalizer wind update or fog update from a client
+                        if(DEBUG)
+                            System.out.println("Congratulations you broke it");
+                        System.exit(-202);
+                        break;
+                }
             }
 
-            // Calc Delta Preserve Prev Time
+            // Calc Delta Preserve Prev Time sleep if we don't have delta >=30
             long curTime = System.currentTimeMillis();
             if(curTime - prevTime < 30 ){
                 try {
@@ -328,7 +354,6 @@ public class Server {
 
                 }
             }
-            // Sleep if we havn't done enough work
 
             windTimer -= (int)delta;
             if(windTimer <= 0){
@@ -336,7 +361,7 @@ public class Server {
                 if(DEBUG)
                     windTimer = 10000;
                 else
-                    windTimer = 600000;
+                    windTimer = 60000;
             }
             timer -= (int) delta;
             if(timer<=0){
@@ -354,11 +379,21 @@ public class Server {
                 }
             }
             prevTime = curTime;
+            if(players.size()==1){
+                inGame = false;
+                Finalizer end = new Finalizer(0);
+                end.setStateTransition(WINNINGSTATE);
+                for(ClientThread player : players){
+                    player.sendCommand(end);
+                    player.stopThread();
+                }
+            }
         }
 
     }
     private static void updateBall(Ball ball){
         BallUpdater cmd = new BallUpdater(ball.getPlayerID());
+        cmd.setBallID(ball.getBallID());
         cmd.setX(ball.getX());
         cmd.setY(ball.getY());
         cmd.setVx(ball.getVx());
@@ -376,6 +411,7 @@ public class Server {
         cmd.setX(ship.getX());
         cmd.setY(ship.getY());
         cmd.setHeading(ship.getHeading());
+        cmd.setIsDead(ship.getDead());
        try{updateAll(cmd);}catch (IOException e){e.printStackTrace();}
 
     }
@@ -400,10 +436,11 @@ public class Server {
     private static class  Handler extends Thread{
         ServerSocket listener;
         long startTime;
-        public Handler(){
+        Handler(){
             startTime = System.currentTimeMillis();
         }
 
+        @Override
         public void run(){
             try {
                 listener = new ServerSocket(PORT);

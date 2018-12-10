@@ -66,6 +66,7 @@ public class LobbyState extends BasicGameState {
 
     private static int[] finalShip = new int[4];
 
+    @Override
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException{
 
@@ -144,21 +145,21 @@ public class LobbyState extends BasicGameState {
         Image stwoCannons = ship_RSC_96.getSubImage(5, 2).getScaledCopy(3f);
         Image sthreeCannons = ship_RSC_96.getSubImage(4, 2).getScaledCopy(3f);
 
-        cannons[2] = oneCannon;
+        cannons[0] = oneCannon;
         cannons[1] = twoCannons;
-        cannons[0] = threeCannons;
+        cannons[2] = threeCannons;
 
-        scannons[2] = soneCannon;
+        scannons[0] = soneCannon;
         scannons[1] = stwoCannons;
-        scannons[0] = sthreeCannons;
+        scannons[2] = sthreeCannons;
 
-        cannonString[2] = "Two Cannons";
+        cannonString[0] = "Two Cannons";
         cannonString[1] = "Four Cannons";
-        cannonString[0] = "Six Cannons";
+        cannonString[2] = "Six Cannons";
 
-        cannonMod[2] = 3;
+        cannonMod[0] = 3;
         cannonMod[1] = 5;
-        cannonMod[0] = 7;
+        cannonMod[2] = 7;
 
         // Crew Images, Mod values and Names/Arrays
 
@@ -190,6 +191,7 @@ public class LobbyState extends BasicGameState {
         return selection == option;
     }
 
+    @Override
     public void enter(GameContainer container, StateBasedGame game) {
         ResourceManager.getMusic(Client.LOBBY_MUSIC).loop(1, 3f);
         if(setCrew == 2 && !ResourceManager.getSound(Client.SCREAM_SOUND).playing()){
@@ -198,6 +200,7 @@ public class LobbyState extends BasicGameState {
 
     }
 
+    @Override
     public void leave(GameContainer container, StateBasedGame game){
         if(enteringGame){
             Initializer cmd = new Initializer(Updates.getInstance().getThread().getClientId());
@@ -237,6 +240,7 @@ public class LobbyState extends BasicGameState {
     }
 
 
+    @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) {
 
         //Draw menu background here
@@ -359,6 +363,7 @@ public class LobbyState extends BasicGameState {
 
     }
 
+    @Override
     public void update(GameContainer container, StateBasedGame game,
                        int delta) {
         if(setCrew ==  2){
@@ -615,6 +620,7 @@ public class LobbyState extends BasicGameState {
         }
     }
 
+    @Override
     public int getID(){ return Client.LOBBYSTATE; }
 
 }

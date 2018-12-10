@@ -13,12 +13,11 @@ import org.titlepending.server.ServerObjects.Ship;
 public class ClientShip extends Entity {
 
     protected int stats[]; //hull, sail, cannon, captain... Get these numbers from another state
-    private boolean isDead = false;
+    private boolean isDead;
     private int playerID;
     private Vector velocity;
     private float rotationRate;
     private TiledMap map;
-
     private ConvexPolygon smHitbox;
     private ConvexPolygon medHitbox;
     private ConvexPolygon lgHitbox;
@@ -55,7 +54,7 @@ public class ClientShip extends Entity {
         this.playerID = playerID;
         velocity = new Vector(0f, 0f);
         float center = (float) new Vector((float) x, (float) y).angleTo(new Vector(3200*5, 3200*5));
-
+        isDead =false;
         heading = center;
 
         detectionCircle = new Circle(getX(), getY(), 288);
@@ -183,19 +182,19 @@ public class ClientShip extends Entity {
     public void addSprites(){
         //Setting Cannons
         switch (stats[2]) {
-            case 2:
-                if(stats[0] == 2)
+            case 0:
+                if(stats[1] == 2)
                     addImage(SoneCannon);
                 else
                     addImage(oneCannon);
                 break;
             case 1:
-                if(stats[0] == 2)
+                if(stats[1] == 2)
                     addImage(StwoCannons);
                 else
                     addImage(twoCannons);
                 break;
-            case 0:
+            case 2:
                 if(stats[0] == 2)
                     addImage(SthreeCannons);
                 else
@@ -275,7 +274,8 @@ public class ClientShip extends Entity {
 
     @Override
     public void render(Graphics g){
-        super.render(g);
+        if(!isDead)
+            super.render(g);
         if(Client.DEBUG) {
             g.draw(detectionCircle);
         }
@@ -309,24 +309,8 @@ public class ClientShip extends Entity {
     public void setHealth(int health) {
         this.health = health;
     }
-//
-//    public void imageRotate(){
-//
-//        oneCannon.setRotation(heading+90);
-//        twoCannons.setRotation(heading+90);
-//        threeCannons.setRotation(heading+90);
-//
-//        SoneCannon.setRotation(heading+90);
-//        StwoCannons.setRotation(heading+90);
-//        SthreeCannons.setRotation(heading+90);
-//
-//        smallHull.setRotation(heading+90);
-//        medHull.setRotation(heading+90);
-//        lgHull.setRotation(heading+90);
-//
-//        oneSail.setRotation(heading+90);
-//        twoSails.setRotation(heading+90);
-//        threeSails.setRotation(heading+90);
-//
-//    }
+
+    public void setDead(boolean isDead){this.isDead = isDead;}
+
+    public boolean getDead(){return isDead;}
 }
