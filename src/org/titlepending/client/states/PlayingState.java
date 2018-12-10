@@ -284,14 +284,18 @@ public class PlayingState extends BasicGameState {
 
 
 
-        if(input.isKeyDown(Input.KEY_W) && bounceDelay <= 0){
+        if(input.isKeyDown(Input.KEY_W)
+                && bounceDelay <= 0
+                && myBoat.getHealth() > 0){
             // Send raise anchor command to server
 
             anchor = false;
             myBoat.updateVelocity();
             changed =true;
 
-        } else if(input.isKeyDown(Input.KEY_S) && bounceDelay <= 0){
+        } else if(input.isKeyDown(Input.KEY_S)
+                && bounceDelay <= 0
+                && myBoat.getHealth() > 0){
             // Send lower anchor command to server
             anchor = true;
             myBoat.updateVelocity(new Vector(0f,0f));
@@ -387,14 +391,6 @@ public class PlayingState extends BasicGameState {
                 ballUpdater.setBallID(ball.getBallId());
                 ballUpdater.setIsDead(true);
                 sendCommand(ballUpdater);
-                if(myBoat.getHealth() == 0 && !isDead){
-                    System.out.println("I am dead");
-                    ShipUpdater cmd = new ShipUpdater(Updates.getInstance().getThread().getClientId());
-                    cmd.setUpdatedShip(myBoat.getPlayerID());
-                    cmd.setIsDead(true);
-                    sendCommand(cmd);
-                    isDead = true;
-                }
                 ball.setDead(true);
             }
 
@@ -426,6 +422,7 @@ public class PlayingState extends BasicGameState {
         wind.update(myBoat.getX()+800,myBoat.getY()+450);
         character.setPosition(myBoat.getX()-750,myBoat.getY()+330);
         character.update(myBoat.getHealth());
+        checkIfDead();
         if(!anchor && bounceDelay <= 0)
             myBoat.updateVelocity(wind);
         if(changed){
@@ -536,7 +533,16 @@ public class PlayingState extends BasicGameState {
 
     }
 
-
+    private void checkIfDead(){
+        if(myBoat.getHealth() <= 0 && !isDead){
+            System.out.println("I am dead");
+            ShipUpdater cmd = new ShipUpdater(Updates.getInstance().getThread().getClientId());
+            cmd.setUpdatedShip(myBoat.getPlayerID());
+            cmd.setIsDead(true);
+            sendCommand(cmd);
+            isDead = true;
+        }
+    }
     @Override
     public int getID(){return Client.PLAYINGSTATE; }
 }
