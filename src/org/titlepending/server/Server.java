@@ -306,13 +306,12 @@ public class Server {
                             }
                         }
                         break;
-                    case 3: //Wind updates should never actually happen on the server
-                        break;
                     case 4://Npc updates go here
                         break;
-                    case 5://fog updates go here should never actually happen on the server
-                        break;
-                    case 6://Finalizers go here
+                    default://Server will crash if it somehow receives a finalizer wind update or fog update from a client
+                        if(DEBUG)
+                            System.out.println("Congratulations you broke it");
+                        System.exit(-202);
                         break;
                 }
             }
