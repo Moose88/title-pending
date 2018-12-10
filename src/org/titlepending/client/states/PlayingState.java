@@ -10,8 +10,8 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
 import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
-import org.titlepending.entities.*;
-import org.titlepending.entities.Character;
+import org.titlepending.client.entities.*;
+import org.titlepending.client.entities.Character;
 import org.titlepending.server.ServerObjects.Ship;
 import org.titlepending.shared.*;
 

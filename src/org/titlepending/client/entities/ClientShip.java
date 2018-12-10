@@ -1,4 +1,4 @@
-package org.titlepending.entities;
+package org.titlepending.client.entities;
 
 import jig.*;
 import org.newdawn.slick.Color;
