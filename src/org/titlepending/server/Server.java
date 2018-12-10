@@ -248,66 +248,76 @@ public class Server {
             //Empty command queue
             while (!commands.isEmpty()){
                 actions = commands.poll();
-                if(actions.getType()==1) {
-                    sUpdate = (ShipUpdater) actions;
-                    Ship shipUpdater = ships.get(sUpdate.getId());
-                    if(sUpdate.getIsDead()){
-                        shipUpdater.setDead(true);
-                        shipUpdater.setUpdated(true);
-                        Finalizer update = new Finalizer(0);
-                        update.setStateTransition(GAMEOVERSTATE);
-                        for(ClientThread player : players){
-                            if(shipUpdater.getPlayerID()==player.getClientId()){
-                                player.sendCommand(update);
-                                player.stopThread();
+                switch (actions.getType()){
+                    case 1: //Ship updates
+                        sUpdate = (ShipUpdater) actions;
+                        Ship shipUpdater = ships.get(sUpdate.getId());
+                        if(sUpdate.getIsDead()){
+                            shipUpdater.setDead(true);
+                            shipUpdater.setUpdated(true);
+                            Finalizer update = new Finalizer(0);
+                            update.setStateTransition(GAMEOVERSTATE);
+                            for(ClientThread player : players){
+                                if(shipUpdater.getPlayerID()==player.getClientId()){
+                                    player.sendCommand(update);
+                                    player.stopThread();
+                                }
+                            }
+                        }else{
+                            if(DEBUG)
+                                System.out.println("Updating ship "+sUpdate.getId()+" vx: "+sUpdate.getVx()+" vy: "+sUpdate.getVy());
+                            shipUpdater.setVelocity(sUpdate.getVx(),sUpdate.getVy());
+                            shipUpdater.setHeading(sUpdate.getHeading());
+                            shipUpdater.setUpdated(true);
+                        }
+                        break;
+                    case 2: //Cannonball updates
+                        bUpdate = (BallUpdater) actions;
+                        if(DEBUG)
+                            System.out.println("Received information about "+bUpdate.getBallID());
+                        if(!ballHashMap.containsKey(bUpdate.getBallID())){
+                            Ball ballUpdater = new Ball(
+                                    bUpdate.getX(),
+                                    bUpdate.getY(),
+                                    bUpdate.getVx(),
+                                    bUpdate.getVy(),
+                                    bUpdate.getBallID(),
+                                    bUpdate.getTtl(),
+                                    bUpdate.getBallDestX(),
+                                    bUpdate.getBallDestY(),
+                                    bUpdate.getId()
+                            );
+                            ballHashMap.put(bUpdate.getBallID(),ballUpdater);
+                            if(DEBUG)
+                                System.out.println("Updating all clients about ball "+ballUpdater.getBallID());
+                            updateBall(ballUpdater);
+                        }else {
+                            if(bUpdate.getIsDead()){
+                                if(DEBUG){
+                                    System.out.println("Ball "+bUpdate.getBallID()+" hit something");
+                                }
+                                Ball ball = ballHashMap.get(bUpdate.getBallID());
+                                ball.setDead(true);
+                                BallUpdater temp = new BallUpdater(ball.getPlayerID());
+                                temp.setIsDead(true);
+                                temp.setBallID(ball.getBallID());
+                                updateAll(temp);
+                                ballHashMap.remove(bUpdate.getId());
                             }
                         }
-                    }else{
-                        if(DEBUG)
-                            System.out.println("Updating ship "+sUpdate.getId()+" vx: "+sUpdate.getVx()+" vy: "+sUpdate.getVy());
-                        shipUpdater.setVelocity(sUpdate.getVx(),sUpdate.getVy());
-                        shipUpdater.setHeading(sUpdate.getHeading());
-                        shipUpdater.setUpdated(true);
-                    }
-                }else{
-                    bUpdate = (BallUpdater) actions;
-                    if(DEBUG)
-                        System.out.println("Received information about "+bUpdate.getBallID());
-                    if(!ballHashMap.containsKey(bUpdate.getBallID())){
-                        Ball ballUpdater = new Ball(
-                                bUpdate.getX(),
-                                bUpdate.getY(),
-                                bUpdate.getVx(),
-                                bUpdate.getVy(),
-                                bUpdate.getBallID(),
-                                bUpdate.getTtl(),
-                                bUpdate.getBallDestX(),
-                                bUpdate.getBallDestY(),
-                                bUpdate.getId()
-                        );
-                        ballHashMap.put(bUpdate.getBallID(),ballUpdater);
-                        if(DEBUG)
-                            System.out.println("Updating all clients about ball "+ballUpdater.getBallID());
-                        updateBall(ballUpdater);
-                    }else {
-                        if(bUpdate.getIsDead()){
-                            if(DEBUG){
-                                System.out.println("Ball "+bUpdate.getBallID()+" hit something");
-                            }
-                            Ball ball = ballHashMap.get(bUpdate.getBallID());
-                            ball.setDead(true);
-                            BallUpdater temp = new BallUpdater(ball.getPlayerID());
-                            temp.setIsDead(true);
-                            temp.setBallID(ball.getBallID());
-                            updateAll(temp);
-                            ballHashMap.remove(bUpdate.getId());
-                        }
-                    }
+                        break;
+                    case 3: //Wind updates should never actually happen on the server
+                        break;
+                    case 4://Npc updates go here
+                        break;
+                    case 5://fog updates go here should never actually happen on the server
+                        break;
+                    case 6://Finalizers go here
+                        break;
                 }
-
             }
 
-            // Calc Delta Preserve Prev Time
+            // Calc Delta Preserve Prev Time sleep if we don't have delta >=30
             long curTime = System.currentTimeMillis();
             if(curTime - prevTime < 30 ){
                 try {
@@ -343,7 +353,6 @@ public class Server {
 
                 }
             }
-            // Sleep if we havn't done enough work
 
             windTimer -= (int)delta;
             if(windTimer <= 0){
