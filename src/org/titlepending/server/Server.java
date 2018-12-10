@@ -1,7 +1,7 @@
 package org.titlepending.server;
 
 
-import org.titlepending.entities.ShipFactory;
+import org.titlepending.server.ServerObjects.ShipFactory;
 import org.titlepending.server.ServerObjects.Ball;
 import org.titlepending.server.ServerObjects.Ship;
 import org.titlepending.shared.*;
@@ -310,7 +310,7 @@ public class Server {
                         break;
                     case 4://Npc updates go here
                         break;
-                    default://Server will crash if it somehow receives a finalizer wind update or fog update from a client
+                    default://Server will crash if it somehow receives a finalizer, wind update or fog update from a client
                         if(DEBUG)
                             System.out.println("Congratulations you broke it");
                         System.exit(-202);
