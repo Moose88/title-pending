@@ -253,7 +253,7 @@ public class PlayingState extends BasicGameState {
         rightDelay-=delta;
         Input input = container.getInput();
 
-        
+
 
         boolean changed = false;
         if(input.isKeyDown(Input.KEY_W) && bounceDelay <= 0){
