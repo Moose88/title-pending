@@ -129,6 +129,9 @@ public class ClientShip extends Entity {
         return sailVector;
     }
 
+    public float getVy(){return velocity.getY();}
+    public float getVx(){return velocity.getX();}
+
     public void setStats(int[] stats) {
         this.stats = stats;
     }
@@ -158,6 +161,20 @@ public class ClientShip extends Entity {
 
     public void updateVelocity(){
         setVelocity(sailVector.setRotation(heading-90));
+    }
+    public void updateVelocity(WindIndicator wind){
+        double PD =(this.getRotation()%360);
+        double WD =(wind.getRotation()%360);
+        double diff = Math.abs(PD-WD);
+        updateVelocity();
+        if(Client.DEBUG && (diff<15|| diff>345)) {
+            setVelocity(velocity.scale(2f));
+
+        }
+        else if(Client.DEBUG &&(diff>165 && diff<195)){
+            setVelocity(velocity.scale(.25f));
+
+        }
     }
 
     public void updateVelocity(Vector stop){

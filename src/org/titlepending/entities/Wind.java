@@ -13,6 +13,12 @@ public class Wind extends Entity {
     public void update(Vector update) {
         velocity = update;
     }
+    public float getVx(){
+        return velocity.getX();
+    }
+    public float getVy(){
+        return velocity.getY();
+    }
     @Override
     public double getRotation(){return velocity.getRotation();}
 
