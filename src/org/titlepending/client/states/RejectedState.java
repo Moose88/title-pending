@@ -14,11 +14,13 @@ public class RejectedState extends BasicGameState{
 
     private int timer;
     private  Client client;
+    @Override
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException{
         this.client= (Client) game;
     }
 
+    @Override
     public void enter(GameContainer container, StateBasedGame game)
         throws SlickException{
         timer = 30000;
@@ -28,6 +30,7 @@ public class RejectedState extends BasicGameState{
 
     }
 
+    @Override
     public void render(GameContainer container, StateBasedGame game,
                        Graphics g) throws SlickException{
         Client client = (Client) game;
@@ -43,6 +46,7 @@ public class RejectedState extends BasicGameState{
 
     }
 
+    @Override
     public void update(GameContainer container, StateBasedGame game,
                        int delta) throws SlickException{
         timer -= delta;
@@ -54,6 +58,7 @@ public class RejectedState extends BasicGameState{
         }
     }
 
+    @Override
     public int getID(){return Client.REJECTSTATE; }
 
     @Override

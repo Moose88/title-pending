@@ -22,6 +22,7 @@ public class LoadState extends BasicGameState {
     private boatGuy boatDude;
 
 
+    @Override
     public void init(GameContainer container, StateBasedGame game) {
         LoadingList.setDeferredLoading(true);
 
@@ -48,6 +49,7 @@ public class LoadState extends BasicGameState {
 
     }
 
+    @Override
     public void enter(GameContainer container, StateBasedGame game) {
 
         boatDude = new boatGuy();
@@ -60,6 +62,7 @@ public class LoadState extends BasicGameState {
 
     // TODO: Boatdude is moving too fast? He's stopping and then going...
 
+    @Override
     public void render(GameContainer container, StateBasedGame game,
                        Graphics g) {
 
@@ -87,6 +90,8 @@ public class LoadState extends BasicGameState {
 
     }
 
+
+    @Override
     public void update(GameContainer container, StateBasedGame game,
                        int delta) {
         Client client = (Client)game;
@@ -143,5 +148,7 @@ public class LoadState extends BasicGameState {
         soFar += delta;
     }
 
+
+    @Override
     public int getID(){ return Client.LOADSTATE; }
 }

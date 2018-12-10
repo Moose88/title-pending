@@ -66,6 +66,7 @@ public class LobbyState extends BasicGameState {
 
     private static int[] finalShip = new int[4];
 
+    @Override
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException{
 
@@ -190,6 +191,7 @@ public class LobbyState extends BasicGameState {
         return selection == option;
     }
 
+    @Override
     public void enter(GameContainer container, StateBasedGame game) {
         ResourceManager.getMusic(Client.LOBBY_MUSIC).loop(1, 3f);
         if(setCrew == 2 && !ResourceManager.getSound(Client.SCREAM_SOUND).playing()){
@@ -198,6 +200,7 @@ public class LobbyState extends BasicGameState {
 
     }
 
+    @Override
     public void leave(GameContainer container, StateBasedGame game){
         if(enteringGame){
             Initializer cmd = new Initializer(Updates.getInstance().getThread().getClientId());
@@ -237,6 +240,7 @@ public class LobbyState extends BasicGameState {
     }
 
 
+    @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) {
 
         //Draw menu background here
@@ -359,6 +363,7 @@ public class LobbyState extends BasicGameState {
 
     }
 
+    @Override
     public void update(GameContainer container, StateBasedGame game,
                        int delta) {
         if(setCrew ==  2){
@@ -615,6 +620,7 @@ public class LobbyState extends BasicGameState {
         }
     }
 
+    @Override
     public int getID(){ return Client.LOBBYSTATE; }
 
 }
