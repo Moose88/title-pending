@@ -1,6 +1,7 @@
 package org.titlepending.client;
 
 import org.titlepending.server.ServerObjects.Ship;
+import org.titlepending.server.ServerObjects.TurretObject;
 import org.titlepending.shared.ClientThread;
 import org.titlepending.shared.CommandObject;
 
@@ -11,6 +12,7 @@ public class Updates {
     private ConcurrentLinkedQueue<CommandObject> queue;
     private static Updates updates;
     private HashMap<Integer, Ship> Ships;
+    private HashMap<Integer, TurretObject> turrets;
     private Updates(){
         queue = new ConcurrentLinkedQueue<>();
     }
@@ -28,9 +30,13 @@ public class Updates {
         return queue;
     }
 
+    public void setTurrets(HashMap<Integer, TurretObject> turrets){this.turrets = turrets;}
+
     public void setShips(HashMap<Integer, Ship> Ships){this.Ships = Ships;}
 
     public void setThread(ClientThread thread) {this.thread = thread;}
+
+    public HashMap<Integer, TurretObject> getTurrets(){return turrets;}
 
     public HashMap<Integer, Ship> getShips(){return Ships;}
 

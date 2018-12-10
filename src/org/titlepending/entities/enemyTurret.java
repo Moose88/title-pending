@@ -28,5 +28,9 @@ public class enemyTurret extends Entity {
 
     }
 
+    public void setImage(){
+        hitbox.setLocation(this.getX(), this.getY());
+    }
+
 
 }

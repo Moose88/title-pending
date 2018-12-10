@@ -2,8 +2,10 @@ package org.titlepending.server;
 
 
 import org.titlepending.entities.ShipFactory;
+import org.titlepending.entities.turretFactory;
 import org.titlepending.server.ServerObjects.Ball;
 import org.titlepending.server.ServerObjects.Ship;
+import org.titlepending.server.ServerObjects.TurretObject;
 import org.titlepending.shared.*;
 
 import java.io.IOException;
@@ -177,6 +179,7 @@ public class Server {
         }
 
         HashMap<Integer, Ship> ships = new HashMap();
+        HashMap<Integer, TurretObject> turrets = new HashMap();
         double degree = Math.toRadians((float)360/players.size());
         double radAlpha;
         if(players.size()<=4){
@@ -185,6 +188,7 @@ public class Server {
             radAlpha = r3;
         }
         int playerNo = 1;
+        int turretNO = 27;
         //Entity.setCoarseGrainedCollisionBoundary(Entity.CIRCLE);
 
         while(!commands.isEmpty()){
@@ -199,20 +203,35 @@ public class Server {
             }
             double shipX;
             double shipY;
+
+            double turretX;
+            double turretY;
+
             if(DEBUG){
                 shipX = 27000;
                 shipY = 8000;
+
+                turretX = 27000;
+                turretY = 9000;
+
             }else{
                 shipX =(3200 + (radAlpha*Math.cos(degree*playerNo)));
                 shipY = (3200 + (radAlpha*Math.sin(degree*playerNo)));
             }
             if(DEBUG) System.out.println("Ship x: "+shipX+" Ship y: "+shipY);
-            Ship temp =ShipFactory.getInstance().createNewPlayerShip(shipX, shipY, cmd.getShip(), cmd.getId());
+            Ship temp = ShipFactory.getInstance().createNewPlayerShip(shipX, shipY, cmd.getShip(), cmd.getId());
+            TurretObject enemy = turretFactory.getInstance().createNewTurret((float) turretX, (float) turretY);
+
+
             if(DEBUG) System.out.println("Temp x: "+temp.getX()+" Temp y: "+temp.getY());
-            ships.put(cmd.getId(),temp);
-            playerNo +=1;
+            ships.put(cmd.getId(), temp);
+            turrets.put(enemy.getTurretID(), enemy);
+            playerNo += 1;
+            turretNO += 1;
 
         }
+
+
 
         if(DEBUG) System.out.println("Generated "+ships.size()+" ships.");
 

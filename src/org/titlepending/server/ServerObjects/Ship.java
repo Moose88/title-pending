@@ -6,8 +6,8 @@ public class Ship extends GameObject implements Serializable {
     private int[] stats;
     private float heading;
     public Ship(float x, float y, int playerID){
-        super(x,y,0,0);
-        this.playerID=playerID;
+        super(x, y, 0, 0);
+        this.playerID = playerID;
     }
 
 

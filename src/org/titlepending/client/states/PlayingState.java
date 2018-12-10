@@ -13,6 +13,7 @@ import org.titlepending.client.Updates;
 import org.titlepending.entities.*;
 import org.titlepending.entities.Character;
 import org.titlepending.server.ServerObjects.Ship;
+import org.titlepending.server.ServerObjects.TurretObject;
 import org.titlepending.shared.BallUpdater;
 import org.titlepending.shared.CommandObject;
 import org.titlepending.shared.ShipUpdater;
@@ -109,7 +110,18 @@ public class PlayingState extends BasicGameState {
             CShips.put(ship.getPlayerID(),temp);
         }
 
+        HashMap<Integer,TurretObject> turrets = Updates.getInstance().getTurrets();
+        Iterator n = turrets.entrySet().iterator();
+        while(n.hasNext()){
+            Map.Entry pair = (Map.Entry) i.next();
+            TurretObject turret = turrets.get(pair.getKey());
+            enemyTurret temp = new enemyTurret(turret.getX(), turret.getY(), 0);
+            temp.setImage();
+            enemyTurrets.put(turret.getTurretID(), temp);
+        }
+
         myBoat = CShips.get(Updates.getInstance().getThread().getClientId());
+
         if(Client.DEBUG) {
             System.out.println("After myBoat thread ID: " + Updates.getInstance().getThread().getClientId());
         }

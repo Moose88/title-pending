@@ -1,6 +1,7 @@
 package org.titlepending.shared;
 
 import org.titlepending.server.ServerObjects.Ship;
+import org.titlepending.server.ServerObjects.TurretObject;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ public class Initializer extends CommandObject implements Serializable {
     private int time;
     private int[] ship;
     private HashMap<Integer, Ship> Ships;
+    private HashMap<Integer, TurretObject> Turret;
 
     public Initializer(int id){
         super(id,0);
@@ -29,11 +31,13 @@ public class Initializer extends CommandObject implements Serializable {
     public void setTime(int time) {this.time = time;}
     public void setShip(int[] ship){this.ship=ship;}
     public void setShips(HashMap<Integer, Ship> Ships){this.Ships = Ships;}
+    public void setTurret(HashMap<Integer, TurretObject> Turrets){this.Turret = Turrets;}
 
     public boolean getready(){return ready;}
     public int getId(){return id;}
     public int getTime(){return time;}
     public int[] getShip(){return ship;}
     public HashMap<Integer, Ship> getShips(){return Ships;}
+    public HashMap<Integer, TurretObject> getTurret(){return Turret;}
 
 }
