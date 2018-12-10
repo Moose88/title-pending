@@ -1,6 +1,4 @@
-package org.titlepending.entities;
-
-import org.titlepending.server.ServerObjects.Ship;
+package org.titlepending.server.ServerObjects;
 
 import java.util.concurrent.ThreadLocalRandom;
 
