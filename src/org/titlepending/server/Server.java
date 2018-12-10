@@ -260,22 +260,26 @@ public class Server {
                     shipUpdater.setUpdated(true);
                 }else{
                     bUpdate = (BallUpdater) actions;
+                    if(DEBUG)
+                        System.out.println("Received information about "+bUpdate.getBallID());
                     if(!ballHashMap.containsKey(bUpdate.getBallID())){
                         ballUpdater = new Ball(
                                 bUpdate.getX(),
                                 bUpdate.getY(),
                                 bUpdate.getVx(),
                                 bUpdate.getVy(),
-                                bUpdate.getId(),
+                                bUpdate.getBallID(),
                                 bUpdate.getTtl(),
                                 bUpdate.getBallDestX(),
                                 bUpdate.getBallDestY(),
                                 bUpdate.getId()
                         );
-                        ballHashMap.put(actions.getId(),ballUpdater);
+                        ballHashMap.put(bUpdate.getBallID(),ballUpdater);
+                        if(DEBUG)
+                            System.out.println("Updating all clients about ball "+ballUpdater.getBallID());
                         updateBall(ballUpdater);
                     }else {
-                        if(actions.getIsDead()){
+                        if(bUpdate.getIsDead()){
                             if(DEBUG){
                                 System.out.println("Ball "+bUpdate.getBallID()+" hit something");
                             }
@@ -359,6 +363,7 @@ public class Server {
     }
     private static void updateBall(Ball ball){
         BallUpdater cmd = new BallUpdater(ball.getPlayerID());
+        cmd.setBallID(ball.getBallID());
         cmd.setX(ball.getX());
         cmd.setY(ball.getY());
         cmd.setVx(ball.getVx());
