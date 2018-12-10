@@ -236,7 +236,6 @@ public class PlayingState extends BasicGameState {
                     if(Client.DEBUG) System.out.println("Code for npc updates goes here");
                     break;
                 case 5:
-                    if(Client.DEBUG) System.out.println("Code for fog updates goes here");
                     theFog.update();
                     break;
                 case 6:
@@ -436,6 +435,11 @@ public class PlayingState extends BasicGameState {
             cmd.setVx(myBoat.getVelocity().getX());
             cmd.setVy(myBoat.getVelocity().getY());
             sendCommand(cmd);
+        }
+
+        Collision collision = myBoat.collides(theFog);
+        if(collision == null){
+            System.out.println("Danger Zone!");
         }
 
     }

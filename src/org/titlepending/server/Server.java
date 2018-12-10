@@ -200,8 +200,8 @@ public class Server {
             double shipX;
             double shipY;
             if(DEBUG){
-                shipX = 23900;
-                shipY = 23900;
+                shipX = 250;//23900;
+                shipY = 24000;
             }else{
                 shipX =(3200 + (radAlpha*Math.cos(degree*playerNo)));
                 shipY = (3200 + (radAlpha*Math.sin(degree*playerNo)));
@@ -391,7 +391,7 @@ public class Server {
             }
             if(fogTimer <=0){
                 updateAll(new FogUpdater(0));
-                fogTimer = 1000;
+                fogTimer = 100;
             }
             fogTimer -= delta;
         }
