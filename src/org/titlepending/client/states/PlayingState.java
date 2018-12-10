@@ -184,12 +184,14 @@ public class PlayingState extends BasicGameState {
         /** update all ships from server command before we do local updates **/
         ShipUpdater shipUpdater;
         BallUpdater ballUpdater;
+        WindUpdater windUpdater;
+        boolean changed = false;
+
         while(!Updates.getInstance().getQueue().isEmpty()){
             CommandObject cmd = Updates.getInstance().getQueue().poll();
             assert cmd !=null;
             if(cmd.getType()==1){
                 shipUpdater = (ShipUpdater) cmd;
-                //do stuff to client representation of ships
                 ClientShip update = CShips.get(shipUpdater.getUpdatedShip());
                 update.setPosition(shipUpdater.getX(),shipUpdater.getY());
                 if(shipUpdater.getUpdatedShip() != myBoat.getPlayerID())
@@ -213,11 +215,11 @@ public class PlayingState extends BasicGameState {
                     cannonBalls.put(newBall.getBallId(),newBall);
                 }
             }else{
-                if(Client.DEBUG)
-                    System.out.println("Received wind update");
-                WindUpdater windUpdater = (WindUpdater) cmd;
-                if(Client.DEBUG)
+                windUpdater = (WindUpdater) cmd;
                 wind.update(new Vector(windUpdater.getVx(),windUpdater.getVy()));
+                myBoat.updateVelocity(wind);
+                changed=true;
+                //check
             }
         }
 
@@ -258,7 +260,6 @@ public class PlayingState extends BasicGameState {
 
         
 
-        boolean changed = false;
         if(input.isKeyDown(Input.KEY_W) && bounceDelay <= 0){
             // Send raise anchor command to server
 
@@ -391,7 +392,8 @@ public class PlayingState extends BasicGameState {
         wind.update(myBoat.getX()+800,myBoat.getY()+450);
         character.setPosition(myBoat.getX()-750,myBoat.getY()+330);
         character.update(myBoat.getHealth());
-
+        if(!anchor)
+            myBoat.updateVelocity(wind);
         if(changed){
             ShipUpdater cmd = new ShipUpdater(Updates.getInstance().getThread().getClientId());
             cmd.setHeading(myBoat.getHeading());
