@@ -22,6 +22,9 @@ public class enemyTurret extends Entity {
     private float rotationRate;
     private float heading;
     private ConvexPolygon hitbox;
+
+
+
     private ConvexPolygon detectionCircle;
 
     private SpriteSheet test = new SpriteSheet(ResourceManager.getImage(Client.SS2_RSC), 32, 32);
@@ -56,6 +59,7 @@ public class enemyTurret extends Entity {
         // This is where we want to check for ships in our detection circle,
         // Then to rotate and fire at the first/remaining ships in its circle.
 
+
         this.setRotation(heading);
     }
 
@@ -63,6 +67,7 @@ public class enemyTurret extends Entity {
     public int getTurretID() { return turretID; }
     public int getHealth() { return health; }
     public boolean isDead() { return isDead; }
+    public ConvexPolygon getDetectionCircle() { return detectionCircle; }
 
     public void setHeading(float heading) { this.heading = heading; }
     public void setTurretID(int turretID) { this.turretID = turretID; }
