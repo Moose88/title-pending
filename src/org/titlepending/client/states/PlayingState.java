@@ -237,6 +237,7 @@ public class PlayingState extends BasicGameState {
                     break;
                 case 5:
                     if(Client.DEBUG) System.out.println("Code for fog updates goes here");
+                    theFog.update();
                     break;
                 case 6:
                     Finalizer end = (Finalizer) cmd;
@@ -284,7 +285,7 @@ public class PlayingState extends BasicGameState {
         bounceDelay -= delta;
         leftDelay-=delta;
         rightDelay-=delta;
-        Input input = container.getInput();
+       Input input = container.getInput();
 
 
 

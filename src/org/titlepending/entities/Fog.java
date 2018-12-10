@@ -12,20 +12,28 @@ import org.titlepending.client.Client;
 
 public class Fog extends Entity {
     private Vector velocity;
-    SpriteSheet RSC_128_128 = new SpriteSheet(ResourceManager.getImage(Client.SS2_RSC),128 ,128 );
+    SpriteSheet FogShape = new SpriteSheet(ResourceManager.getImage(Client.FOG_RSC),512 ,512 );
+    float rad = (float)150*32;
+    Shape fogS = new ConvexPolygon(rad);
     //you would call draw circle at the edge(300*32) and as time goes on decrease the radius
     // also want to call for a bit in the opposite direction for fog cover.
     public Fog(float dx, float dy) {
         super(dx,dy);
         velocity = new Vector(dx, dy);
-        addImage(RSC_128_128.getSubImage(2, 2).getScaledCopy(3f));
+        addImage(FogShape.getSubImage(0, 0).getScaledCopy(32f),new Vector(150,150));
         //addShape(new ConvexPolygon((float)(200*32), (float)(200*32)), new Vector(0, 0), Color.white, Color.white);
-        addShape(new ConvexPolygon((float)155*32),new Vector(32*150,32*150), new Color(200,100,100,100),Color.red);
+        //addShape(fogS,new Vector(150*16,150*16), new Color(200 ,100,100,100),Color.red);
 
     }
-//    public void update(){
-//
-//    }
+    public void update(){
+        removeShape(fogS);
+        if (rad > 25) {
+            rad = rad - 10;
+        }
+        fogS = new ConvexPolygon(rad);
+        addShape(fogS,new Vector(150*16,150*16), new Color(200 ,100,100,100),Color.red);
+        //removeShape();
+    }
 
 //    public void drawCircle(int x0, int y0, int radius){ //radius = 300*32 to start
 //    }
