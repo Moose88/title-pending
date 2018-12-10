@@ -34,6 +34,7 @@ public class ConnectState extends BasicGameState {
 
     private ClientThread thread;
     private boolean connectSuccess;
+    @Override
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException{
         thread = null;
@@ -41,6 +42,7 @@ public class ConnectState extends BasicGameState {
 
     }
 
+    @Override
     public void enter(GameContainer container, StateBasedGame game)
         throws SlickException{
         Client client = (Client) game;
@@ -66,11 +68,13 @@ public class ConnectState extends BasicGameState {
 
     }
 
+    @Override
     public void render(GameContainer container, StateBasedGame game,
                        Graphics g) throws SlickException{
 
     }
 
+    @Override
     public void update(GameContainer container, StateBasedGame game,
                        int delta) throws SlickException{
 
@@ -98,5 +102,6 @@ public class ConnectState extends BasicGameState {
         }
 
     }
+    @Override
     public int getID(){return Client.CONNECTSTATE; }
 }

@@ -26,6 +26,7 @@ public class Client extends StateBasedGame {
     public static final int OPTIONSMENUSTATE = 7;
     public static final int LOBBYSTATE = 8;
     public static final int REJECTSTATE= 9;
+    public static final int WINNINGSTATE=10;
 
     /**
      * These are all the game resources to include-

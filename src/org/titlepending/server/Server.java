@@ -358,6 +358,9 @@ public class Server {
                 }
             }
             prevTime = curTime;
+            if(players.size()==1){
+
+            }
         }
 
     }

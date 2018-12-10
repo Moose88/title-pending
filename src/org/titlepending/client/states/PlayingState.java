@@ -54,6 +54,7 @@ public class PlayingState extends BasicGameState {
 
     private WindIndicator wind;
 
+    @Override
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException {
         map = new TiledMap(Client.MAP_RSC);
@@ -82,6 +83,7 @@ public class PlayingState extends BasicGameState {
 
     }
 
+    @Override
     public void enter(GameContainer container, StateBasedGame game)
             throws SlickException{
 
@@ -179,6 +181,7 @@ public class PlayingState extends BasicGameState {
 
     }
 
+    @Override
     public void update(GameContainer container, StateBasedGame game,
                        int delta) throws SlickException{
         /** update all ships from server command before we do local updates **/
@@ -503,5 +506,6 @@ public class PlayingState extends BasicGameState {
     }
 
 
+    @Override
     public int getID(){return Client.PLAYINGSTATE; }
 }
