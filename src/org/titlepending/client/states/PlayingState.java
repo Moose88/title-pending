@@ -193,11 +193,17 @@ public class PlayingState extends BasicGameState {
             switch(cmd.getType()){
                 case 1:
                     shipUpdater = (ShipUpdater) cmd;
-                    ClientShip update = CShips.get(shipUpdater.getUpdatedShip());
-                    update.setPosition(shipUpdater.getX(),shipUpdater.getY());
-                    if(shipUpdater.getUpdatedShip() != myBoat.getPlayerID())
-                        update.setHeading(shipUpdater.getHeading());
-                    update.setVelocity(new Vector(shipUpdater.getVx(),shipUpdater.getVy()));
+                    if(CShips.containsKey(shipUpdater.getUpdatedShip())){
+                        ClientShip update = CShips.get(shipUpdater.getUpdatedShip());
+                        update.setPosition(shipUpdater.getX(),shipUpdater.getY());
+                        update.setDead(cmd.getIsDead());
+                        if(shipUpdater.getUpdatedShip() != myBoat.getPlayerID())
+                            update.setHeading(shipUpdater.getHeading());
+                        update.setVelocity(new Vector(shipUpdater.getVx(),shipUpdater.getVy()));
+                        if(update.getDead()){
+                            CShips.remove(update.getPlayerID());
+                        }
+                    }
                     break;
                 case 2:
                     ballUpdater = (BallUpdater) cmd;

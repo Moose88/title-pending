@@ -255,6 +255,7 @@ public class Server {
                         if(sUpdate.getIsDead()){
                             shipUpdater.setDead(true);
                             shipUpdater.setUpdated(true);
+                            updateShip(shipUpdater);
                             Finalizer update = new Finalizer(0);
                             update.setStateTransition(GAMEOVERSTATE);
                             for(ClientThread player : players){
@@ -263,6 +264,7 @@ public class Server {
                                     player.stopThread();
                                 }
                             }
+
                         }else{
                             if(DEBUG)
                                 System.out.println("Updating ship "+sUpdate.getId()+" vx: "+sUpdate.getVx()+" vy: "+sUpdate.getVy());
@@ -409,6 +411,7 @@ public class Server {
         cmd.setX(ship.getX());
         cmd.setY(ship.getY());
         cmd.setHeading(ship.getHeading());
+        cmd.setIsDead(ship.getDead());
        try{updateAll(cmd);}catch (IOException e){e.printStackTrace();}
 
     }
@@ -437,6 +440,7 @@ public class Server {
             startTime = System.currentTimeMillis();
         }
 
+        @Override
         public void run(){
             try {
                 listener = new ServerSocket(PORT);
