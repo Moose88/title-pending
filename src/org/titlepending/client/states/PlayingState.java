@@ -53,6 +53,7 @@ public class PlayingState extends BasicGameState {
     private static Image[] Dudeface = new Image[3];
 
     private WindIndicator wind;
+    private Fog theFog;
 
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException {
@@ -121,6 +122,7 @@ public class PlayingState extends BasicGameState {
 
         wind = new WindIndicator( container.getScreenWidth()-128,container.getHeight()-128);
         wind.setWind(new Wind(0,-1));
+        theFog = new Fog(30*32,30*32);
 
         cannonsTargeting = new TargetingComputer(myBoat);
         reticle = new TargetReticle(0,0);
@@ -141,7 +143,9 @@ public class PlayingState extends BasicGameState {
         g.pushTransform();
         g.scale(5, 5);
         map.render(0,0);
+        theFog.render(g);
         g.popTransform();
+
 
         for (Map.Entry<Integer, ClientShip> integerClientShipEntry : CShips.entrySet()) {
             ClientShip ship = CShips.get(((Map.Entry) integerClientShipEntry).getKey());
@@ -170,11 +174,11 @@ public class PlayingState extends BasicGameState {
             g.drawImage(left, 0, Ysofar);
             g.drawImage(right, Xsofar, Ysofar);
         }
-
         g.drawImage(topleft, 0, 0);
         g.drawImage(bottomleft, 0, client.ScreenHeight - bottomleft.getHeight());
         g.drawImage(topright, client.ScreenWidth - topright.getWidth(), 0);
         g.drawImage(bottomright, client.ScreenWidth - topright.getWidth(), client.ScreenHeight - bottomright.getHeight());
+
 
 
     }
