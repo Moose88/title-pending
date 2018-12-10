@@ -50,7 +50,6 @@ public class PlayingState extends BasicGameState {
     private static Image bottom;
     private static Image bottomleft;
     private static Image left;
-    private static Image[] Dudeface = new Image[3];
 
     private WindIndicator wind;
 
@@ -76,10 +75,6 @@ public class PlayingState extends BasicGameState {
         islandLayer = map.getLayerIndex("Tile Layer 2"); // = 2
         whirlpoolLayer = map.getLayerIndex("Tile Layer 3"); // = 1
         oceanLayer = map.getLayerIndex("Tile Layer 5"); // = 0
-
-
-
-
     }
 
     public void enter(GameContainer container, StateBasedGame game)
