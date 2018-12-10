@@ -4,7 +4,7 @@ public class Finalizer extends CommandObject {
     private int stateTransition;
 
     public Finalizer(int id){
-        super(id,5);
+        super(id,6);
     }
 
     public void setStateTransition(int stateTransition) {

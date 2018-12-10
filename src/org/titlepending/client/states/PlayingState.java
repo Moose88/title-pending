@@ -190,40 +190,54 @@ public class PlayingState extends BasicGameState {
         while(!Updates.getInstance().getQueue().isEmpty()){
             CommandObject cmd = Updates.getInstance().getQueue().poll();
             assert cmd !=null;
-            if(cmd.getType()==1){
-                shipUpdater = (ShipUpdater) cmd;
-                ClientShip update = CShips.get(shipUpdater.getUpdatedShip());
-                update.setPosition(shipUpdater.getX(),shipUpdater.getY());
-                if(shipUpdater.getUpdatedShip() != myBoat.getPlayerID())
-                    update.setHeading(shipUpdater.getHeading());
-                update.setVelocity(new Vector(shipUpdater.getVx(),shipUpdater.getVy()));
-            }else if(cmd.getType() ==2){
-                //do stuff to client representation of cannonballs
-                ballUpdater = (BallUpdater) cmd;
-                if(Client.DEBUG)
-                    System.out.println("Received information about ball "+ballUpdater.getBallID());
-                if(cannonBalls.containsKey(ballUpdater.getBallID())){
-                    CannonBall update = cannonBalls.get(ballUpdater.getBallID());
-                    if(ballUpdater.getIsDead()){
-                        cannonBalls.remove(ballUpdater.getBallID());
+            switch(cmd.getType()){
+                case 1:
+                    shipUpdater = (ShipUpdater) cmd;
+                    ClientShip update = CShips.get(shipUpdater.getUpdatedShip());
+                    update.setPosition(shipUpdater.getX(),shipUpdater.getY());
+                    if(shipUpdater.getUpdatedShip() != myBoat.getPlayerID())
+                        update.setHeading(shipUpdater.getHeading());
+                    update.setVelocity(new Vector(shipUpdater.getVx(),shipUpdater.getVy()));
+                    break;
+                case 2:
+                    ballUpdater = (BallUpdater) cmd;
+                    if(Client.DEBUG)
+                        System.out.println("Received information about ball "+ballUpdater.getBallID());
+                    if(cannonBalls.containsKey(ballUpdater.getBallID())){
+                        CannonBall updater = cannonBalls.get(ballUpdater.getBallID());
+                        if(ballUpdater.getIsDead()){
+                            cannonBalls.remove(ballUpdater.getBallID());
+                        }
+                        else{
+                            updater.setPosition(ballUpdater.getX(),ballUpdater.getY());
+                        }
+                    }else{
+                        CannonBall newBall = new CannonBall(ballUpdater.getX(),ballUpdater.getY(),ballUpdater.getBallDestX(),ballUpdater.getBallDestY(),ballUpdater.getHeading()+90,ballUpdater.getBallID(),cmd.getId());
+                        cannonBalls.put(newBall.getBallId(),newBall);
                     }
-                    else{
-                        update.setPosition(ballUpdater.getX(),ballUpdater.getY());
-                    }
-                }else{
-                    CannonBall newBall = new CannonBall(ballUpdater.getX(),ballUpdater.getY(),ballUpdater.getBallDestX(),ballUpdater.getBallDestY(),ballUpdater.getHeading()+90,ballUpdater.getBallID(),cmd.getId());
-                    cannonBalls.put(newBall.getBallId(),newBall);
-                }
-            }else if(cmd.getType()==3){
-                windUpdater = (WindUpdater) cmd;
-                wind.update(new Vector(windUpdater.getVx(),windUpdater.getVy()));
-                myBoat.updateVelocity(wind);
-                changed=true;
-            }else if(cmd.getType()==5){
-                Finalizer end = (Finalizer) cmd;
-                Updates.getInstance().getThread().stopThread();
-                Client client = (Client)game;
-                client.enterState(end.getStateTransition());
+                    break;
+                case 3:
+                    windUpdater = (WindUpdater) cmd;
+                    wind.update(new Vector(windUpdater.getVx(),windUpdater.getVy()));
+                    myBoat.updateVelocity(wind);
+                    changed=true;
+                    break;
+                case 4:
+                    if(Client.DEBUG) System.out.println("Code for npc updates goes here");
+                    break;
+                case 5:
+                    if(Client.DEBUG) System.out.println("Code for fog updates goes here");
+                    break;
+                case 6:
+                    Finalizer end = (Finalizer) cmd;
+                    Updates.getInstance().getThread().stopThread();
+                    Client client = (Client)game;
+                    client.enterState(end.getStateTransition());
+                    break;
+                default:
+                    System.out.println("Congrats you somehow broke it, see ya.");
+                    System.exit(-200);
+                    break;
             }
         }
 
