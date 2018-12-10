@@ -121,7 +121,7 @@ public class PlayingState extends BasicGameState {
 
         wind = new WindIndicator( container.getScreenWidth()-128,container.getHeight()-128);
         wind.setWind(new Wind(0,-1));
-        theFog = new Fog(30*32,30*32);
+        theFog = new Fog(4800,4800);
 
         cannonsTargeting = new TargetingComputer(myBoat);
         reticle = new TargetReticle(0,0);
