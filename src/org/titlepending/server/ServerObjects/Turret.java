@@ -1,16 +1,21 @@
 package org.titlepending.server.ServerObjects;
 
+import org.titlepending.server.Server;
+
 import java.io.Serializable;
 
-public class TurretObject extends GameObject implements Serializable {
+public class Turret extends GameObject implements Serializable {
 
     private int turretID;
     private float direction;
-
-    public TurretObject(float x, float y, int turretID){
+    private int health;
+    public Turret(float x, float y, int turretID){
         super(x, y, 0, 0);
         this.turretID = turretID;
-
+        if(Server.DEBUG)
+            health = 2;
+        else
+            health = 30;
     }
 
     public int getTurretID() {
@@ -23,5 +28,13 @@ public class TurretObject extends GameObject implements Serializable {
 
     public void setDirection(float direction){
         this.direction = direction;
+    }
+
+    public int getHealth(){
+        return health;
+    }
+
+    public void setHealth(int health){
+        this.health = health;
     }
 }

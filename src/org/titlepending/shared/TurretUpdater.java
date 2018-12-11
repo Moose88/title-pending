@@ -17,4 +17,5 @@ public class TurretUpdater extends CommandObject implements Serializable {
     public void setUpdatedTurret(int updatedTurret) { this.updatedTurret = updatedTurret; }
     public void setHeading(float heading) { this.heading = heading; }
 
+
 }

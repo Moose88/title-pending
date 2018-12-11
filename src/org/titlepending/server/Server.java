@@ -4,7 +4,7 @@ package org.titlepending.server;
 import org.titlepending.server.ServerObjects.ShipFactory;
 import org.titlepending.server.ServerObjects.Ball;
 import org.titlepending.server.ServerObjects.Ship;
-import org.titlepending.server.ServerObjects.TurretObject;
+import org.titlepending.server.ServerObjects.Turret;
 import org.titlepending.shared.*;
 import java.io.IOException;
 import java.net.*;
@@ -178,7 +178,7 @@ public class Server {
         }
 
 
-        HashMap<Integer, TurretObject> turrets = new HashMap();
+        HashMap<Integer, Turret> turrets = new HashMap();
         HashMap<Integer, Ship> ships = new HashMap<>();
 
         double degree = Math.toRadians((float)360/players.size());
@@ -232,7 +232,7 @@ public class Server {
         }
 
         for(int j = 0; j < turretNO; j++) {
-            TurretObject enemy = ShipFactory.getInstance().createNewTurret((float) ThreadLocalRandom.current().nextInt(1, 48000), (float) ThreadLocalRandom.current().nextInt(1, 48000));
+            Turret enemy = ShipFactory.getInstance().createNewTurret((float) ThreadLocalRandom.current().nextInt(1, 48000), (float) ThreadLocalRandom.current().nextInt(1, 48000));
             turrets.put(enemy.getTurretID(), enemy);
         }
 
@@ -333,7 +333,18 @@ public class Server {
                             }
                         }
                         break;
-                    case 4://Npc updates go here
+                    case 4:
+                        tUpdate = (TurretUpdater) actions;
+                        if(DEBUG){
+                            System.out.println("Receiving update of turret: "+tUpdate.getUpdatedTurret());
+                        }
+                        if(turrets.containsKey(tUpdate.getUpdatedTurret())){
+                            Turret turret = turrets.get(tUpdate.getUpdatedTurret());
+                            turret.setHealth(turret.getHealth()-1);
+                            if(turret.getHealth()<=0){
+                                updateTurrets(turret);
+                            }
+                        }
                         break;
                     default://Server will crash if it somehow receives a finalizer, wind update or fog update from a client
                         if(DEBUG)
@@ -421,6 +432,18 @@ public class Server {
         }
 
     }
+    private static void updateShip(Ship ship){
+        ShipUpdater cmd = new ShipUpdater(0);
+        cmd.setUpdatedShip(ship.getPlayerID());
+        cmd.setVy(ship.getVy());
+        cmd.setVx(ship.getVx());
+        cmd.setX(ship.getX());
+        cmd.setY(ship.getY());
+        cmd.setHeading(ship.getHeading());
+        cmd.setIsDead(ship.getDead());
+        try{updateAll(cmd);}catch (IOException e){e.printStackTrace();}
+
+    }
     private static void updateBall(Ball ball){
         BallUpdater cmd = new BallUpdater(ball.getPlayerID());
         cmd.setBallID(ball.getBallID());
@@ -433,18 +456,6 @@ public class Server {
         cmd.setBallDestY(ball.getDestY());
         try{updateAll(cmd);}catch (IOException e){e.printStackTrace();}
     }
-    private static void updateShip(Ship ship){
-        ShipUpdater cmd = new ShipUpdater(0);
-        cmd.setUpdatedShip(ship.getPlayerID());
-        cmd.setVy(ship.getVy());
-        cmd.setVx(ship.getVx());
-        cmd.setX(ship.getX());
-        cmd.setY(ship.getY());
-        cmd.setHeading(ship.getHeading());
-        cmd.setIsDead(ship.getDead());
-       try{updateAll(cmd);}catch (IOException e){e.printStackTrace();}
-
-    }
 
     private static void updateWind(){
         if(DEBUG)
@@ -456,6 +467,13 @@ public class Server {
         cmd.setVy(vy);
         try{updateAll(cmd);}catch (IOException e){e.printStackTrace();}
 
+    }
+
+    private static void updateTurrets(Turret turret){
+        TurretUpdater cmd = new TurretUpdater(0);
+        cmd.setUpdatedTurret(turret.getTurretID());
+        cmd.setIsDead(true);
+        try { updateAll(cmd);}catch (IOException e){e.printStackTrace();}
     }
     private static void updateAll(CommandObject action)throws IOException{
         for(ClientThread player : players){

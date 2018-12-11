@@ -34,7 +34,6 @@ public class EnemyTurret extends Entity {
         isDead =false;
         float center = (float) new Vector(x, y).angleTo(new Vector(3200*5, 3200*5));
         hitbox = new ConvexPolygon(50);
-        //detectionCircle = new ConvexPolygon(650);
         heading = center;
         setHeading(center);
         rotationRate = 0.08f;
@@ -61,7 +60,8 @@ public class EnemyTurret extends Entity {
 
     @Override
     public void render(Graphics g){
-        super.render(g);
+        if(!isDead)
+            super.render(g);
         if(Client.DEBUG){
             detectionCircle.render(g);
         }
@@ -84,7 +84,6 @@ public class EnemyTurret extends Entity {
     public int getTurretID() { return turretID; }
     public int getHealth() { return health; }
     public boolean isDead() { return isDead; }
-    //public ConvexPolygon getDetectionCircle() { return detectionCircle; }
 
     public void setHeading(float heading) { this.heading = heading; }
     public void setTurretID(int turretID) { this.turretID = turretID; }
