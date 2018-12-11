@@ -414,7 +414,7 @@ public class PlayingState extends BasicGameState {
                 Map.Entry pair = (Map.Entry) i.next();
                 EnemyTurret turret = enemyTurrets.get(pair.getKey());
                 Collision collision = cannonsTargeting.getTargetNet().collides(turret);
-                if(collision!=null) {
+                if(cannonsTargeting.getTargetNet().collides(turret)!=null) {
                     reticle.setVisible(true);
                     reticle.setPosition(turret.getX(),turret.getY());
                 }
@@ -482,20 +482,11 @@ public class PlayingState extends BasicGameState {
         // and have it fire on the player.
         for(Map.Entry<Integer, EnemyTurret> integerenemyTurretEntry : enemyTurrets.entrySet()){
             EnemyTurret turret = enemyTurrets.get(((Map.Entry) integerenemyTurretEntry).getKey());
-            Collision collides = myBoat.collides(turret);
             turret.update(delta);
-
-            if(collides != null){
-                if(Client.DEBUG)
-                    System.out.println("I'm in their circle.");
-
-                // FIRE!!!
-
-                CannonBall ball = turret.fireCannon(myBoat);
+            CannonBall ball = turret.fireCannon(myBoat);
                 if(ball != null)
                     buildBallCommand(ball,turret.getTurretID());
 
-            }
         }
 
         wind.update(myBoat.getX()+800,myBoat.getY()+450);
