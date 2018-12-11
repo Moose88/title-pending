@@ -9,7 +9,7 @@ import org.newdawn.slick.SpriteSheet;
 import org.titlepending.client.Client;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class enemyTurret extends Entity {
+public class EnemyTurret extends Entity {
 
     private int health;
     private int turretID;
@@ -24,14 +24,15 @@ public class enemyTurret extends Entity {
 
     private SpriteSheet test = new SpriteSheet(ResourceManager.getImage(Client.SS2_RSC), 32, 32);
 
-    public enemyTurret(float x, float y, float direction){
+    public EnemyTurret(float x, float y, float direction){
         super(x, y);
 
 
         // The x and y will be its initial placement on the map
         isDead =false;
         float center = (float) new Vector(x, y).angleTo(new Vector(3200*5, 3200*5));
-        hitbox = new ConvexPolygon(100);
+        hitbox = new ConvexPolygon(50);
+        this.setCoarseGrainedRadius(50);
         detectionCircle = new ConvexPolygon(650);
         heading = center;
         setHeading(center);
