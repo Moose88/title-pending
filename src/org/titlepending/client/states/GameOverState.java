@@ -34,15 +34,20 @@ public class GameOverState extends BasicGameState {
         Client client = (Client) game;
 
         // Background
-        g.drawImage(ResourceManager.getImage(Client.FRONT_MENU_RSC).getScaledCopy(3f), 0, 0);
+        g.drawImage(ResourceManager.getImage(Client.LOADING_SKY_RSC).getScaledCopy(client.ScreenWidth, client.ScreenHeight*5/7), 0, 0);
 
         // String
-        String statement = "You've been sunk! D:";
+        String statement = "You've been sunk!";
+        String statement2 = "Game Over";
         int textWidth = client.fontMenu.getWidth(statement);
+        int textWidth2 = client.fontMenu.getWidth(statement2);
+        int textHeight = client.fontMenu.getHeight(statement);
         g.setFont(client.fontMenu);
         g.setColor(Color.black);
 
-        g.drawString(statement, (client.ScreenWidth/2 - textWidth/2), client.ScreenHeight/2);
+        g.drawImage(ResourceManager.getImage(Client.LOADING_SEA_RSC).getScaledCopy(client.ScreenWidth, client.ScreenHeight), 0, 100);
+        g.drawString(statement, (client.ScreenWidth/2 - textWidth/2), client.ScreenHeight/2 - textHeight);
+        g.drawString(statement2, (client.ScreenWidth/2 - textWidth2/2), client.ScreenHeight/2);
 
     }
 

@@ -21,7 +21,7 @@ public class WinningState extends BasicGameState {
         if(Client.DEBUG){
             System.out.println("I'm da bes");
         }
-        
+
         SpriteSheet w_spark = new SpriteSheet(ResourceManager.getImage(Client.WHITE_SPARKLE_RSC).getScaledCopy(4f), 32 * 4, 32 * 4);
         whitesparkle = new Animation(w_spark, 0, 0, 3, 3, true, 50, true);
     }
