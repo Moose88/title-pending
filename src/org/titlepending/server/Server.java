@@ -213,8 +213,8 @@ public class Server {
 
 
             if(DEBUG){
-                shipX = 27000;
-                shipY = 8000;
+                shipX = 23900;//23900;
+                shipY = 23900;
             }else{
                 shipX =(3200 + (radAlpha*Math.cos(degree*playerNo)));
                 shipY = (3200 + (radAlpha*Math.sin(degree*playerNo)));
