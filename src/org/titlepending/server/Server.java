@@ -15,7 +15,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Server {
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public static List<ClientThread> players = new CopyOnWriteArrayList<>();
     private static final int PORT = 8000;
     private static final int PLIMIT = 8;
@@ -35,9 +35,10 @@ public class Server {
     public static final int REJECTSTATE= 9;
     public static final int WINNINGSTATE=10;
     private static final int turretNO = 200;
-    public static final int r1 = 896;
-    public static final int r2 = 1824;
-    public static final int r3 = 3200;
+    public static final int r1 = 11500;
+    public static final int r2 = 23000;
+    private static final int centerX = 24000;
+    private static final int centerY = 24000;
     public static void main(String[] args) throws IOException{
         if(Server.DEBUG){
             InetAddress Ip= InetAddress.getLocalHost();
@@ -185,9 +186,9 @@ public class Server {
         double degree = Math.toRadians((float)360/players.size());
         double radAlpha;
         if(players.size()<=4){
-            radAlpha = r2;
+            radAlpha = r1;
         }else{
-            radAlpha = r3;
+            radAlpha = r2;
         }
         int playerNo = 1;
         double turretX;
@@ -216,8 +217,8 @@ public class Server {
                 shipX = 23900;//23900;
                 shipY = 23900;
             }else{
-                shipX =(3200 + (radAlpha*Math.cos(degree*playerNo)));
-                shipY = (3200 + (radAlpha*Math.sin(degree*playerNo)));
+                shipX =(centerX + (radAlpha*Math.cos(degree*playerNo)));
+                shipY = (centerY + (radAlpha*Math.sin(degree*playerNo)));
             }
             if(DEBUG) System.out.println("Ship x: "+shipX+" Ship y: "+shipY);
             Ship temp = ShipFactory.getInstance().createNewPlayerShip(shipX, shipY, cmd.getShip(), cmd.getId());
