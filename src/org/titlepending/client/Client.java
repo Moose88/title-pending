@@ -36,8 +36,6 @@ public class Client extends StateBasedGame {
     // Map
     public static final String MAP_RSC = "org/titlepending/resources/images/Map.tmx";
 
-    // Backgrounds and images
-    public static final String STARTUP_BANNER_RSC = "org/titlepending/resources/images/startstatebackground.png";
     public static final String LOADING_SKY_RSC = "org/titlepending/resources/images/LoadSky.png";
     public static final String LOADING_SEA_RSC = "org/titlepending/resources/images/LoadOcean.png";
     public static final String SHIP_RSC = "org/titlepending/resources/images/ShipSS.png";

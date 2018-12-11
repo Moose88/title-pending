@@ -1,6 +1,7 @@
 package org.titlepending.client.states;
 
 import jig.ResourceManager;
+import org.lwjgl.Sys;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -28,7 +29,6 @@ public class LoadState extends BasicGameState {
 
 
         //Load your resources here using ResourceManager
-        ResourceManager.loadImage(Client.STARTUP_BANNER_RSC);
         ResourceManager.loadImage(Client.FRONT_MENU_RSC);
         ResourceManager.loadImage(Client.CHEST_RSC);
         ResourceManager.loadImage(Client.TREASURE_RSC);
