@@ -215,9 +215,6 @@ public class Server {
             if(DEBUG){
                 shipX = 27000;
                 shipY = 8000;
-
-
-
             }else{
                 shipX =(3200 + (radAlpha*Math.cos(degree*playerNo)));
                 shipY = (3200 + (radAlpha*Math.sin(degree*playerNo)));
@@ -270,6 +267,7 @@ public class Server {
         timer = 0;
         boolean updateAll = false;
         int windTimer = 0;
+        int fogTimer = 1000;
         HashMap<Integer,Ball>ballHashMap = new HashMap<>();
         while(inGame){
             //Empty command queue
@@ -415,6 +413,11 @@ public class Server {
                     player.stopThread();
                 }
             }
+            if(fogTimer <=0){
+                updateAll(new FogUpdater(0));
+                fogTimer = 100;
+            }
+            fogTimer -= delta;
         }
 
     }
