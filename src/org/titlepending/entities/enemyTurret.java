@@ -1,30 +1,30 @@
 package org.titlepending.entities;
 
-import jig.*;
+import jig.ConvexPolygon;
+import jig.Entity;
+import jig.ResourceManager;
+import jig.Vector;
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SpriteSheet;
-import org.newdawn.slick.geom.Circle;
 import org.titlepending.client.Client;
 import org.titlepending.client.entities.CannonBall;
 import org.titlepending.client.entities.ClientShip;
 import org.titlepending.client.entities.TargetingComputer;
+
 import java.util.HashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class enemyTurret extends Entity {
 
-    private HashMap<Integer, ClientShip> CShips;
-    private HashMap<Integer, CannonBall> cannonBalls;
-    private TargetingComputer cannonsTargeting;
     private int health;
     private int turretID;
     private boolean isDead;
     private float rotationRate;
     private float heading;
+    private int cannonCooldown;
+    private boolean justFired;
+
     private ConvexPolygon hitbox;
-
-
-
     private ConvexPolygon detectionCircle;
 
     private SpriteSheet test = new SpriteSheet(ResourceManager.getImage(Client.SS2_RSC), 32, 32);
@@ -59,9 +59,25 @@ public class enemyTurret extends Entity {
         // This is where we want to check for ships in our detection circle,
         // Then to rotate and fire at the first/remaining ships in its circle.
 
+        cannonCooldown -= delta;
 
-        this.setRotation(heading);
+        if(cannonCooldown <= 0)
+            justFired = false;
+
+        //this.setRotation(heading);
     }
+
+    public CannonBall fireCannon(ClientShip boat){
+        if(cannonCooldown > 0)
+            return null;
+
+        justFired = true;
+        cannonCooldown = 3000;
+        CannonBall ball = new CannonBall(this.getX(), this.getY(), boat.getX(), boat.getY(), +90, ThreadLocalRandom.current().nextInt(), turretID);
+        return ball;
+
+    }
+
 
     public float getHeading() { return heading; }
     public int getTurretID() { return turretID; }

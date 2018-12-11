@@ -454,32 +454,17 @@ public class PlayingState extends BasicGameState {
         for(Map.Entry<Integer, enemyTurret> integerenemyTurretEntry : enemyTurrets.entrySet()){
             enemyTurret turret = enemyTurrets.get(((Map.Entry) integerenemyTurretEntry).getKey());
             Collision collides = myBoat.collides(turret);
+            turret.update(delta);
+
             if(collides != null){
                 if(Client.DEBUG)
                     System.out.println("I'm in their circle.");
 
                 // FIRE!!!
 
-
-                i = cannonBalls.entrySet().iterator();
-                while (i.hasNext()){
-                    Map.Entry pair = (Map.Entry) i.next();
-                    CannonBall ball = cannonBalls.get(pair.getKey());
-                    Collision collision = ball.collides(myBoat);
-                    if(collision !=null
-                            && ball.getPlayerID() != myBoat.getPlayerID()){
-                        if(Client.DEBUG) {
-                            System.out.println("I got hit bois by ball "+ball.getBallId()+" from "+ball.getPlayerID());
-                        }
-                        myBoat.setHealth(myBoat.getHealth()-1);
-                        ballUpdater= new BallUpdater(myBoat.getPlayerID());
-                        ballUpdater.setBallID(ball.getBallId());
-                        ballUpdater.setIsDead(true);
-                        sendCommand(ballUpdater);
-                        ball.setDead(true);
-                    }
-
-                }
+                CannonBall ball = turret.fireCannon(myBoat);
+                if(ball != null)
+                    buildBallCommand(ball,turret.getTurretID());
 
             }
         }
@@ -525,10 +510,10 @@ public class PlayingState extends BasicGameState {
         if(Client.DEBUG)
             System.out.println("Sending cannonball with id "+ball.getBallId());
         cannonBalls.put(ball.getBallId(),ball);
-        buildBallCommand(ball);
+        buildBallCommand(ball,myBoat.getPlayerID());
     }
-    private void buildBallCommand(CannonBall ball) {
-        BallUpdater cmd = new BallUpdater(myBoat.getPlayerID());
+    private void buildBallCommand(CannonBall ball, int ID) {
+        BallUpdater cmd = new BallUpdater(ID);
         cmd.setX(ball.getX());
         cmd.setY(ball.getY());
         cmd.setVx(ball.getVelocity().getX());
