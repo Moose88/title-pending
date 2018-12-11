@@ -42,7 +42,10 @@ public class Client extends StateBasedGame {
     public static final String LOADING_SEA_RSC = "org/titlepending/resources/images/LoadOcean.png";
     public static final String SHIP_RSC = "org/titlepending/resources/images/ShipSS.png";
     public static final String SS2_RSC = "org/titlepending/resources/images/SS2.png";
-
+    public static final String TREASURE_RSC = "org/titlepending/resources/images/sheet.png";
+    public static final String CHEST_RSC = "org/titlepending/resources/images/treasure chest.png";
+    public static final String GREEN_SPARKLE_RSC = "org/titlepending/resources/images/Green Sparkle.png";
+    public static final String WHITE_SPARKLE_RSC = "org/titlepending/resources/images/White Sparkle.png";
     public static final String FOG_RSC = "org/titlepending/resources/images/Fog.png";
     public static final String FRONT_MENU_RSC = "org/titlepending/resources/images/bgnd.png";
     private static final String TEST_RSC = "org/titlepending/resources/images/PVCwAb3.png";

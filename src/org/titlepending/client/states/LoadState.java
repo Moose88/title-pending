@@ -30,7 +30,10 @@ public class LoadState extends BasicGameState {
         //Load your resources here using ResourceManager
         ResourceManager.loadImage(Client.STARTUP_BANNER_RSC);
         ResourceManager.loadImage(Client.FRONT_MENU_RSC);
-
+        ResourceManager.loadImage(Client.CHEST_RSC);
+        ResourceManager.loadImage(Client.TREASURE_RSC);
+        ResourceManager.loadImage(Client.WHITE_SPARKLE_RSC);
+        ResourceManager.loadImage(Client.GREEN_SPARKLE_RSC);
 
         ResourceManager.loadSound(Client.SOUND1);
         ResourceManager.loadSound(Client.SOUND2);

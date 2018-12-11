@@ -1,5 +1,7 @@
 package org.titlepending.client.states;
 
+import jig.ResourceManager;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -28,6 +30,19 @@ public class GameOverState extends BasicGameState {
     @Override
     public void render(GameContainer container, StateBasedGame game,
                        Graphics g) throws SlickException {
+
+        Client client = (Client) game;
+
+        // Background
+        g.drawImage(ResourceManager.getImage(Client.FRONT_MENU_RSC).getScaledCopy(3f), 0, 0);
+
+        // String
+        String statement = "You've been sunk! D:";
+        int textWidth = client.fontMenu.getWidth(statement);
+        g.setFont(client.fontMenu);
+        g.setColor(Color.black);
+
+        g.drawString(statement, (client.ScreenWidth/2 - textWidth/2), client.ScreenHeight/2);
 
     }
 
