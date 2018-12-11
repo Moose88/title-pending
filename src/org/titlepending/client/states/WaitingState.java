@@ -28,7 +28,7 @@ public class WaitingState extends BasicGameState {
         boatDude = new boatGuy();
         boatDude.speed = 1;
         boatDude.movement(250);
-        ResourceManager.getSound(Client.SCREAM_SOUND).loop(2f, 0.5f);
+        ResourceManager.getSound(Client.SCREAM_SOUND).loop(2f, 0.25f);
     }
 
     @Override
@@ -60,6 +60,7 @@ public class WaitingState extends BasicGameState {
             Updates.getInstance().setShips(cmd.getShips());
             Updates.getInstance().setTurrets(cmd.getTurret());
             ResourceManager.getSound(Client.SCREAM_SOUND).stop();
+            ResourceManager.getMusic(Client.GAME_MUSIC).loop();
             client.enterState(cmd.getStateTransition());
         }
 

@@ -46,6 +46,7 @@ public class LoadState extends BasicGameState {
         ResourceManager.loadMusic(Client.TITLE_MUSIC);
         ResourceManager.loadMusic(Client.LOBBY_MUSIC);
         ResourceManager.loadMusic(Client.HTP_MUSIC);
+        ResourceManager.loadMusic(Client.GAME_MUSIC);
 
     }
 
@@ -55,7 +56,7 @@ public class LoadState extends BasicGameState {
         boatDude = new boatGuy();
         boatDude.movement(0);
         ResourceManager.getSound(Client.SCREAM_SOUND).loop(1.6f, 0.07f);
-        ResourceManager.getSound(Client.LOADING_SOUND).loop();
+        ResourceManager.getSound(Client.LOADING_SOUND).loop(1, 0.5f);
 
 
     }

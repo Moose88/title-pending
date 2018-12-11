@@ -86,6 +86,7 @@ public class PlayingState extends BasicGameState {
             throws SlickException{
         map = new TiledMap(Client.MAP_RSC);
 
+
         islandLayer = map.getLayerIndex("Tile Layer 2"); // = 2
         whirlpoolLayer = map.getLayerIndex("Tile Layer 3"); // = 1
         oceanLayer = map.getLayerIndex("Tile Layer 5"); // = 0
@@ -586,6 +587,7 @@ public class PlayingState extends BasicGameState {
     private void checkIfDead(){
         if(myBoat.getHealth() <= 0 && !isDead){
             System.out.println("I am dead");
+            ResourceManager.getMusic(Client.GAME_MUSIC).stop();
             ShipUpdater cmd = new ShipUpdater(Updates.getInstance().getThread().getClientId());
             cmd.setUpdatedShip(myBoat.getPlayerID());
             cmd.setIsDead(true);
