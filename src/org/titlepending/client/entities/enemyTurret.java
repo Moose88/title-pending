@@ -1,4 +1,4 @@
-package org.titlepending.entities;
+package org.titlepending.client.entities;
 
 import jig.ConvexPolygon;
 import jig.Entity;
@@ -7,11 +7,6 @@ import jig.Vector;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.SpriteSheet;
 import org.titlepending.client.Client;
-import org.titlepending.client.entities.CannonBall;
-import org.titlepending.client.entities.ClientShip;
-import org.titlepending.client.entities.TargetingComputer;
-
-import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class enemyTurret extends Entity {

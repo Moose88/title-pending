@@ -12,7 +12,7 @@ import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
 import org.titlepending.client.entities.*;
 import org.titlepending.client.entities.Character;
-import org.titlepending.entities.enemyTurret;
+import org.titlepending.client.entities.enemyTurret;
 import org.titlepending.server.ServerObjects.Ship;
 import org.titlepending.server.ServerObjects.TurretObject;
 import org.titlepending.shared.BallUpdater;
