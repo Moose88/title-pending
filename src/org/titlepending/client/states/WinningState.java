@@ -6,9 +6,13 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.titlepending.client.Client;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class WinningState extends BasicGameState {
     private int timer;
     private Animation whitesparkle;
+    private int x;
+    private int y;
 
     @Override
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
@@ -18,9 +22,12 @@ public class WinningState extends BasicGameState {
     @Override
     public void enter(GameContainer container, StateBasedGame game) throws SlickException {
         super.enter(container, game);
+        Client client = (Client)game;
         if(Client.DEBUG){
             System.out.println("I'm da bes");
         }
+        x = ThreadLocalRandom.current().nextInt((int) (client.ScreenWidth * .1f), (int) (client.ScreenWidth * .9f));
+        y = ThreadLocalRandom.current().nextInt((int) (client.ScreenHeight * .75f), (int) (client.ScreenHeight * .9f));
 
         SpriteSheet w_spark = new SpriteSheet(ResourceManager.getImage(Client.WHITE_SPARKLE_RSC).getScaledCopy(4f), 32 * 4, 32 * 4);
         whitesparkle = new Animation(w_spark, 0, 0, 3, 3, true, 50, true);
@@ -44,7 +51,7 @@ public class WinningState extends BasicGameState {
 
         g.drawString(statement, (client.ScreenWidth/2 - textWidth/2), client.ScreenHeight/2);
         g.drawString(statement2, (client.ScreenWidth/2 - textWidth2/2), client.ScreenHeight/2 + textHeight);
-        g.drawAnimation(whitesparkle, client.ScreenWidth * .75f, client.ScreenHeight * .85f);
+        g.drawAnimation(whitesparkle, x, y);
 
     }
 
