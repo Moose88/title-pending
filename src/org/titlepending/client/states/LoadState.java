@@ -1,6 +1,7 @@
 package org.titlepending.client.states;
 
 import jig.ResourceManager;
+import org.lwjgl.Sys;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -28,9 +29,11 @@ public class LoadState extends BasicGameState {
 
 
         //Load your resources here using ResourceManager
-        ResourceManager.loadImage(Client.STARTUP_BANNER_RSC);
         ResourceManager.loadImage(Client.FRONT_MENU_RSC);
-        ResourceManager.loadImage(Client.CHARACTER_RSC);
+        ResourceManager.loadImage(Client.CHEST_RSC);
+        ResourceManager.loadImage(Client.TREASURE_RSC);
+        ResourceManager.loadImage(Client.WHITE_SPARKLE_RSC);
+        ResourceManager.loadImage(Client.GREEN_SPARKLE_RSC);
 
         ResourceManager.loadSound(Client.SOUND1);
         ResourceManager.loadSound(Client.SOUND2);
@@ -46,6 +49,7 @@ public class LoadState extends BasicGameState {
         ResourceManager.loadMusic(Client.TITLE_MUSIC);
         ResourceManager.loadMusic(Client.LOBBY_MUSIC);
         ResourceManager.loadMusic(Client.HTP_MUSIC);
+        ResourceManager.loadMusic(Client.GAME_MUSIC);
 
     }
 
@@ -55,7 +59,7 @@ public class LoadState extends BasicGameState {
         boatDude = new boatGuy();
         boatDude.movement(0);
         ResourceManager.getSound(Client.SCREAM_SOUND).loop(1.6f, 0.07f);
-        ResourceManager.getSound(Client.LOADING_SOUND).loop();
+        ResourceManager.getSound(Client.LOADING_SOUND).loop(1, 0.5f);
 
 
     }

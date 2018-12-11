@@ -28,7 +28,7 @@ public class WaitingState extends BasicGameState {
         boatDude = new boatGuy();
         boatDude.speed = 1;
         boatDude.movement(250);
-        ResourceManager.getSound(Client.SCREAM_SOUND).loop(2f, 0.5f);
+        ResourceManager.getSound(Client.SCREAM_SOUND).loop(2f, 0.25f);
     }
 
     @Override
@@ -36,14 +36,16 @@ public class WaitingState extends BasicGameState {
                        Graphics g){
         Client client = (Client) game;
 
-        g.drawImage(ResourceManager.getImage(Client.FRONT_MENU_RSC).getScaledCopy(3f), 0, 0);
+        g.drawImage(ResourceManager.getImage(Client.LOADING_SKY_RSC).getScaledCopy(client.ScreenWidth, client.ScreenHeight*5/7), 0, 0);
         String string1 = "Game world is building, please wait...";
 
+        int textWidth = client.fontMenu.getWidth(string1);
         g.setFont(client.fontMenu);
         g.setColor(Color.black);
-        g.drawString(string1, client.ScreenWidth/2f - g.getFont().getWidth(string1)/2f, client.ScreenHeight/2f - g.getFont().getHeight(string1)/2f);
 
-        boatDude.render(g, client.ScreenHeight* 6/10);
+        boatDude.render(g, 500);
+        g.drawImage(ResourceManager.getImage(Client.LOADING_SEA_RSC).getScaledCopy(client.ScreenWidth, client.ScreenHeight*5/7), 0, 200);
+        g.drawString(string1, (client.ScreenWidth/2 - textWidth/2), client.ScreenHeight*.9f);
 
     }
 
@@ -58,7 +60,9 @@ public class WaitingState extends BasicGameState {
             Initializer cmd =(Initializer) Updates.getInstance().getQueue().poll();
             Client client = (Client) game;
             Updates.getInstance().setShips(cmd.getShips());
+            Updates.getInstance().setTurrets(cmd.getTurret());
             ResourceManager.getSound(Client.SCREAM_SOUND).stop();
+            ResourceManager.getMusic(Client.GAME_MUSIC).loop();
             client.enterState(cmd.getStateTransition());
         }
 

@@ -21,7 +21,7 @@ public class CannonBall extends Entity {
         super(x,y);
         SpriteSheet ss = ResourceManager.getSpriteSheet(Client.SS2_RSC, 32, 32);
         Vector dest = new Vector(destX,destY);
-        Image image = ss.getSubImage(3,0);
+        Image image = ss.getSubImage(3,0).getScaledCopy(1.5f);
         Animation smoke = new Animation(ss,4,0,6,0,true,300,false);
         addImage(image);
         velocity = new Vector(0,-.5f).rotate(getPosition().angleTo(dest)+rotation);
