@@ -405,14 +405,12 @@ public class PlayingState extends BasicGameState {
         }
 
 
-        if(!theFog.getHitBox().contains(myBoat.getX(),myBoat.getY())&& fogTimer <=0){
+        if(getDistToCenter() > theFog.getRadius() && fogTimer <= 0){
             //myBoat.setHealth(myBoat.getHealth()-1);
             if(Client.DEBUG)
-                System.out.println("Danger Zone!");
-            fogTimer = 10000;
-        }else if(fogTimer <=0){
-            if(Client.DEBUG)
-                System.out.println("Safe Zone");
+                System.out.println("Distance to center: "+getDistToCenter()+" fog radius: "+theFog.getRadius());
+            myBoat.setHealth(myBoat.getHealth()-1);
+            fogTimer = 2000;
         }
 
         if(!notanIsland(myBoat.getHitbox()) && bounceDelay <= 0){
@@ -512,6 +510,15 @@ public class PlayingState extends BasicGameState {
 
         return true;
 
+    }
+
+    private float getDistToCenter(){
+        Vector pos = myBoat.getPosition();
+        Vector center = new Vector(24000,24000);
+
+        float result = pos.distance(center);
+
+        return result;
     }
 
     public boolean isGameInProgress(){

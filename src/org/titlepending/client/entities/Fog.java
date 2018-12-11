@@ -35,6 +35,9 @@ public class Fog extends Entity {
 
     public Circle getHitBox(){return test;}
 
+    public float getRadius(){
+           return test.getRadius()*5;
+    }
     @Override
     public void render(Graphics g){
            super.render(g);
