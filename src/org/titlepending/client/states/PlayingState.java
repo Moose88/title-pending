@@ -568,9 +568,7 @@ public class PlayingState extends BasicGameState {
         Vector pos = myBoat.getPosition();
         Vector center = new Vector(24000,24000);
 
-        float result = pos.distance(center);
-
-        return result;
+        return pos.distance(center);
     }
 
     public boolean isGameInProgress(){
