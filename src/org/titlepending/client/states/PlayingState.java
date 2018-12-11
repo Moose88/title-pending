@@ -15,7 +15,7 @@ import org.titlepending.client.entities.*;
 import org.titlepending.client.entities.Character;
 import org.titlepending.client.entities.EnemyTurret;
 import org.titlepending.server.ServerObjects.Ship;
-import org.titlepending.server.ServerObjects.TurretObject;
+import org.titlepending.server.ServerObjects.Turret;
 import org.titlepending.shared.BallUpdater;
 import org.titlepending.shared.CommandObject;
 import org.titlepending.shared.ShipUpdater;
@@ -98,17 +98,10 @@ public class PlayingState extends BasicGameState {
         System.out.println("Made it to the playing state");
         bounceDelay =0;
         HashMap<Integer,Ship> ships = Updates.getInstance().getShips();
-        HashMap<Integer,TurretObject> turrets = Updates.getInstance().getTurrets();
+        HashMap<Integer, Turret> turrets = Updates.getInstance().getTurrets();
         this.cannonBalls = new HashMap<>();
         this.CShips = new HashMap<>();
         this.enemyTurrets = new HashMap<>();
-
-        if(Client.DEBUG){
-            System.out.println("Attepting to create tiled map from: "+Client.MAP_RSC);
-        }
-        if(Client.DEBUG) {
-            System.out.println("Before myBoat thread ID: " + Updates.getInstance().getThread().getClientId());
-        }
 
         Iterator i = ships.entrySet().iterator();
 
@@ -127,12 +120,13 @@ public class PlayingState extends BasicGameState {
         Iterator n = turrets.entrySet().iterator();
         while(n.hasNext()){
             Map.Entry pair = (Map.Entry) n.next();
-            TurretObject turret = turrets.get(pair.getKey());
+            Turret turret = turrets.get(pair.getKey());
             if(Client.DEBUG){
                 System.out.println("Turret ID: " + turret.getTurretID() + " x: " + turret.getX() + " y: " + turret.getY());
             }
             EnemyTurret temp = new EnemyTurret(turret.getX(), turret.getY(), 0);
             temp.setImage();
+            temp.setTurretID(turret.getTurretID());
             enemyTurrets.put(turret.getTurretID(), temp);
         }
 
@@ -238,6 +232,7 @@ public class PlayingState extends BasicGameState {
         ShipUpdater shipUpdater;
         BallUpdater ballUpdater;
         WindUpdater windUpdater;
+        TurretUpdater turretUpdater;
         boolean changed = false;
 
         while(!Updates.getInstance().getQueue().isEmpty()){
@@ -282,7 +277,14 @@ public class PlayingState extends BasicGameState {
                     changed=true;
                     break;
                 case 4:
-                    if(Client.DEBUG) System.out.println("Code for npc updates goes here");
+                    turretUpdater =(TurretUpdater) cmd;
+                    if(Client.DEBUG)
+                        System.out.println("Updating turret "+turretUpdater.getId());
+                    if(enemyTurrets.containsKey(turretUpdater.getUpdatedTurret())){
+                        EnemyTurret turret = enemyTurrets.get(turretUpdater.getUpdatedTurret());
+                        turret.setDead(true);
+                        enemyTurrets.remove(turretUpdater.getUpdatedTurret());
+                    }
                     break;
                 case 5:
                     theFog.update();
@@ -450,6 +452,24 @@ public class PlayingState extends BasicGameState {
                 sendCommand(ballUpdater);
                 ball.setDead(true);
             }
+            Iterator j = enemyTurrets.entrySet().iterator();
+            while (j.hasNext()){
+                pair = (Map.Entry) j.next();
+                EnemyTurret turret = enemyTurrets.get(pair.getKey());
+                collision = ball.collides(turret);
+                if(collision != null
+                        && ball.getPlayerID() != turret.getTurretID()
+                        && ball.getPlayerID() == myBoat.getPlayerID()){
+                    if(Client.DEBUG)
+                        System.out.println("Attempting to update turret: "+turret.getTurretID());
+                    buildTurretUpdater(turret);
+                    ballUpdater= new BallUpdater(myBoat.getPlayerID());
+                    ballUpdater.setBallID(ball.getBallId());
+                    ballUpdater.setIsDead(true);
+                    sendCommand(ballUpdater);
+                    ball.setDead(true);
+                }
+            }
 
         }
 
@@ -551,6 +571,16 @@ public class PlayingState extends BasicGameState {
         cmd.setTtl(ball.getTtl());
         cmd.setBallDestX(ball.getDestX());
         cmd.setBallDestY(ball.getDestY());
+        sendCommand(cmd);
+    }
+
+    private void buildTurretUpdater(EnemyTurret turret){
+        if(Client.DEBUG){
+            System.out.println("Attempting to update turret: "+turret.getTurretID());
+        }
+        System.out.println();
+        TurretUpdater cmd = new TurretUpdater(myBoat.getPlayerID());
+        cmd.setUpdatedTurret(turret.getTurretID());
         sendCommand(cmd);
     }
 
