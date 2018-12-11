@@ -4,6 +4,7 @@ import jig.Collision;
 import jig.ConvexPolygon;
 import jig.ResourceManager;
 import jig.Vector;
+import org.lwjgl.Sys;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -43,6 +44,7 @@ public class PlayingState extends BasicGameState {
     private int bounceDelay;
     private int rightDelay;
     private int leftDelay;
+    private int CDBuff;
     private TargetingComputer cannonsTargeting;
     private TargetReticle reticle;
     private boolean anchor;
@@ -154,6 +156,18 @@ public class PlayingState extends BasicGameState {
 
         character = new Character(myBoat.getHealth(), myBoat.getStats()[3],0, 0);
         fogTimer = 10000;
+
+        if(myBoat.getStats()[3] == 2){
+            CDBuff = 500;
+        } else
+            CDBuff = 0;
+
+
+        if(Client.DEBUG) {
+            System.out.println("My HP is: " + myBoat.getHealth());
+            System.out.println("My Speed is: " + myBoat.getSailVector());
+            System.out.println("My Cannon Cooldown is: " + CDBuff/1000f);
+        }
     }
 
     public void render(GameContainer container, StateBasedGame game,
@@ -303,16 +317,6 @@ public class PlayingState extends BasicGameState {
 
         }
 
-        i = CShips.entrySet().iterator();
-        while(i.hasNext()){
-            Map.Entry pair = (Map.Entry) i.next();
-            if(myBoat.getDetectionCircle().contains(CShips.get(pair.getKey()).getX(), CShips.get(pair.getKey()).getY())
-                    && CShips.get(pair.getKey()).getPlayerID() != myBoat.getPlayerID()){
-//                if(Client.DEBUG)
-//                    System.out.println("O LAWD HE COMIN!");
-            }
-        }
-
         fogTimer-=delta;
         bounceDelay -= delta;
         leftDelay-=delta;
@@ -390,9 +394,9 @@ public class PlayingState extends BasicGameState {
                     }
                 }
                 if(!cannonsTargeting.getFireRight() && justFired)
-                    leftDelay=3000;
+                    leftDelay = 3000 - CDBuff;
                 else if(justFired)
-                    rightDelay=3000;
+                    rightDelay = 3000 - CDBuff;
             }
         }
 
