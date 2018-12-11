@@ -31,6 +31,7 @@ public class PlayingState extends BasicGameState {
     private int whirlpoolLayer;
     private boolean isDead;
     private Character character;
+    private int fogTimer;
 
     private int bounceDelay;
     private int rightDelay;
@@ -128,6 +129,7 @@ public class PlayingState extends BasicGameState {
         rightDelay=leftDelay=0;
 
         character = new Character(myBoat.getHealth(), myBoat.getStats()[3],0, 0);
+        fogTimer = 10000;
     }
 
     public void render(GameContainer container, StateBasedGame game,
@@ -280,11 +282,12 @@ public class PlayingState extends BasicGameState {
             }
         }
 
-
+        fogTimer-=delta;
         bounceDelay -= delta;
         leftDelay-=delta;
         rightDelay-=delta;
-       Input input = container.getInput();
+
+        Input input = container.getInput();
 
 
 
@@ -381,10 +384,11 @@ public class PlayingState extends BasicGameState {
 
 
         i=cannonBalls.entrySet().iterator();
+        Collision collision;
         while (i.hasNext()){
             Map.Entry pair = (Map.Entry) i.next();
             CannonBall ball =cannonBalls.get(pair.getKey());
-            Collision collision = ball.collides(myBoat);
+            collision = ball.collides(myBoat);
             if(collision !=null
                     && ball.getPlayerID() != myBoat.getPlayerID()){
                 if(Client.DEBUG) {
@@ -398,6 +402,14 @@ public class PlayingState extends BasicGameState {
                 ball.setDead(true);
             }
 
+        }
+
+
+        if(theFog.collides(myBoat)==null && fogTimer <=0){
+            //myBoat.setHealth(myBoat.getHealth()-1);
+            if(Client.DEBUG)
+                System.out.println("Danger Zone!");
+            fogTimer = 10000;
         }
 
         if(!notanIsland(myBoat.getHitbox()) && bounceDelay <= 0){
@@ -426,20 +438,17 @@ public class PlayingState extends BasicGameState {
         wind.update(myBoat.getX()+800,myBoat.getY()+450);
         character.setPosition(myBoat.getX()-750,myBoat.getY()+330);
         character.update(myBoat.getHealth());
+
         checkIfDead();
-        if(!anchor && bounceDelay <= 0)
+        if(!anchor && bounceDelay <= 0) {
             myBoat.updateVelocity(wind);
+        }
         if(changed){
             ShipUpdater cmd = new ShipUpdater(Updates.getInstance().getThread().getClientId());
             cmd.setHeading(myBoat.getHeading());
             cmd.setVx(myBoat.getVelocity().getX());
             cmd.setVy(myBoat.getVelocity().getY());
             sendCommand(cmd);
-        }
-
-        Collision collision = myBoat.collides(theFog);
-        if(collision == null){
-            System.out.println("Danger Zone!");
         }
 
     }
@@ -537,7 +546,7 @@ public class PlayingState extends BasicGameState {
             System.out.println("Current heading: " + myBoat.getHeading() + " New heading: " +  a);
         }
         myBoat.setHealth(myBoat.getHealth()-2);
-        myBoat.setVelocity(myBoat.getVelocity().scale(-1));
+        myBoat.bouncedVelocity();
         //myBoat.setVelocity(new Vector(myBoat.getVelocity().setRotation(a)));
 
     }
