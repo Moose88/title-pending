@@ -1,13 +1,26 @@
 ## Resources ##
 
-Resources that are needed for the Client and Server
+Resources that are needed for the Client or Server
 
 ## Issues ##
-* Textures for ships
-* Textures for islands
-* Textures for water
-* Textures for items
-* Textures for the fog
-* Character images
+* Font Resources
+    * N/A
+
+* Sound Resources
+    * Explosion sounds for Cannons
+    * Sounds for when taking damage
+
+* Image Resources
+    * Needed images for other character expressions
+    * Background compass for wind arrow
+    * Red border to flash when taking damage
+    * Turret images
+
+* Music Resources
+    * N/A
+
 ## Resolved ##
-* Background Pictures
+
+* TileMap input
+* Dirk Character images/Expressions completed
+* Zog and Terry Splashes completed, need Expressions

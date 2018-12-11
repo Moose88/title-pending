@@ -1,7 +1,18 @@
 ## Map ##
-Using a tiled map
+Log for the Map and all contained within it
+
 ## Issues ##
+
 * Islands
+    * Reshape islands to better discern island tiles
+
 * Whirlpool
-* Ship Placement - Level manager
+    * Add Whirlpool mechanic
+
+* Ship Placement
+
+* Animations
+
 ## Resolved ##
+
+* Map has 3 layers

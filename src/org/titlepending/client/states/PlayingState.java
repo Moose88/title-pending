@@ -4,6 +4,7 @@ import jig.Collision;
 import jig.ConvexPolygon;
 import jig.ResourceManager;
 import jig.Vector;
+import org.lwjgl.Sys;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -14,7 +15,7 @@ import org.titlepending.client.entities.*;
 import org.titlepending.client.entities.Character;
 import org.titlepending.client.entities.EnemyTurret;
 import org.titlepending.server.ServerObjects.Ship;
-import org.titlepending.server.ServerObjects.TurretObject;
+import org.titlepending.server.ServerObjects.Turret;
 import org.titlepending.shared.BallUpdater;
 import org.titlepending.shared.CommandObject;
 import org.titlepending.shared.ShipUpdater;
@@ -43,6 +44,7 @@ public class PlayingState extends BasicGameState {
     private int bounceDelay;
     private int rightDelay;
     private int leftDelay;
+    private int CDBuff;
     private TargetingComputer cannonsTargeting;
     private TargetReticle reticle;
     private boolean anchor;
@@ -88,6 +90,7 @@ public class PlayingState extends BasicGameState {
             throws SlickException{
         map = new TiledMap(Client.MAP_RSC);
 
+
         islandLayer = map.getLayerIndex("Tile Layer 2"); // = 2
         whirlpoolLayer = map.getLayerIndex("Tile Layer 3"); // = 1
         oceanLayer = map.getLayerIndex("Tile Layer 5"); // = 0
@@ -95,17 +98,10 @@ public class PlayingState extends BasicGameState {
         System.out.println("Made it to the playing state");
         bounceDelay =0;
         HashMap<Integer,Ship> ships = Updates.getInstance().getShips();
-        HashMap<Integer,TurretObject> turrets = Updates.getInstance().getTurrets();
+        HashMap<Integer, Turret> turrets = Updates.getInstance().getTurrets();
         this.cannonBalls = new HashMap<>();
         this.CShips = new HashMap<>();
         this.enemyTurrets = new HashMap<>();
-
-        if(Client.DEBUG){
-            System.out.println("Attepting to create tiled map from: "+Client.MAP_RSC);
-        }
-        if(Client.DEBUG) {
-            System.out.println("Before myBoat thread ID: " + Updates.getInstance().getThread().getClientId());
-        }
 
         Iterator i = ships.entrySet().iterator();
 
@@ -124,12 +120,13 @@ public class PlayingState extends BasicGameState {
         Iterator n = turrets.entrySet().iterator();
         while(n.hasNext()){
             Map.Entry pair = (Map.Entry) n.next();
-            TurretObject turret = turrets.get(pair.getKey());
+            Turret turret = turrets.get(pair.getKey());
             if(Client.DEBUG){
                 System.out.println("Turret ID: " + turret.getTurretID() + " x: " + turret.getX() + " y: " + turret.getY());
             }
             EnemyTurret temp = new EnemyTurret(turret.getX(), turret.getY(), 0);
             temp.setImage();
+            temp.setTurretID(turret.getTurretID());
             enemyTurrets.put(turret.getTurretID(), temp);
         }
 
@@ -153,6 +150,18 @@ public class PlayingState extends BasicGameState {
 
         character = new Character(myBoat.getHealth(), myBoat.getStats()[3],0, 0);
         fogTimer = 10000;
+
+        if(myBoat.getStats()[3] == 2){
+            CDBuff = 500;
+        } else
+            CDBuff = 0;
+
+
+        if(Client.DEBUG) {
+            System.out.println("My HP is: " + myBoat.getHealth());
+            System.out.println("My Speed is: " + myBoat.getSailVector());
+            System.out.println("My Cannon Cooldown is: " + CDBuff/1000f);
+        }
     }
 
     public void render(GameContainer container, StateBasedGame game,
@@ -223,6 +232,7 @@ public class PlayingState extends BasicGameState {
         ShipUpdater shipUpdater;
         BallUpdater ballUpdater;
         WindUpdater windUpdater;
+        TurretUpdater turretUpdater;
         boolean changed = false;
 
         while(!Updates.getInstance().getQueue().isEmpty()){
@@ -267,7 +277,14 @@ public class PlayingState extends BasicGameState {
                     changed=true;
                     break;
                 case 4:
-                    if(Client.DEBUG) System.out.println("Code for npc updates goes here");
+                    turretUpdater =(TurretUpdater) cmd;
+                    if(Client.DEBUG)
+                        System.out.println("Updating turret "+turretUpdater.getId());
+                    if(enemyTurrets.containsKey(turretUpdater.getUpdatedTurret())){
+                        EnemyTurret turret = enemyTurrets.get(turretUpdater.getUpdatedTurret());
+                        turret.setDead(true);
+                        enemyTurrets.remove(turretUpdater.getUpdatedTurret());
+                    }
                     break;
                 case 5:
                     theFog.update();
@@ -302,16 +319,6 @@ public class PlayingState extends BasicGameState {
                 ball.update(delta);
             }
 
-        }
-
-        i = CShips.entrySet().iterator();
-        while(i.hasNext()){
-            Map.Entry pair = (Map.Entry) i.next();
-            if(myBoat.getDetectionCircle().contains(CShips.get(pair.getKey()).getX(), CShips.get(pair.getKey()).getY())
-                    && CShips.get(pair.getKey()).getPlayerID() != myBoat.getPlayerID()){
-//                if(Client.DEBUG)
-//                    System.out.println("O LAWD HE COMIN!");
-            }
         }
 
         fogTimer-=delta;
@@ -391,9 +398,9 @@ public class PlayingState extends BasicGameState {
                     }
                 }
                 if(!cannonsTargeting.getFireRight() && justFired)
-                    leftDelay=3000;
+                    leftDelay = 3000 - CDBuff;
                 else if(justFired)
-                    rightDelay=3000;
+                    rightDelay = 3000 - CDBuff;
             }
         }
 
@@ -444,6 +451,24 @@ public class PlayingState extends BasicGameState {
                 ballUpdater.setIsDead(true);
                 sendCommand(ballUpdater);
                 ball.setDead(true);
+            }
+            Iterator j = enemyTurrets.entrySet().iterator();
+            while (j.hasNext()){
+                pair = (Map.Entry) j.next();
+                EnemyTurret turret = enemyTurrets.get(pair.getKey());
+                collision = ball.collides(turret);
+                if(collision != null
+                        && ball.getPlayerID() != turret.getTurretID()
+                        && ball.getPlayerID() == myBoat.getPlayerID()){
+                    if(Client.DEBUG)
+                        System.out.println("Attempting to update turret: "+turret.getTurretID());
+                    buildTurretUpdater(turret);
+                    ballUpdater= new BallUpdater(myBoat.getPlayerID());
+                    ballUpdater.setBallID(ball.getBallId());
+                    ballUpdater.setIsDead(true);
+                    sendCommand(ballUpdater);
+                    ball.setDead(true);
+                }
             }
 
         }
@@ -549,6 +574,16 @@ public class PlayingState extends BasicGameState {
         sendCommand(cmd);
     }
 
+    private void buildTurretUpdater(EnemyTurret turret){
+        if(Client.DEBUG){
+            System.out.println("Attempting to update turret: "+turret.getTurretID());
+        }
+        System.out.println();
+        TurretUpdater cmd = new TurretUpdater(myBoat.getPlayerID());
+        cmd.setUpdatedTurret(turret.getTurretID());
+        sendCommand(cmd);
+    }
+
     private boolean notanIsland(ConvexPolygon hitbox){
 
         float minX = myBoat.getX() + hitbox.getMinX();
@@ -571,9 +606,7 @@ public class PlayingState extends BasicGameState {
         Vector pos = myBoat.getPosition();
         Vector center = new Vector(24000,24000);
 
-        float result = pos.distance(center);
-
-        return result;
+        return pos.distance(center);
     }
 
     public boolean isGameInProgress(){
@@ -619,6 +652,7 @@ public class PlayingState extends BasicGameState {
     private void checkIfDead(){
         if(myBoat.getHealth() <= 0 && !isDead){
             System.out.println("I am dead");
+            ResourceManager.getMusic(Client.GAME_MUSIC).stop();
             ShipUpdater cmd = new ShipUpdater(Updates.getInstance().getThread().getClientId());
             cmd.setUpdatedShip(myBoat.getPlayerID());
             cmd.setIsDead(true);

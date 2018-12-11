@@ -518,7 +518,7 @@ public class LobbyState extends BasicGameState {
         }
 
         // Left and right selection for Cannons
-        if(key == Input.KEY_LEFT && selection == CANNONS){
+        if(key == Input.KEY_RIGHT && selection == CANNONS){
             if(setCannons >= 2){
                 if(hullMod[setHull] + sailMod[setSails] + cannonMod[0] <= 15) {
                     ResourceManager.getSound(Client.MENU_CLICK).play();
@@ -534,7 +534,7 @@ public class LobbyState extends BasicGameState {
             save();
         }
 
-        if(key == Input.KEY_RIGHT && selection == CANNONS){
+        if(key == Input.KEY_LEFT && selection == CANNONS){
             if(setCannons <= 0) {
                 if(hullMod[setHull] + sailMod[setSails] + cannonMod[2] <= 15) {
                     ResourceManager.getSound(Client.MENU_CLICK).play();

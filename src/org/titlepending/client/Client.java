@@ -36,15 +36,17 @@ public class Client extends StateBasedGame {
     // Map
     public static final String MAP_RSC = "org/titlepending/resources/images/Map.tmx";
 
-    // Backgrounds and images
-    public static final String STARTUP_BANNER_RSC = "org/titlepending/resources/startstatebackground.png";
-    public static final String LOADING_SKY_RSC = "org/titlepending/resources/LoadSky.png";
-    public static final String LOADING_SEA_RSC = "org/titlepending/resources/LoadOcean.png";
+    public static final String LOADING_SKY_RSC = "org/titlepending/resources/images/LoadSky.png";
+    public static final String LOADING_SEA_RSC = "org/titlepending/resources/images/LoadOcean.png";
     public static final String SHIP_RSC = "org/titlepending/resources/images/ShipSS.png";
     public static final String SS2_RSC = "org/titlepending/resources/images/SS2.png";
+    public static final String TREASURE_RSC = "org/titlepending/resources/images/sheet.png";
+    public static final String CHEST_RSC = "org/titlepending/resources/images/treasure chest.png";
+    public static final String GREEN_SPARKLE_RSC = "org/titlepending/resources/images/Green Sparkle.png";
+    public static final String WHITE_SPARKLE_RSC = "org/titlepending/resources/images/White Sparkle.png";
     public static final String FOG_RSC = "org/titlepending/resources/images/Fog.png";
-    public static final String FRONT_MENU_RSC = "org/titlepending/resources/bgnd.png";
-    private static final String TEST_RSC = "org/titlepending/resources/PVCwAb3.png";
+    public static final String FRONT_MENU_RSC = "org/titlepending/resources/images/bgnd.png";
+    private static final String TEST_RSC = "org/titlepending/resources/images/PVCwAb3.png";
     public static final String CHARACTER_RSC = "org/titlepending/resources/images/Characters.png";
 
     // Fonts
@@ -57,9 +59,9 @@ public class Client extends StateBasedGame {
     public static final String GAME_MUSIC = "org/titlepending/resources/music/Pirate_Theme.wav";
 
     // Sounds
-    public static final String LOADING_SOUND = "org/titlepending/resources/WaveSound.wav";
-    public static final String SCREAM_SOUND = "org/titlepending/resources/AAAGH1.wav";
-    public static final String MENU_CLICK = "org/titlepending/resources/MenuClick.wav";
+    public static final String LOADING_SOUND = "org/titlepending/resources/game sounds/WaveSound.wav";
+    public static final String SCREAM_SOUND = "org/titlepending/resources/game sounds/AAAGH1.wav";
+    public static final String MENU_CLICK = "org/titlepending/resources/game sounds/MenuClick.wav";
 
     // Testing resources go here
     public static final String SOUND1 = "org/titlepending/resources/game sounds/Explosion1.wav";
