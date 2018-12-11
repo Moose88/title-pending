@@ -94,8 +94,8 @@ public class PlayingState extends BasicGameState {
         islandLayer = map.getLayerIndex("Tile Layer 2"); // = 2
         whirlpoolLayer = map.getLayerIndex("Tile Layer 3"); // = 1
         oceanLayer = map.getLayerIndex("Tile Layer 5"); // = 0
-
-        System.out.println("Made it to the playing state");
+        if(Client.DEBUG)
+            System.out.println("Made it to the playing state");
         bounceDelay =0;
         HashMap<Integer,Ship> ships = Updates.getInstance().getShips();
         HashMap<Integer, Turret> turrets = Updates.getInstance().getTurrets();
@@ -296,7 +296,8 @@ public class PlayingState extends BasicGameState {
                     client.enterState(end.getStateTransition());
                     break;
                 default:
-                    System.out.println("Congrats you somehow broke it, see ya.");
+                    if(Client.DEBUG)
+                        System.out.println("Congrats you somehow broke it, see ya.");
                     System.exit(-200);
                     break;
             }
@@ -578,7 +579,6 @@ public class PlayingState extends BasicGameState {
         if(Client.DEBUG){
             System.out.println("Attempting to update turret: "+turret.getTurretID());
         }
-        System.out.println();
         TurretUpdater cmd = new TurretUpdater(myBoat.getPlayerID());
         cmd.setUpdatedTurret(turret.getTurretID());
         sendCommand(cmd);
@@ -651,7 +651,8 @@ public class PlayingState extends BasicGameState {
 
     private void checkIfDead(){
         if(myBoat.getHealth() <= 0 && !isDead){
-            System.out.println("I am dead");
+            if(Client.DEBUG)
+                System.out.println("I am dead");
             ResourceManager.getMusic(Client.GAME_MUSIC).stop();
             ShipUpdater cmd = new ShipUpdater(Updates.getInstance().getThread().getClientId());
             cmd.setUpdatedShip(myBoat.getPlayerID());
