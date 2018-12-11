@@ -13,7 +13,7 @@ import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
 import org.titlepending.client.entities.*;
 import org.titlepending.client.entities.Character;
-import org.titlepending.client.entities.enemyTurret;
+import org.titlepending.client.entities.EnemyTurret;
 import org.titlepending.server.ServerObjects.Ship;
 import org.titlepending.server.ServerObjects.TurretObject;
 import org.titlepending.shared.BallUpdater;
@@ -30,7 +30,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class PlayingState extends BasicGameState {
     private HashMap<Integer, ClientShip> CShips;
-    private HashMap<Integer, enemyTurret> enemyTurrets;
+    private HashMap<Integer, EnemyTurret> enemyTurrets;
     private HashMap<Integer, CannonBall> cannonBalls;
     private ClientShip myBoat;
     private TiledMap map;
@@ -131,7 +131,7 @@ public class PlayingState extends BasicGameState {
             if(Client.DEBUG){
                 System.out.println("Turret ID: " + turret.getTurretID() + " x: " + turret.getX() + " y: " + turret.getY());
             }
-            enemyTurret temp = new enemyTurret(turret.getX(), turret.getY(), 0);
+            EnemyTurret temp = new EnemyTurret(turret.getX(), turret.getY(), 0);
             temp.setImage();
             enemyTurrets.put(turret.getTurretID(), temp);
         }
@@ -182,7 +182,6 @@ public class PlayingState extends BasicGameState {
         g.pushTransform();
         g.scale(5, 5);
         map.render(0,0);
-        theFog.render(g);
         g.popTransform();
 
 
@@ -191,8 +190,8 @@ public class PlayingState extends BasicGameState {
             ship.render(g);
         }
 
-        for(Map.Entry<Integer, enemyTurret> integerenemyTurretEntry : enemyTurrets.entrySet()){
-            enemyTurret turret = enemyTurrets.get(((Map.Entry) integerenemyTurretEntry).getKey());
+        for(Map.Entry<Integer, EnemyTurret> integerenemyTurretEntry : enemyTurrets.entrySet()){
+            EnemyTurret turret = enemyTurrets.get(((Map.Entry) integerenemyTurretEntry).getKey());
             turret.render(g);
         }
 
@@ -202,7 +201,10 @@ public class PlayingState extends BasicGameState {
             CannonBall ball = cannonBalls.get(((Map.Entry) integerCannonBallEntry).getKey());
             ball.render(g);
         }
-
+        g.pushTransform();
+        g.scale(5,5);
+        theFog.render(g);
+        g.popTransform();
         wind.render(g);
         character.render(g);
         g.popTransform();
@@ -414,6 +416,17 @@ public class PlayingState extends BasicGameState {
                     }
                 }
             }
+            i = enemyTurrets.entrySet().iterator();
+            while (i.hasNext()){
+                Map.Entry pair = (Map.Entry) i.next();
+                EnemyTurret turret = enemyTurrets.get(pair.getKey());
+                Collision collision = cannonsTargeting.getTargetNet().collides(turret);
+                if(cannonsTargeting.getTargetNet().collides(turret)!=null) {
+                    reticle.setVisible(true);
+                    reticle.setPosition(turret.getX(),turret.getY());
+                }
+
+            }
         } else{
             reticle.setVisible(false);
         }
@@ -474,22 +487,13 @@ public class PlayingState extends BasicGameState {
 
         // Check to see if the ship is contained within the turret. If yes, change turret heading
         // and have it fire on the player.
-        for(Map.Entry<Integer, enemyTurret> integerenemyTurretEntry : enemyTurrets.entrySet()){
-            enemyTurret turret = enemyTurrets.get(((Map.Entry) integerenemyTurretEntry).getKey());
-            Collision collides = myBoat.collides(turret);
+        for(Map.Entry<Integer, EnemyTurret> integerenemyTurretEntry : enemyTurrets.entrySet()){
+            EnemyTurret turret = enemyTurrets.get(((Map.Entry) integerenemyTurretEntry).getKey());
             turret.update(delta);
-
-            if(collides != null){
-                if(Client.DEBUG)
-                    System.out.println("I'm in their circle.");
-
-                // FIRE!!!
-
-                CannonBall ball = turret.fireCannon(myBoat);
+            CannonBall ball = turret.fireCannon(myBoat);
                 if(ball != null)
                     buildBallCommand(ball,turret.getTurretID());
 
-            }
         }
 
         wind.update(myBoat.getX()+800,myBoat.getY()+450);

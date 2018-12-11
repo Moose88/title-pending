@@ -213,7 +213,6 @@ public class Server {
 
 
             if(DEBUG){
-
                 shipX = 23900;//23900;
                 shipY = 23900;
             }else{
