@@ -44,8 +44,8 @@ public class Client extends StateBasedGame {
     public static final String SS2_RSC = "org/titlepending/resources/images/SS2.png";
 
     public static final String FOG_RSC = "org/titlepending/resources/images/Fog.png";
-    public static final String FRONT_MENU_RSC = "org/titlepending/resources/bgnd.png";
-    private static final String TEST_RSC = "org/titlepending/resources/PVCwAb3.png";
+    public static final String FRONT_MENU_RSC = "org/titlepending/resources/images/bgnd.png";
+    private static final String TEST_RSC = "org/titlepending/resources/images/PVCwAb3.png";
     public static final String CHARACTER_RSC = "org/titlepending/resources/images/Characters.png";
 
     // Fonts
