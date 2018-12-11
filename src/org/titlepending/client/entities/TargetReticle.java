@@ -10,7 +10,6 @@ import org.newdawn.slick.SpriteSheet;
 import org.titlepending.client.Client;
 
 public class TargetReticle extends Entity {
-    ConvexPolygon shape;
 
     private boolean isVisible;
 
@@ -19,7 +18,7 @@ public class TargetReticle extends Entity {
         SpriteSheet sheet = new SpriteSheet(ResourceManager.getImage(Client.SS2_RSC), 128, 128);
         Image redReticle = sheet.getSubImage(3, 0).getScaledCopy(.75f);
 
-        shape = new ConvexPolygon(30);
+        ConvexPolygon shape = new ConvexPolygon(30);
         addShape(shape, Color.transparent, Color.transparent);
         addImage(redReticle);
         isVisible=false;
