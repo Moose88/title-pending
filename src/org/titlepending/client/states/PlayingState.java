@@ -38,6 +38,7 @@ public class PlayingState extends BasicGameState {
     private int whirlpoolLayer;
     private boolean isDead;
     private Character character;
+    private int fogTimer;
 
     private int bounceDelay;
     private int rightDelay;
@@ -56,6 +57,7 @@ public class PlayingState extends BasicGameState {
     private static Image left;
 
     private WindIndicator wind;
+    private Fog theFog;
 
     @Override
     public void init(GameContainer container, StateBasedGame game)
@@ -144,12 +146,14 @@ public class PlayingState extends BasicGameState {
 
         wind = new WindIndicator( container.getScreenWidth()-128,container.getHeight()-128);
         wind.setWind(new Wind(0,-1));
+        theFog = new Fog(4800,4800);
 
         cannonsTargeting = new TargetingComputer(myBoat);
         reticle = new TargetReticle(0,0);
         rightDelay=leftDelay=0;
 
         character = new Character(myBoat.getHealth(), myBoat.getStats()[3],0, 0);
+        fogTimer = 10000;
     }
 
     public void render(GameContainer container, StateBasedGame game,
@@ -164,7 +168,9 @@ public class PlayingState extends BasicGameState {
         g.pushTransform();
         g.scale(5, 5);
         map.render(0,0);
+        theFog.render(g);
         g.popTransform();
+
 
         for (Map.Entry<Integer, ClientShip> integerClientShipEntry : CShips.entrySet()) {
             ClientShip ship = CShips.get(((Map.Entry) integerClientShipEntry).getKey());
@@ -199,11 +205,11 @@ public class PlayingState extends BasicGameState {
             g.drawImage(left, 0, Ysofar);
             g.drawImage(right, Xsofar, Ysofar);
         }
-
         g.drawImage(topleft, 0, 0);
         g.drawImage(bottomleft, 0, client.ScreenHeight - bottomleft.getHeight());
         g.drawImage(topright, client.ScreenWidth - topright.getWidth(), 0);
         g.drawImage(bottomright, client.ScreenWidth - topright.getWidth(), client.ScreenHeight - bottomright.getHeight());
+
 
 
     }
@@ -263,7 +269,7 @@ public class PlayingState extends BasicGameState {
                     if(Client.DEBUG) System.out.println("Code for npc updates goes here");
                     break;
                 case 5:
-                    if(Client.DEBUG) System.out.println("Code for fog updates goes here");
+                    theFog.update();
                     break;
                 case 6:
                     Finalizer end = (Finalizer) cmd;
@@ -307,10 +313,11 @@ public class PlayingState extends BasicGameState {
             }
         }
 
-
+        fogTimer-=delta;
         bounceDelay -= delta;
         leftDelay-=delta;
         rightDelay-=delta;
+
         Input input = container.getInput();
 
 
@@ -409,10 +416,11 @@ public class PlayingState extends BasicGameState {
 
 
         i=cannonBalls.entrySet().iterator();
+        Collision collision;
         while (i.hasNext()){
             Map.Entry pair = (Map.Entry) i.next();
             CannonBall ball =cannonBalls.get(pair.getKey());
-            Collision collision = ball.collides(myBoat);
+            collision = ball.collides(myBoat);
             if(collision !=null
                     && ball.getPlayerID() != myBoat.getPlayerID()){
                 if(Client.DEBUG) {
@@ -426,6 +434,16 @@ public class PlayingState extends BasicGameState {
                 ball.setDead(true);
             }
 
+        }
+
+
+        if(getDistToCenter() > theFog.getRadius() && fogTimer <= 0){
+            //myBoat.setHealth(myBoat.getHealth()-1);
+            if(Client.DEBUG)
+                System.out.println("Distance to center: "+getDistToCenter()+" fog radius: "+theFog.getRadius());
+            else
+                myBoat.setHealth(myBoat.getHealth()-1);
+            fogTimer = 2000;
         }
 
         if(!notanIsland(myBoat.getHitbox()) && bounceDelay <= 0){
@@ -473,9 +491,11 @@ public class PlayingState extends BasicGameState {
         wind.update(myBoat.getX()+800,myBoat.getY()+450);
         character.setPosition(myBoat.getX()-750,myBoat.getY()+330);
         character.update(myBoat.getHealth());
+
         checkIfDead();
-        if(!anchor && bounceDelay <= 0)
+        if(!anchor && bounceDelay <= 0) {
             myBoat.updateVelocity(wind);
+        }
         if(changed){
             ShipUpdater cmd = new ShipUpdater(Updates.getInstance().getThread().getClientId());
             cmd.setHeading(myBoat.getHeading());
@@ -544,6 +564,15 @@ public class PlayingState extends BasicGameState {
 
     }
 
+    private float getDistToCenter(){
+        Vector pos = myBoat.getPosition();
+        Vector center = new Vector(24000,24000);
+
+        float result = pos.distance(center);
+
+        return result;
+    }
+
     public boolean isGameInProgress(){
         return false;
     }
@@ -579,7 +608,7 @@ public class PlayingState extends BasicGameState {
             System.out.println("Current heading: " + myBoat.getHeading() + " New heading: " +  a);
         }
         myBoat.setHealth(myBoat.getHealth()-2);
-        myBoat.setVelocity(myBoat.getVelocity().scale(-1));
+        myBoat.bouncedVelocity();
         //myBoat.setVelocity(new Vector(myBoat.getVelocity().setRotation(a)));
 
     }

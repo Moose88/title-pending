@@ -177,6 +177,10 @@ public class ClientShip extends Entity {
 
         }
     }
+    public void bouncedVelocity(){
+        updateVelocity();
+        setVelocity(getVelocity().scale(-1));
+    }
 
     public void updateVelocity(Vector stop){
         setVelocity(stop.setRotation(heading));
