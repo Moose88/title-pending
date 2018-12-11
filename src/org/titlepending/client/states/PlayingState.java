@@ -167,7 +167,6 @@ public class PlayingState extends BasicGameState {
         g.pushTransform();
         g.scale(5, 5);
         map.render(0,0);
-        theFog.render(g);
         g.popTransform();
 
 
@@ -187,7 +186,10 @@ public class PlayingState extends BasicGameState {
             CannonBall ball = cannonBalls.get(((Map.Entry) integerCannonBallEntry).getKey());
             ball.render(g);
         }
-
+        g.pushTransform();
+        g.scale(5,5);
+        theFog.render(g);
+        g.popTransform();
         wind.render(g);
         character.render(g);
         g.popTransform();
