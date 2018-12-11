@@ -405,11 +405,14 @@ public class PlayingState extends BasicGameState {
         }
 
 
-        if(theFog.collides(myBoat)==null && fogTimer <=0){
+        if(!theFog.getHitBox().contains(myBoat.getX(),myBoat.getY())&& fogTimer <=0){
             //myBoat.setHealth(myBoat.getHealth()-1);
             if(Client.DEBUG)
                 System.out.println("Danger Zone!");
             fogTimer = 10000;
+        }else if(fogTimer <=0){
+            if(Client.DEBUG)
+                System.out.println("Safe Zone");
         }
 
         if(!notanIsland(myBoat.getHitbox()) && bounceDelay <= 0){
