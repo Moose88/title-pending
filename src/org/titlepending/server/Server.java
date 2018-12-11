@@ -189,6 +189,13 @@ public class Server {
             radAlpha = r3;
         }
         int playerNo = 1;
+        int turretNO = 100;
+        double turretX;
+        double turretY;
+        if(DEBUG){
+            turretX = 26880 + 80;
+            turretY = 8640 + 80;
+        }
 
         while(!commands.isEmpty()){
             //construct player ships here
@@ -203,15 +210,13 @@ public class Server {
             double shipX;
             double shipY;
 
-            double turretX;
-            double turretY;
+
 
             if(DEBUG){
                 shipX = 27000;
                 shipY = 8000;
 
-                turretX = 26880 + 80;
-                turretY = 8640 + 80;
+
 
             }else{
                 shipX =(3200 + (radAlpha*Math.cos(degree*playerNo)));
@@ -219,14 +224,19 @@ public class Server {
             }
             if(DEBUG) System.out.println("Ship x: "+shipX+" Ship y: "+shipY);
             Ship temp = ShipFactory.getInstance().createNewPlayerShip(shipX, shipY, cmd.getShip(), cmd.getId());
-            TurretObject enemy = ShipFactory.getInstance().createNewTurret((float) turretX, (float) turretY);
 
 
             if(DEBUG) System.out.println("Temp x: "+temp.getX()+" Temp y: "+temp.getY());
             ships.put(cmd.getId(), temp);
-            turrets.put(enemy.getTurretID(), enemy);
+
             playerNo += 1;
 
+
+        }
+
+        for(int j = 0; j < turretNO; j++) {
+            TurretObject enemy = ShipFactory.getInstance().createNewTurret((float) ThreadLocalRandom.current().nextInt(1, 48000), (float) ThreadLocalRandom.current().nextInt(1, 48000));
+            turrets.put(enemy.getTurretID(), enemy);
         }
 
         if(DEBUG) System.out.println("Generated "+ships.size()+" ships and " + turrets.size() + " turrets.");
