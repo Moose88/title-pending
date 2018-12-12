@@ -415,7 +415,7 @@ public class PlayingState extends BasicGameState {
                     Collision collision = cannonsTargeting.getTargetNet().collides(ship);
                     if(collision!=null){
                         reticle.setVisible(true);
-                        reticle.setPosition(ship.getX(),ship.getY());
+                        reticle.setPosition(ship.getX()+(ship.getVelocity().scale(8*delta).getX()),ship.getY()+(ship.getVelocity().scale(8*delta).getY()));
                     }
                 }
             }
