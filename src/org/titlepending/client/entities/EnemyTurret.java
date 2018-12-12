@@ -24,7 +24,7 @@ public class EnemyTurret extends Entity {
     private ConvexPolygon hitbox;
     private TurretTargetNet detectionCircle;
 
-    private SpriteSheet test = new SpriteSheet(ResourceManager.getImage(Client.SS2_RSC), 32, 32);
+    private SpriteSheet RSC_64_64 = new SpriteSheet(ResourceManager.getImage(Client.SS2_RSC), 64, 64);
 
     public EnemyTurret(float x, float y, float direction){
         super(x, y);
@@ -42,7 +42,8 @@ public class EnemyTurret extends Entity {
     }
 
     public void setImage(){
-        addShape(hitbox, Color.red, Color.black);
+        addShape(hitbox, Color.transparent, Color.transparent);
+        addImage(RSC_64_64.getSubImage(5, 0).getScaledCopy(1.5f));
 
     }
 
