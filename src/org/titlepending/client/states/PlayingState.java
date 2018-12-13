@@ -516,6 +516,12 @@ public class PlayingState extends BasicGameState {
             CannonBall ball = turret.fireCannon(myBoat);
                 if(ball != null)
                     buildBallCommand(ball,turret.getTurretID());
+            collision = turret.collides(myBoat);
+            if(collision !=null){
+                myBoat.updateheading(collision.getMinPenetration().getRotation());
+                collisionTimer=1000;
+                changed=true;
+            }
 
         }
 
