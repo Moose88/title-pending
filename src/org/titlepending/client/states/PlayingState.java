@@ -327,6 +327,7 @@ public class PlayingState extends BasicGameState {
         bounceDelay -= delta;
         leftDelay-=delta;
         rightDelay-=delta;
+        collisionTimer -= delta;
 
         Input input = container.getInput();
 
@@ -529,7 +530,7 @@ public class PlayingState extends BasicGameState {
 
         for(Map.Entry<Integer,ClientShip>  integerClientShipEntry : CShips.entrySet()){
             ClientShip other = CShips.get(((Map.Entry) integerClientShipEntry).getKey());
-            if(other.getPlayerID() != myBoat.getPlayerID()){
+            if(other.getPlayerID() != myBoat.getPlayerID()&&collisionTimer<0){
                 collision = myBoat.collides(other);
                 if(collision != null){
                     if(Client.DEBUG)
