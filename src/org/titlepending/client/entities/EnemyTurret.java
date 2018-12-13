@@ -84,7 +84,7 @@ public class EnemyTurret extends Entity {
         if(detectionCircle.collides(boat)==null)
             return null;
         justFired = true;
-        cannonCooldown = 3000;
+        cannonCooldown = 1000;
         CannonBall ball = new CannonBall(this.getX(), this.getY(), targetReticle.getX(), targetReticle.getY(), +90, ThreadLocalRandom.current().nextInt(), turretID);
         return ball;
 
