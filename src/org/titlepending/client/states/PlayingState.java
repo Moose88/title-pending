@@ -517,8 +517,10 @@ public class PlayingState extends BasicGameState {
                 if(ball != null)
                     buildBallCommand(ball,turret.getTurretID());
             collision = turret.collides(myBoat);
-            if(collision !=null){
+            if(collision !=null && bounceDelay <=0){
                 bounce();
+                bounceDelay +=1000;
+                changed = true;
             }
 
         }
