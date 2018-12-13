@@ -40,7 +40,7 @@ public class PlayingState extends BasicGameState {
     private boolean isDead;
     private Character character;
     private int fogTimer;
-
+    private int collisionTimer;
     private int bounceDelay;
     private int rightDelay;
     private int leftDelay;
@@ -150,6 +150,7 @@ public class PlayingState extends BasicGameState {
 
         character = new Character(myBoat.getHealth(), myBoat.getStats()[3],0, 0);
         fogTimer = 10000;
+        collisionTimer = 0;
 
         if(myBoat.getStats()[3] == 2){
             CDBuff = 500;
@@ -326,6 +327,7 @@ public class PlayingState extends BasicGameState {
         bounceDelay -= delta;
         leftDelay-=delta;
         rightDelay-=delta;
+        collisionTimer -= delta;
 
         Input input = container.getInput();
 
@@ -496,10 +498,10 @@ public class PlayingState extends BasicGameState {
             Vector boatPosition = new Vector(myBoat.getX(), myBoat.getY());
 
             float islandAngle = (float) boatPosition.angleTo(tileCenter);
+            //TODO come back to this later better collisiong
+//            angle = bounceAngle(islandAngle, curHeading);
 
-            angle = bounceAngle(islandAngle, curHeading);
-
-            bounce(angle);
+            bounce();
 
             changed = true;
             bounceDelay = 1000;
@@ -514,6 +516,13 @@ public class PlayingState extends BasicGameState {
             CannonBall ball = turret.fireCannon(myBoat);
                 if(ball != null)
                     buildBallCommand(ball,turret.getTurretID());
+            collision = turret.collides(myBoat);
+            if(collision !=null
+                    && bounceDelay <=0){
+                bounce();
+                bounceDelay = 1000;
+                changed = true;
+            }
 
         }
 
@@ -525,6 +534,25 @@ public class PlayingState extends BasicGameState {
         if(!anchor && bounceDelay <= 0) {
             myBoat.updateVelocity(wind);
         }
+
+        for(Map.Entry<Integer,ClientShip>  integerClientShipEntry : CShips.entrySet()){
+            ClientShip other = CShips.get(((Map.Entry) integerClientShipEntry).getKey());
+            if(other.getPlayerID() != myBoat.getPlayerID()&&collisionTimer<0){
+                collision = myBoat.collides(other);
+                if(collision != null){
+                    if(Client.DEBUG)
+                        System.out.println("Collided with enemy ship");
+                    myBoat.updateheading(collision.getMinPenetration().getRotation());
+                    changed=true;
+                    collisionTimer = 1000;
+                    if(!Client.DEBUG){
+                        myBoat.setHealth(myBoat.getHealth()-3);
+                    }
+                }
+            }
+
+        }
+
         if(changed){
             ShipUpdater cmd = new ShipUpdater(Updates.getInstance().getThread().getClientId());
             cmd.setHeading(myBoat.getHeading());
@@ -635,14 +663,9 @@ public class PlayingState extends BasicGameState {
      *
      * Future direction would be to identify the angle of collision
      * and to change velocity from that angle.
-     * 
-     * @param a The angle at which the velocity needs to transform to
      *
      */
-    private void bounce(float a){
-        if(Client.DEBUG){
-            System.out.println("Current heading: " + myBoat.getHeading() + " New heading: " +  a);
-        }
+    private void bounce(){
         myBoat.setHealth(myBoat.getHealth()-2);
         myBoat.bouncedVelocity();
         //myBoat.setVelocity(new Vector(myBoat.getVelocity().setRotation(a)));
