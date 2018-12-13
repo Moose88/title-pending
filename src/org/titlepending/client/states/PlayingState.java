@@ -293,6 +293,8 @@ public class PlayingState extends BasicGameState {
                     Finalizer end = (Finalizer) cmd;
                     Updates.getInstance().getThread().stopThread();
                     Client client = (Client)game;
+                    ResourceManager.getMusic(Client.GAME_MUSIC).stop();
+                    ResourceManager.getMusic(Client.TITLE_MUSIC).loop();
                     client.enterState(end.getStateTransition());
                     break;
                 default:
@@ -522,9 +524,11 @@ public class PlayingState extends BasicGameState {
         character.update(myBoat.getHealth());
 
         checkIfDead();
+
         if(!anchor && bounceDelay <= 0) {
             myBoat.updateVelocity(wind);
         }
+
         if(changed){
             ShipUpdater cmd = new ShipUpdater(Updates.getInstance().getThread().getClientId());
             cmd.setHeading(myBoat.getHeading());
@@ -653,7 +657,6 @@ public class PlayingState extends BasicGameState {
         if(myBoat.getHealth() <= 0 && !isDead){
             if(Client.DEBUG)
                 System.out.println("I am dead");
-            ResourceManager.getMusic(Client.GAME_MUSIC).stop();
             ShipUpdater cmd = new ShipUpdater(Updates.getInstance().getThread().getClientId());
             cmd.setUpdatedShip(myBoat.getPlayerID());
             cmd.setIsDead(true);
