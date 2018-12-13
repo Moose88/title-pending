@@ -498,10 +498,10 @@ public class PlayingState extends BasicGameState {
             Vector boatPosition = new Vector(myBoat.getX(), myBoat.getY());
 
             float islandAngle = (float) boatPosition.angleTo(tileCenter);
+            //TODO come back to this later better collisiong
+//            angle = bounceAngle(islandAngle, curHeading);
 
-            angle = bounceAngle(islandAngle, curHeading);
-
-            bounce(angle);
+            bounce();
 
             changed = true;
             bounceDelay = 1000;
@@ -518,9 +518,7 @@ public class PlayingState extends BasicGameState {
                     buildBallCommand(ball,turret.getTurretID());
             collision = turret.collides(myBoat);
             if(collision !=null){
-                myBoat.updateheading(collision.getMinPenetration().getRotation());
-                collisionTimer=1000;
-                changed=true;
+                bounce();
             }
 
         }
@@ -659,14 +657,9 @@ public class PlayingState extends BasicGameState {
      *
      * Future direction would be to identify the angle of collision
      * and to change velocity from that angle.
-     * 
-     * @param a The angle at which the velocity needs to transform to
      *
      */
-    private void bounce(float a){
-        if(Client.DEBUG){
-            System.out.println("Current heading: " + myBoat.getHeading() + " New heading: " +  a);
-        }
+    private void bounce(){
         myBoat.setHealth(myBoat.getHealth()-2);
         myBoat.bouncedVelocity();
         //myBoat.setVelocity(new Vector(myBoat.getVelocity().setRotation(a)));
