@@ -545,6 +545,9 @@ public class PlayingState extends BasicGameState {
                     myBoat.updateheading(collision.getMinPenetration().getRotation());
                     changed=true;
                     collisionTimer = 1000;
+                    if(!Client.DEBUG){
+                        myBoat.setHealth(myBoat.getHealth()-3);
+                    }
                 }
             }
 
