@@ -34,6 +34,7 @@ public class Server {
     public static final int LOBBYSTATE = 8;
     public static final int REJECTSTATE= 9;
     public static final int WINNINGSTATE=10;
+    private static final int turretNO = 200;
     public static final int r1 = 11500;
     public static final int r2 = 23000;
     private static final int centerX = 24000;
@@ -190,7 +191,6 @@ public class Server {
             radAlpha = r2;
         }
         int playerNo = 1;
-        int turretNO = 100;
         double turretX;
         double turretY;
         if(DEBUG){
