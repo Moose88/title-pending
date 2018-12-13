@@ -145,7 +145,7 @@ public class PlayingState extends BasicGameState {
         theFog = new Fog(4800,4800);
 
         cannonsTargeting = new TargetingComputer(myBoat);
-        reticle = new TargetReticle(0,0);
+        reticle = new TargetReticle(0,0,false);
         rightDelay=leftDelay=0;
 
         character = new Character(myBoat.getHealth(), myBoat.getStats()[3],0, 0);
@@ -415,7 +415,7 @@ public class PlayingState extends BasicGameState {
                     Collision collision = cannonsTargeting.getTargetNet().collides(ship);
                     if(collision!=null){
                         reticle.setVisible(true);
-                        reticle.setPosition(ship.getX(),ship.getY());
+                        reticle.setPosition(ship.getX()+(ship.getVelocity().scale(8*delta).getX()),ship.getY()+(ship.getVelocity().scale(8*delta).getY()));
                     }
                 }
             }
@@ -510,7 +510,7 @@ public class PlayingState extends BasicGameState {
         // and have it fire on the player.
         for(Map.Entry<Integer, EnemyTurret> integerenemyTurretEntry : enemyTurrets.entrySet()){
             EnemyTurret turret = enemyTurrets.get(((Map.Entry) integerenemyTurretEntry).getKey());
-            turret.update(delta);
+            turret.update(delta,myBoat);
             CannonBall ball = turret.fireCannon(myBoat);
                 if(ball != null)
                     buildBallCommand(ball,turret.getTurretID());

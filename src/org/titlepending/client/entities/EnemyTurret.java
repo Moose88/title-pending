@@ -20,6 +20,7 @@ public class EnemyTurret extends Entity {
     private float heading;
     private int cannonCooldown;
     private boolean justFired;
+    private TargetReticle targetReticle;
 
     private ConvexPolygon hitbox;
     private TurretTargetNet detectionCircle;
@@ -38,6 +39,7 @@ public class EnemyTurret extends Entity {
         setHeading(center);
         rotationRate = 0.08f;
         detectionCircle = new TurretTargetNet(x,y);
+        targetReticle = new TargetReticle(0,0,true);
 
     }
 
@@ -52,10 +54,16 @@ public class EnemyTurret extends Entity {
         this.setRotation(heading);
     }
 
-    public void update(final int delta) {
+    public void update(final int delta,ClientShip boat) {
         cannonCooldown -= delta;
         if(cannonCooldown <= 0)
             justFired = false;
+
+        if(detectionCircle.collides(boat)!=null){
+            targetReticle.setVisible(true);
+            targetReticle.setPosition(boat.getX()+(boat.getVelocity().scale(8*delta).getX()),boat.getY()+(boat.getVelocity().scale(8*delta).getY()));
+        }else
+            targetReticle.setVisible(false);
 
     }
 
@@ -63,6 +71,8 @@ public class EnemyTurret extends Entity {
     public void render(Graphics g){
         if(!isDead)
             super.render(g);
+        if(targetReticle.isVisible())
+            targetReticle.render(g);
         if(Client.DEBUG){
             detectionCircle.render(g);
         }
@@ -75,7 +85,7 @@ public class EnemyTurret extends Entity {
             return null;
         justFired = true;
         cannonCooldown = 3000;
-        CannonBall ball = new CannonBall(this.getX(), this.getY(), boat.getX(), boat.getY(), +90, ThreadLocalRandom.current().nextInt(), turretID);
+        CannonBall ball = new CannonBall(this.getX(), this.getY(), targetReticle.getX(), targetReticle.getY(), +90, ThreadLocalRandom.current().nextInt(), turretID);
         return ball;
 
     }
