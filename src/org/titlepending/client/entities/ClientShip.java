@@ -1,12 +1,13 @@
 package org.titlepending.client.entities;
 
-import jig.*;
-import org.lwjgl.Sys;
+import jig.ConvexPolygon;
+import jig.Entity;
+import jig.ResourceManager;
+import jig.Vector;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
-import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.tiled.TiledMap;
 import org.titlepending.client.Client;
 
