@@ -525,6 +525,21 @@ public class PlayingState extends BasicGameState {
         if(!anchor && bounceDelay <= 0) {
             myBoat.updateVelocity(wind);
         }
+
+        for(Map.Entry<Integer,ClientShip>  integerClientShipEntry : CShips.entrySet()){
+            ClientShip other = CShips.get(((Map.Entry) integerClientShipEntry).getKey());
+            if(other.getPlayerID() != myBoat.getPlayerID()){
+                collision = myBoat.collides(other);
+                if(collision != null){
+                    if(Client.DEBUG)
+                        System.out.println("Collided with enemy ship");
+                    myBoat.updateheading(collision.getMinPenetration().getRotation());
+                    changed=true;
+                }
+            }
+
+        }
+
         if(changed){
             ShipUpdater cmd = new ShipUpdater(Updates.getInstance().getThread().getClientId());
             cmd.setHeading(myBoat.getHeading());

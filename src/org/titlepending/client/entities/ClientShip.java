@@ -122,6 +122,10 @@ public class ClientShip extends Entity {
 
     }
 
+    public void updateheading(double minPenetration){
+        heading += (float) minPenetration;
+    }
+
     public void setHeading(float heading){
         this.heading = heading;
     }
