@@ -40,7 +40,7 @@ public class PlayingState extends BasicGameState {
     private boolean isDead;
     private Character character;
     private int fogTimer;
-
+    private int collisionTimer;
     private int bounceDelay;
     private int rightDelay;
     private int leftDelay;
@@ -150,6 +150,7 @@ public class PlayingState extends BasicGameState {
 
         character = new Character(myBoat.getHealth(), myBoat.getStats()[3],0, 0);
         fogTimer = 10000;
+        collisionTimer = 0;
 
         if(myBoat.getStats()[3] == 2){
             CDBuff = 500;
@@ -535,6 +536,7 @@ public class PlayingState extends BasicGameState {
                         System.out.println("Collided with enemy ship");
                     myBoat.updateheading(collision.getMinPenetration().getRotation());
                     changed=true;
+                    collisionTimer = 1000;
                 }
             }
 
