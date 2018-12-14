@@ -1,0 +1,10 @@
+## Server ##
+one beefy boi
+
+## Issues ##
+* Needs to se
+
+
+## Completed ##
+* Needs thread that connects with the clients
+* Keeps track of clients by thread

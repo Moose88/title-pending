@@ -1,0 +1,18 @@
+## Client ##
+
+## Issues ##
+
+## Future Additions ##
+* Need a thread that will connect to the Server.
+    - A way to send and receive information
+* An area to render what the Server sends back to it.
+* A menu system.
+* Turn music on or off from front menu or from possible pause menu
+* Do the same as above, but with sound
+
+* John had a feature that auto found available servers on an ip address.
+    * See how implemented and add?
+
+* Mouse Listener on front menu, and change "<", ">" into actual arrows
+
+## Resolved ##

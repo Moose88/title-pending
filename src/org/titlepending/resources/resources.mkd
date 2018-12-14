@@ -1,0 +1,26 @@
+## Resources ##
+
+Resources that are needed for the Client or Server
+
+## Issues ##
+* Font Resources
+    * N/A
+
+* Sound Resources
+    * Explosion sounds for Cannons
+    * Sounds for when taking damage
+
+* Image Resources
+    * Needed images for other character expressions
+    * Background compass for wind arrow
+    * Red border to flash when taking damage
+    * Turret images
+
+* Music Resources
+    * N/A
+
+## Resolved ##
+
+* TileMap input
+* Dirk Character images/Expressions completed
+* Zog and Terry Splashes completed, need Expressions
