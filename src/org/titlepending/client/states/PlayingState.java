@@ -4,22 +4,16 @@ import jig.Collision;
 import jig.ConvexPolygon;
 import jig.ResourceManager;
 import jig.Vector;
-import org.lwjgl.Sys;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
 import org.titlepending.client.Client;
 import org.titlepending.client.Updates;
-import org.titlepending.client.entities.*;
 import org.titlepending.client.entities.Character;
-import org.titlepending.client.entities.EnemyTurret;
+import org.titlepending.client.entities.*;
 import org.titlepending.server.ServerObjects.Ship;
 import org.titlepending.server.ServerObjects.Turret;
-import org.titlepending.shared.BallUpdater;
-import org.titlepending.shared.CommandObject;
-import org.titlepending.shared.ShipUpdater;
-import org.titlepending.shared.WindUpdater;
 import org.titlepending.shared.*;
 
 import java.io.IOException;
@@ -482,7 +476,7 @@ public class PlayingState extends BasicGameState {
             if(Client.DEBUG)
                 System.out.println("Distance to center: "+getDistToCenter()+" fog radius: "+theFog.getRadius());
             else
-                myBoat.setHealth(myBoat.getHealth()-1);
+                myBoat.setHealth(myBoat.getHealth()+1);
             fogTimer = 2000;
         }
 

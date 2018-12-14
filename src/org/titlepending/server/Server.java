@@ -1,11 +1,12 @@
 package org.titlepending.server;
 
 
-import org.titlepending.server.ServerObjects.ShipFactory;
 import org.titlepending.server.ServerObjects.Ball;
 import org.titlepending.server.ServerObjects.Ship;
+import org.titlepending.server.ServerObjects.ShipFactory;
 import org.titlepending.server.ServerObjects.Turret;
 import org.titlepending.shared.*;
+
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
@@ -15,7 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Server {
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public static List<ClientThread> players = new CopyOnWriteArrayList<>();
     private static final int PORT = 8000;
     private static final int PLIMIT = 8;
