@@ -518,7 +518,7 @@ public class Server {
                     e.printStackTrace();
                 }
                 int id = ThreadLocalRandom.current().nextInt(0,1000000);
-                System.out.println("Assigned ID: " + id);
+                if(DEBUG)System.out.println("Assigned ID: " + id);
                 if(temp != null) temp.setClientId(id);
 
                 if(DEBUG) System.out.println("Starting thread with id: "+id);
