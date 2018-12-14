@@ -476,7 +476,7 @@ public class PlayingState extends BasicGameState {
             if(Client.DEBUG)
                 System.out.println("Distance to center: "+getDistToCenter()+" fog radius: "+theFog.getRadius());
             else
-                myBoat.setHealth(myBoat.getHealth()+1);
+                myBoat.setHealth(myBoat.getHealth()-1);
             fogTimer = 2000;
         }
 

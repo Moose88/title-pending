@@ -27,7 +27,7 @@ public class CannonBall extends Entity {
         velocity = new Vector(0,-.5f).rotate(getPosition().angleTo(dest)+rotation);
         destinationX = destX;
         destinationY = destY;
-        ttl = 5000;
+        ttl = 3000;
         dead = false;
         this.ballId = ballId;
         this.playerID=playerID;
