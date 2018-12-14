@@ -35,7 +35,7 @@ public class Server {
     public static final int LOBBYSTATE = 8;
     public static final int REJECTSTATE= 9;
     public static final int WINNINGSTATE=10;
-    private static final int turretNO = 200;
+    private static final int turretNO = 400;
     public static final int r1 = 11500;
     public static final int r2 = 23000;
     private static final int centerX = 24000;
