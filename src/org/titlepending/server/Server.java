@@ -1,11 +1,12 @@
 package org.titlepending.server;
 
 
-import org.titlepending.server.ServerObjects.ShipFactory;
 import org.titlepending.server.ServerObjects.Ball;
 import org.titlepending.server.ServerObjects.Ship;
+import org.titlepending.server.ServerObjects.ShipFactory;
 import org.titlepending.server.ServerObjects.Turret;
 import org.titlepending.shared.*;
+
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
@@ -15,7 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Server {
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public static List<ClientThread> players = new CopyOnWriteArrayList<>();
     private static final int PORT = 8000;
     private static final int PLIMIT = 8;
@@ -34,7 +35,7 @@ public class Server {
     public static final int LOBBYSTATE = 8;
     public static final int REJECTSTATE= 9;
     public static final int WINNINGSTATE=10;
-    private static final int turretNO = 200;
+    private static final int turretNO = 400;
     public static final int r1 = 11500;
     public static final int r2 = 23000;
     private static final int centerX = 24000;
@@ -517,7 +518,7 @@ public class Server {
                     e.printStackTrace();
                 }
                 int id = ThreadLocalRandom.current().nextInt(0,1000000);
-                System.out.println("Assigned ID: " + id);
+                if(DEBUG)System.out.println("Assigned ID: " + id);
                 if(temp != null) temp.setClientId(id);
 
                 if(DEBUG) System.out.println("Starting thread with id: "+id);
