@@ -19,7 +19,7 @@ public class TargetReticle extends Entity {
         this.isTurret = isTurret;
         SpriteSheet sheet = new SpriteSheet(ResourceManager.getImage(Client.SS2_RSC), 128, 128);
         Image reticle;
-        if(!isTurret)
+        if(isTurret)
             reticle = sheet.getSubImage(3, 0).getScaledCopy(.75f);
         else
             reticle = sheet.getSubImage(3, 1).getScaledCopy(.75f);
