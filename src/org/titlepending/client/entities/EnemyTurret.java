@@ -7,8 +7,8 @@ import jig.Vector;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SpriteSheet;
-import org.newdawn.slick.geom.Circle;
 import org.titlepending.client.Client;
+
 import java.util.concurrent.ThreadLocalRandom;
 
 public class EnemyTurret extends Entity {

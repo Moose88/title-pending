@@ -1,7 +1,6 @@
 package org.titlepending.client.states;
 
 import jig.ResourceManager;
-import org.lwjgl.Sys;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
